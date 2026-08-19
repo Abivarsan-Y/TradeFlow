@@ -22,3 +22,72 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# =========================
+# Java, Maven & Spring Boot
+# =========================
+target/
+build/
+out/
+*.jar
+*.war
+*.class
+*.log
+application-local.properties
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# IDEs & Code Editors
+# =========================
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Zed
+.zed/
+
+# Eclipse / Microsoft Workbench
+.project
+.classpath
+.settings/
+.metadata/
+
+# Terminal Editors (Vim & Nano)
+*~
+*.swp
+*.swo
+.nano_history
+
+# =========================
+# Database Clients (DBeaver)
+# =========================
+.dbeaver/
+Scripts/
+
+# =========================
+# Operating Systems
+# =========================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux (Fedora)
+.directory
+.Trash-*
+
+# =========================
+# API Testing Tools
+# =========================
+# VS Code REST Client / Thunder Client extensions
+*.http
+*.rest
+
+# Postman local exports
+*.postman_collection.json
+*.postman_environment.json
