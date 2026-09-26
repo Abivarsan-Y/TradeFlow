@@ -21,6 +21,11 @@ public class InquiryReply {
     @Column(nullable = false, length = 2000)
     private String message;
 
+    // true = written by the Trade Japan team, false = written by the customer
+    // (empty on old rows -> decided by the author's role)
+    @Column(name = "from_admin")
+    private Boolean fromAdmin;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -39,4 +44,6 @@ public class InquiryReply {
     public void setMessage(String message) { this.message = message; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Boolean getFromAdmin() { return fromAdmin; }
+    public void setFromAdmin(Boolean fromAdmin) { this.fromAdmin = fromAdmin; }
 }

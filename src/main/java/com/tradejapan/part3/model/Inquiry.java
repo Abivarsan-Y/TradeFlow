@@ -38,6 +38,10 @@ public class Inquiry {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    // when an admin last opened this conversation (used for the "unread" badge)
+    @Column(name = "admin_last_read_at")
+    private LocalDateTime adminLastReadAt;
+
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
@@ -71,4 +75,6 @@ public class Inquiry {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getAdminLastReadAt() { return adminLastReadAt; }
+    public void setAdminLastReadAt(LocalDateTime adminLastReadAt) { this.adminLastReadAt = adminLastReadAt; }
 }
