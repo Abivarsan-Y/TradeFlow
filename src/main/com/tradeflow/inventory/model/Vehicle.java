@@ -25,5 +25,23 @@ public class Vehicle {
     private String steering;
     private String transmission;
     private String driveType;
+    private String chassisNo;
+    private String modelCode;
+    private String grade;
+    private String engineModel;
+    private Integer odometerKm;
+    private Integer displacementCc;
+    private Integer doors;
+    private Integer passengers;
+    private String dimension;
+    private String size;
+    private String exteriorColor;
+    private String location;
+    private String description;
+    private Boolean isNewArrival = false;
+    private Boolean isActive = true;
+    private String status = "AVAILABLE";
+    private LocalDateTime createdAt;
+    private List<VehicleImage> images = new ArrayList<>();
 
 }
