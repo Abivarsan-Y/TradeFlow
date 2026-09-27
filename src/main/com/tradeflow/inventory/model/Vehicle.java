@@ -44,7 +44,7 @@ public class Vehicle {
     private LocalDateTime createdAt;
     private List<VehicleImage> images = new ArrayList<>();
 
-    // Basic Getters and Setters
+    //Getters and Setters
     public Integer getVehicleId() { return vehicleId; }
     public void setVehicleId(Integer vehicleId) { this.vehicleId = vehicleId; }
     public Model getModel() { return model; }

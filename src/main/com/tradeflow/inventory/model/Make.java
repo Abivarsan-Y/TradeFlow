@@ -11,6 +11,7 @@ public class Make {
 
     private String name;
 
+    //Getters and Setters
     public Integer getMakeId() { return makeId; }
     public void setMakeId(Integer makeId) { this.makeId = makeId; }
     public String getName() { return name; }
