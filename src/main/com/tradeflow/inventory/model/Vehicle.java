@@ -15,36 +15,132 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "vehicles")
 public class Vehicle {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "vehicle_id")
+    @JsonProperty("id")
     private Integer vehicleId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "model_id", nullable = false)
+    @JsonIgnore
     private Model model;
+
+    @Transient
+    @JsonProperty("make")
+    public String getMakeName() {
+        return model != null && model.getMake() != null ? model.getMake().getName() : null;
+    }
+
+    @Transient
+    @JsonProperty("model")
+    public String getModelName() {
+        return model != null ? model.getName() : null;
+    }
+
+    @Column(nullable = false)
+    @JsonProperty("manufactureYear")
     private Integer year;
+
+    @Column(name = "price_usd", nullable = false, precision = 10, scale = 2)
+    @JsonProperty("fobPrice")
     private BigDecimal priceUsd;
+
+    @Column(name = "ref_no", unique = true, nullable = false, length = 30)
     private String refNo;
+
+    @Column(name = "body_type", length = 50)
+    @JsonProperty("category")
     private String bodyType;
+
+    @Column(name = "fuel_type", length = 50)
     private String fuelType;
+
+    @Column(length = 50)
     private String steering;
+
+    @Column(length = 50)
     private String transmission;
+
+    @Column(name = "drive_type", length = 50)
     private String driveType;
+
+    @Column(name = "chassis_no", length = 50)
+    @JsonProperty("vin")
     private String chassisNo;
+
+    @Column(name = "model_code", length = 50)
     private String modelCode;
+
+    @Column(length = 50)
     private String grade;
+
+    @Column(name = "engine_model", length = 50)
+    @JsonProperty("engineType")
     private String engineModel;
+
+    @Column(name = "odometer_km", nullable = false)
+    @JsonProperty("mileage")
     private Integer odometerKm;
+
+    @Column(name = "displacement_cc")
     private Integer displacementCc;
+
     private Integer doors;
     private Integer passengers;
+
+    @Column(length = 50)
     private String dimension;
+
+    @Column(length = 50)
     private String size;
+
+    @Column(name = "exterior_color", length = 30)
     private String exteriorColor;
+
+    @Column(length = 50)
+    @JsonProperty("inventoryLocation")
     private String location;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "is_new_arrival")
     private Boolean isNewArrival = false;
+
+    @Column(name = "is_active")
     private Boolean isActive = true;
+
+    @Column(length = 20)
     private String status = "AVAILABLE";
+
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<VehicleImage> images = new ArrayList<>();
 
-    //Getters and Setters
+    @Transient
+    @JsonProperty("imageUrls")
+    public String getImageUrlsString() {
+        if (images == null || images.isEmpty()) return null;
+        List<String> urls = new ArrayList<>();
+        for (VehicleImage img : images) {
+            urls.add(img.getImageUrl());
+        }
+        return String.join(",", urls);
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "vehicle_features",
+        joinColumns = @JoinColumn(name = "vehicle_id"),
+        inverseJoinColumns = @JoinColumn(name = "feature_id")
+    )
+    private Set<Feature> features = new HashSet<>();
+
+    // Basic Getters and Setters
     public Integer getVehicleId() { return vehicleId; }
     public void setVehicleId(Integer vehicleId) { this.vehicleId = vehicleId; }
     public Model getModel() { return model; }

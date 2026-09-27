@@ -5,9 +5,16 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "models")
 public class Model {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "model_id")
     private Integer modelId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "make_id", nullable = false)
     private Make make;
+
+    @Column(nullable = false, length = 50)
     private String name;
 
     // Getters and Setters

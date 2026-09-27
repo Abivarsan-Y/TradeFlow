@@ -7,11 +7,27 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer userId;
+
+    @Column(name = "first_name", length = 50)
     private String firstName;
+
+    @Column(unique = true, length = 100)
     private String email;
+
+    @Column(length = 20)
     private String role;
+
+    @ManyToMany
+    @JoinTable(
+        name = "saved_vehicles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "vehicle_id")
+    )
+    private Set<Vehicle> savedVehicles = new HashSet<>();
 
     // Getters and Setters
     public Integer getUserId() { return userId; }
