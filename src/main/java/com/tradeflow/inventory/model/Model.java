@@ -10,7 +10,7 @@ public class Model {
     @Column(name = "model_id")
     private Integer modelId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "make_id", nullable = false)
     private Make make;
 

@@ -117,7 +117,7 @@ public class Vehicle {
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<VehicleImage> images = new ArrayList<>();
 
@@ -132,7 +132,7 @@ public class Vehicle {
         return String.join(",", urls);
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "vehicle_features",
         joinColumns = @JoinColumn(name = "vehicle_id"),
