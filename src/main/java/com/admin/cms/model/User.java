@@ -2,6 +2,7 @@ package com.admin.cms.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "users")
@@ -15,12 +16,14 @@ public class User {
     private String email;
 
     // Nullable: a GOOGLE-auth user has no local password
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password_hash", nullable = true)
     private String password;
 
     private String firstName;
     private String lastName;
 
+    // Matches DMS design: WhatsApp number replaces the old phone/address fields
     @Column(name = "whatsapp_no")
     private String whatsappNo;
 
