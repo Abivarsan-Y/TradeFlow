@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Japan — Vehicle Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- ─── Header ──────────────────────────────────────── -->
+    <header class="tj-header">
+        <div class="tj-header-left">
+            <button class="tj-hamburger" aria-label="Menu"><i class="bi bi-list"></i></button>
+        </div>
+        <div class="tj-logo">
+            <span class="tj-logo-text">
+                TRADE JAPAN
+                <span class="tj-logo-tagline">MAKE EVERY MILES COUNT</span>
+            </span>
+            <span class="tj-logo-car">🚗</span>
+        </div>
+        <div class="tj-header-right">
+            <button class="tj-header-icon" aria-label="Search"><i class="bi bi-search"></i></button>
+            <button class="tj-header-icon" aria-label="Cart"><i class="bi bi-cart"></i></button>
+            <a href="/inventory.html" class="tj-header-icon" aria-label="Catalogue"><i class="bi bi-grid"></i></a>
+        </div>
+    </header>
+
+    <!-- ─── Breadcrumb ──────────────────────────────────── -->
+    <div class="tj-breadcrumb">
+        <a href="#">Home</a><span class="sep">»</span>
+        <a href="/inventory.html">Vehicles</a><span class="sep">»</span>
+        <span id="breadcrumb-name">Vehicle Details</span>
+    </div>
+
+    <!-- ─── Main Content ────────────────────────────────── -->
+    <main class="tj-main">
+        <a class="back-link" href="/inventory.html"><i class="bi bi-arrow-left"></i> Back to catalogue</a>
+        <section id="vehicle-detail" class="detail-card">
+            <div style="padding: 3rem; text-align: center; color: var(--tj-text-muted);">
+                <div class="loading-spinner" style="margin: 0 auto 1rem;"></div>
+                Loading vehicle details…
+            </div>
+        </section>
+    </main>
+
+    <!-- ─── Footer ──────────────────────────────────────── -->
+    <footer class="tj-footer">
+        <div class="tj-footer-grid">
+            <div class="tj-footer-brand">
+                <div class="tj-footer-logo">TRADE JAPAN 🚗</div>
+                <div class="tj-footer-tagline">Make Every Miles Count</div>
+                <div class="tj-footer-social">
+                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" aria-label="X"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+            <div class="tj-footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Terms &amp; Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="tj-footer-col">
+                <h4>Information</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">How To Buy</a></li>
+                    <li><a href="#">Auction Service</a></li>
+                </ul>
+            </div>
+            <div class="tj-footer-col">
+                <h4>Brands</h4>
+                <ul>
+                    <li><a href="#">Toyota</a></li>
+                    <li><a href="#">Honda</a></li>
+                    <li><a href="#">Nissan</a></li>
+                    <li><a href="#">Mazda</a></li>
+                    <li><a href="#">Suzuki</a></li>
+                </ul>
+            </div>
+            <div class="tj-footer-col">
+                <h4>Contact Us</h4>
+                <div class="tj-footer-contact-item">
+                    <i class="bi bi-telephone"></i>
+                    <span>+81 3-1234-5678</span>
+                </div>
+                <div class="tj-footer-contact-item">
+                    <i class="bi bi-envelope"></i>
+                    <span>info@tradejapan.co.jp</span>
+                </div>
+                <div class="tj-footer-contact-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>1-1-1 Chuo, Tokyo 100-0001 Japan</span>
+                </div>
+            </div>
+        </div>
+        <div class="tj-footer-bottom">
+            <span>© 2026 Trade Japan. All rights reserved.</span>
+            <span class="tagline-right">MAKE EVERY MILES COUNT</span>
+        </div>
+    </footer>
+
+    <script src="/js/inventory.js"></script>
+</body>
+</html>
