@@ -1,30 +1,30 @@
 -- TradeFlow: Vehicle Inventory & Catalogue
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50),
     email VARCHAR(100) UNIQUE,
     role VARCHAR(20) DEFAULT 'CUSTOMER'
 );
 
-CREATE TABLE makes (
+CREATE TABLE IF NOT EXISTS makes (
     make_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE models (
+CREATE TABLE IF NOT EXISTS models (
     model_id INT AUTO_INCREMENT PRIMARY KEY,
     make_id INT NOT NULL,
     name VARCHAR(50) NOT NULL,
     FOREIGN KEY (make_id) REFERENCES makes(make_id)
 );
 
-CREATE TABLE features (
+CREATE TABLE IF NOT EXISTS features (
     feature_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE vehicles (
+CREATE TABLE IF NOT EXISTS vehicles (
     vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
     model_id INT NOT NULL,
     year INT NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE vehicles (
     FOREIGN KEY (model_id) REFERENCES models(model_id)
 );
 
-CREATE TABLE vehicle_images (
+CREATE TABLE IF NOT EXISTS vehicle_images (
     image_id INT AUTO_INCREMENT PRIMARY KEY,
     vehicle_id INT NOT NULL,
     image_url VARCHAR(255) NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE vehicle_images (
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
 );
 
-CREATE TABLE vehicle_features (
+CREATE TABLE IF NOT EXISTS vehicle_features (
     vehicle_id INT NOT NULL,
     feature_id INT NOT NULL,
     PRIMARY KEY (vehicle_id, feature_id),
@@ -72,7 +72,7 @@ CREATE TABLE vehicle_features (
     FOREIGN KEY (feature_id) REFERENCES features(feature_id) ON DELETE CASCADE
 );
 
-CREATE TABLE saved_vehicles (
+CREATE TABLE IF NOT EXISTS saved_vehicles (
     user_id INT NOT NULL,
     vehicle_id INT NOT NULL,
     saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -81,6 +81,6 @@ CREATE TABLE saved_vehicles (
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
 );
 
-CREATE TABLE app_initialization (
+CREATE TABLE IF NOT EXISTS app_initialization (
     name VARCHAR(80) NOT NULL PRIMARY KEY
 );
