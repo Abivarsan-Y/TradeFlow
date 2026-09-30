@@ -1,18 +1,17 @@
-package com.tradeflow.inventory.controller;
+package com.tradejapan.inventory.controller;
 
-import com.tradeflow.inventory.model.Vehicle;
-import com.tradeflow.inventory.service.VehicleService;
-import org.springframework.data.domain.Page;
+import com.tradejapan.inventory.dto.StatusUpdateRequest;
+import com.tradejapan.inventory.model.Feature;
+import com.tradejapan.inventory.model.Vehicle;
+import com.tradejapan.inventory.service.VehicleService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
-import java.io.File;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +23,7 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
-    // Public endpoints
+    // ── Public Endpoints ─────────────────────────────────────
     @GetMapping("/vehicles")
     public List<Vehicle> search(
             @RequestParam(required = false) String make,
@@ -46,26 +45,13 @@ public class VehicleController {
         return vehicleService.getNewArrivals();
     }
 
-    // Customer wishlist endpoints
-    @PostMapping("/vehicles/{id}/save")
-    public ResponseEntity<Void> saveToWishlist(@PathVariable Integer id) {
-        // Hardcoded user 2 for testing
-        vehicleService.saveToWishlist(2, id);
-        return ResponseEntity.ok().build();
+    /** The 28 option names, in display order (public: the vehicle page shows them as ON / OFF). */
+    @GetMapping("/features")
+    public List<Feature> getFeatures() {
+        return vehicleService.getAllFeatures();
     }
 
-    @DeleteMapping("/vehicles/{id}/save")
-    public ResponseEntity<Void> removeFromWishlist(@PathVariable Integer id) {
-        vehicleService.removeFromWishlist(2, id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/users/me/saved-vehicles")
-    public List<Vehicle> viewWishlist() {
-        return vehicleService.getSavedVehicles(2); // Hardcoded user 2
-    }
-
-    // Admin endpoints
+    // ── Admin Endpoints (secured by SecurityConfig) ──────────
     @PostMapping("/admin/vehicles")
     @ResponseStatus(HttpStatus.CREATED)
     public Vehicle create(@RequestBody Map<String, Object> payload) {
@@ -75,6 +61,12 @@ public class VehicleController {
     @PutMapping("/admin/vehicles/{id}")
     public Vehicle update(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
         return vehicleService.update(id, payload);
+    }
+
+    @PatchMapping("/admin/vehicles/{id}/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable Integer id, @Valid @RequestBody StatusUpdateRequest request) {
+        vehicleService.setStatus(id, request.getStatus());
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/admin/vehicles/{id}/new-arrival")
@@ -89,22 +81,32 @@ public class VehicleController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/admin/vehicles/{id}/activate")
+    public ResponseEntity<Void> activate(@PathVariable Integer id) {
+        vehicleService.setActive(id, true);
+        return ResponseEntity.ok().build();
+    }
+
+    /** All vehicles including deactivated ones, for the admin panel. */
+    @GetMapping("/admin/vehicles")
+    public List<Vehicle> adminList() {
+        return vehicleService.getAllForAdmin();
+    }
+
     @DeleteMapping("/admin/vehicles/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         vehicleService.delete(id);
     }
 
-    // Image endpoints
     @PostMapping("/admin/vehicles/{id}/images")
-    public ResponseEntity<Vehicle> uploadImages(@PathVariable Integer id, @RequestParam("files") MultipartFile[] files) {
-        // Simplistic file handling for demo
+    public ResponseEntity<Vehicle> uploadImages(@PathVariable Integer id,
+                                                 @RequestParam("files") org.springframework.web.multipart.MultipartFile[] files) {
         List<String> urls = new java.util.ArrayList<>();
-        for (MultipartFile file : files) {
-            urls.add("https://picsum.photos/id/" + (Math.random() * 1000) + "/800/500");
+        for (int i = 0; i < files.length; i++) {
+            urls.add("https://picsum.photos/id/" + (100 + i) + "/800/500");
         }
-        Vehicle updated = vehicleService.addImages(id, urls);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(vehicleService.addImages(id, urls));
     }
 
     @DeleteMapping("/admin/vehicles/{id}/images/{imageId}")

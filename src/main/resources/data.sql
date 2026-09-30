@@ -1,34 +1,81 @@
-INSERT IGNORE INTO users (user_id, first_name, email, role) VALUES
-(1, 'Admin', 'admin@tradejapan.com', 'ADMIN'),
-(2, 'Customer', 'customer@example.com', 'CUSTOMER');
 
-INSERT IGNORE INTO makes (make_id, name) VALUES
-(1, 'Toyota'), (2, 'Nissan'), (3, 'Honda');
+INSERT IGNORE INTO content (id, page_name, title, html_content, updated_at) VALUES
+(1, 'about', 'About Us',
+ '<h2>Who we are</h2><p>Dear Valued Customers, welcome to Trade Japan Co., Ltd., a leading used vehicle exporting company. Our head office is based in Japan, and we have been established since 2007.</p><h2>Our Mission</h2><p>We continuously export all kinds of used vehicles worldwide with better service to our customers all around the world, and we pursue customer satisfaction with constant effort and passion in the used automobile industry.</p><h2>Our Vision</h2><p>With the growth of developing nations and a rising global consciousness towards resource conservation, the demand for used automobiles is surging. Our worldwide services aim to meet and exceed these increasing needs for used automobiles.</p><p>We want to be the world''s most trusted and innovative used car exporter, delivering good quality vehicles and customer satisfaction while expanding our global presence and positively impacting communities and the environment.</p><h2>Company Profile</h2><p><strong>Company name:</strong> TRADE JAPAN CO., LTD.</p><p><strong>Established:</strong> June 2007</p><p><strong>Address:</strong> Yamazaki 2116-2, Noda-Shi, Chiba-Ken, Japan</p><p><strong>Corresponding banks:</strong> THE BANK OF TOKYO MITSUBISHI UFJ LTD &amp; MIZUHO BANK</p><p><strong>Business description:</strong> Export and sale of used vehicles, and other.</p>',
+ NOW()),
 
-INSERT IGNORE INTO models (model_id, make_id, name) VALUES
-(1, 1, 'Corolla Axio'), (2, 2, 'X-Trail'), (3, 3, 'Stepwgn Spada');
+(2, 'services', 'Services',
+ '<h2>Auction Service</h2><h3>Japanese Used Car Auction</h3><p>The Japan used cars auction system is a method of selling pre-owned vehicles through competitive bidding. These auctions offer high-quality Japanese used cars and are held at over 100 different auction houses across Japan, listing more than 140,000 vehicles each week. Each car undergoes a rigorous inspection process to ensure its quality, providing buyers with detailed reports and peace of mind.</p><p>Whether you are looking for a specific make and model or exploring various options, our Auction Service can assist you in finding the perfect vehicle. Our team of experts is dedicated to helping you navigate the auction process, from initial search to final purchase, ensuring a seamless and satisfying experience.</p><h3>Why choose Trade Japan for auction: ZERO Hidden Cost</h3><ul><li><strong>Credibility</strong></li><li><strong>Access to all Japan auction houses</strong></li><li><strong>Customer service</strong></li><li><strong>Best prices</strong></li></ul><h2>How To Buy</h2><ol><li><strong>Sign Up</strong></li><li><strong>Choose your Vehicle</strong></li><li><strong>Pay for Auction Deposit</strong></li><li><strong>Bidding &amp; Result</strong></li><li><strong>Shipment</strong></li><li><strong>Arrival on Port</strong></li></ol><h2>FAQs</h2><p><a href="/pages/faq.html">Click here for our FAQs</a></p>',
+ NOW()),
 
-INSERT IGNORE INTO features (feature_id, name) VALUES
-(1, 'Navigation'), (2, 'Alloy Wheels'), (3, 'Sunroof'), (4, 'Leather Seats');
+(3, 'tc', 'Terms & Conditions',
+ '<h2>Terms &amp; Conditions</h2><p><em>Last updated: October 2026</em></p><p>These terms apply to your use of the Trade Japan website and to vehicles you buy through TRADE JAPAN CO., LTD. (&quot;Trade Japan&quot;, &quot;we&quot;, &quot;us&quot;). By creating an account or sending an inquiry, you agree to them.</p><h3>1. Using our website and your account</h3><ul><li>Registration is free. Anyone, including automobile dealers and individual buyers, can register.</li><li>You must give correct information when you register and when you send an inquiry.</li><li>Keep your password private. You are responsible for what happens on your account.</li><li>We may deactivate an account that breaks these terms or is used to harm the website or other users.</li></ul><h3>2. Vehicle information and prices</h3><p>We work hard to keep vehicle details, specifications, photos and prices accurate. Photos are for illustration. Vehicle details are based on our inspection and on the auction or dealer information available to us.</p><p>A price is only confirmed when our team confirms it to you in writing, for example in a reply to your inquiry or on your invoice. Until then a price may change.</p><h3>3. Price terms and additional charges</h3><p>Your price is agreed under one of these terms:</p><ul><li><strong>FOB:</strong> additional charges include freight, clearance, import duty, registration, compliance fees and other fees under your country''s import regulations.</li><li><strong>C&amp;F:</strong> the same, without the freight charge.</li><li><strong>CIF:</strong> the same, without the freight and insurance charges.</li></ul><p>Please check your country''s import regulations before you buy. The buyer is responsible for the charges that apply in the buyer''s country.</p><h3>4. Inquiries and purchases</h3><p>Sending an inquiry does not oblige you to buy. A purchase begins when you confirm a vehicle with our team and we record it in your account. We then issue an invoice. You can see your purchases and download your invoices in your account.</p><h3>5. Buying through auctions</h3><p>To buy through the Japanese auctions you need to register with Trade Japan, stay in touch with our sales representative, and pay a security deposit (100% refundable) to activate your bidding permission. You can then bid up to the credit limit of your account.</p><p>After you win a vehicle, we ask you for the deposit to ship it. Once the vehicle is fully paid, we send you the final documents so you can release the vehicle at the destination port.</p><h3>6. Payments</h3><p>We accept payment by telegraphic transfer to our designated bank account, and by Visa, Mastercard and PayPal. The buyer pays all bank fees; please ask your bank for the exact amount.</p><p>Only pay to the bank account shown on your official invoice, and contact us if you are not sure.</p><h3>7. Shipping and delivery</h3><p>The delivery time depends on the shipping schedule. It typically takes 4 to 8 weeks. Once the vehicle is fully paid, we ship it on the earliest available vessel. Delivery times are estimates and are not guaranteed.</p><h3>8. Cancellation</h3><p>You can cancel a purchase order. If you cancel, you may need to pay the costs already incurred, because we may have to resell the vehicle.</p><h3>9. Inspection</h3><p>All cars are inspected before shipping to make sure they match the specifications on the sheet. For auction vehicles, our staff inspect the cars before deciding to bid.</p><h3>10. Testimonials and messages</h3><p>A testimonial you submit may be shown on our website after our team approves it. The messages you send us are used to answer you.</p><h3>11. Our responsibility</h3><p>We do our best to give you accurate information and a good service. As far as the law allows, we are not responsible for losses caused by things outside our control, such as shipping delays or changes to your country''s import rules.</p><h3>12. Changes to these terms</h3><p>We may update these terms from time to time. The latest version is always on this page.</p><h3>13. Contact</h3><p>TRADE JAPAN CO., LTD., Yamazaki 2116-2, Noda-Shi, Chiba-Ken, Japan. For any question about these terms, please use our <a href="/pages/contact.html">Contact Us</a> page.</p>',
+ NOW()),
 
-INSERT IGNORE INTO vehicles (vehicle_id, model_id, year, price_usd, ref_no, body_type, fuel_type, steering, transmission, drive_type, chassis_no, model_code, grade, engine_model, odometer_km, displacement_cc, doors, passengers, dimension, size, exterior_color, location, description, is_new_arrival, is_active, status, created_at) VALUES
-(1, 1, 2018, 9800.00, 'TJ00001', 'Sedan', 'Petrol', 'Right', 'CVT', '2WD', 'NRE161-123456', 'DBA-NRE161', 'X', '1NR-FE', 42000, 1496, 4, 5, '4400x1695x1460', 'Standard', 'White', 'Japan', 'Great condition family sedan.', TRUE, TRUE, 'AVAILABLE', DATE_SUB(NOW(), INTERVAL 1 DAY)),
-(2, 2, 2019, 15450.00, 'TJ00002', 'SUV', 'Hybrid', 'Right', 'CVT', '4WD', 'HNT32-123456', 'DAA-HNT32', '20X', 'MR20DD-RM31', 61000, 1997, 5, 5, '4690x1820x1730', 'Standard', 'Black', 'Japan', 'Spacious hybrid SUV.', FALSE, TRUE, 'AVAILABLE', DATE_SUB(NOW(), INTERVAL 20 DAY)),
-(3, 3, 2017, 11200.00, 'TJ00003', 'Van', 'Petrol', 'Right', 'CVT', '2WD', 'RP3-123456', 'DBA-RP3', 'Spada', 'L15B', 88000, 1496, 5, 7, '4760x1695x1840', 'Standard', 'Silver', 'Japan', 'Family van with lots of space.', FALSE, TRUE, 'RESERVED', DATE_SUB(NOW(), INTERVAL 45 DAY));
+(4, 'privacy', 'Privacy Policy',
+ '<h2>Privacy Policy</h2><p><em>Last updated: October 2026</em></p><p>TRADE JAPAN CO., LTD. (&quot;Trade Japan&quot;, &quot;we&quot;, &quot;us&quot;) respects your privacy. This page explains what personal information we collect through this website, why, and what choices you have.</p><h3>What we collect</h3><ul><li><strong>Account details:</strong> your first name, last name, email address and WhatsApp number. Your password is stored only in a protected (hashed) form.</li><li><strong>Your inquiries and messages:</strong> the vehicle you ask about, your destination country and the conversation with our team.</li><li><strong>Your purchases:</strong> the purchase records, payment amounts and invoices for vehicles you buy.</li><li><strong>Saved vehicles:</strong> the vehicles you add to your wishlist.</li><li><strong>Contact and testimonial forms:</strong> the name, email, subject and message you send us, and any testimonial you write.</li><li><strong>Sign-in information:</strong> we keep a login token in your browser so that you stay signed in.</li></ul><h3>How we use it</h3><ul><li>To create and manage your account.</li><li>To answer your inquiries and to prepare, invoice and ship your purchases.</li><li>To contact you about your vehicle, usually by email or WhatsApp.</li><li>To show testimonials on our website, only after our team has approved them.</li><li>To keep the website secure and to meet legal and accounting requirements.</li></ul><h3>Who we share it with</h3><p>We do not sell your personal information. We only share what is needed to complete your purchase, for example with shipping companies, auction houses, banks and payment providers, and with authorities when the law requires it.</p><h3>Keeping it safe</h3><p>Your customer record, messages and invoices can only be opened by you, for your own account, and by our logged-in staff. Please keep your password private and log out when you use a shared computer.</p><h3>How long we keep it</h3><p>We keep your account and your purchase records for as long as we need them to provide our service and to meet legal and accounting requirements.</p><h3>Your choices</h3><ul><li>You can see and update your details in your account at any time.</li><li>You can ask us to deactivate your account.</li><li>You can ask us a question about your information.</li></ul><p>To do any of these, please use our <a href="/pages/contact.html">Contact Us</a> page.</p><h3>Changes to this policy</h3><p>We may update this policy from time to time. The latest version is always on this page.</p><h3>Contact</h3><p>TRADE JAPAN CO., LTD., Yamazaki 2116-2, Noda-Shi, Chiba-Ken, Japan. Use our <a href="/pages/contact.html">Contact Us</a> page to reach us.</p>',
+ NOW());
 
+<<<<<<< HEAD
 INSERT IGNORE INTO vehicle_images (image_id, vehicle_id, image_url, is_main, sort_order) VALUES
 (1, 1, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.carjunction.com%2Fcar_images2%2F94990_106925%2F106925aa-(1).jpg&f=1&nofb=1&ipt=f49e0a682d692a1bcf2110b5cab97f324fbcdfbf70aab07ce500ccb39449f469&ipo=images', TRUE, 1),
 (2, 1, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fautovanjp.com%2Fwp-content%2Fuploads%2F2023%2F01%2FTOYOTA-COROLLA-AXIO-9.jpeg&f=1&nofb=1&ipt=460dae0f5f89799aa5443e4cf0146c64ed054ffaf46d35d508067f880cb771aa&ipo=images', FALSE, 2),
 (3, 2, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs1.cdn.autoevolution.com%2Fimages%2Fnews%2Fgallery%2F2019-nissan-x-trail-gets-17-liter-diesel-with-150-hp-13-turbo-with-160-hp_6.jpg&f=1&nofb=1&ipt=00a467b2a2cee306a39a958e45acc649b68f921ed317c428bf69ca98b98c66d9&ipo=images', TRUE, 1),
 (4, 2, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.motor1.com%2Fimages%2Fmgl%2Fz21Wb%2Fs1%2Fnissan-x-trail-2019-neue-motoren.jpg&f=1&nofb=1&ipt=a7767daa5aabb725ee3d15dc4886b5a55ee992183e7bfd72f7a8575387d8fc14&ipo=images', FALSE, 2),
 (5, 3, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars.mds.yandex.net%2Fget-autoru-vos%2F4946962%2F6777edce082bb5734befa67c28c346a7%2F1200x900&f=1&nofb=1&ipt=fc225c56ef35423033ffe52accb8d2dd0448b7b6d3a08ebbe1b0e620124c1e8e&ipo=images', TRUE, 1);
+=======
+>>>>>>> 2d4028fdca0a9bd90096444f026d3abebe99e5bf
 
-INSERT IGNORE INTO vehicle_features (vehicle_id, feature_id) VALUES
-(1, 1), (1, 2),
-(2, 1), (2, 3), (2, 4),
-(3, 1);
+INSERT IGNORE INTO faq_items (id, question, answer, display_order, active) VALUES
+(1, 'How can I start getting cars with Trade Japan?',
+ '<p>5 Easy Buying Steps</p><p><br></p><p><strong>Search your desired vehicle &rarr; Inquire &rarr; Invoice &rarr; Payment &rarr; Shipment</strong></p><p><br></p><p>Visit <a href="/pages/content.html?page=services">How To Buy</a> for detailed information.</p>', 1, 1),
 
-INSERT IGNORE INTO saved_vehicles (user_id, vehicle_id) VALUES
-(2, 1), (2, 2);
+(2, 'Who can become a registered member of Trade Japan?',
+ '<p>Anyone, including automobile dealers and individual buyers can register. We recommend checking your country''s regulations before making a purchase.</p>', 2, 1),
 
-INSERT IGNORE INTO app_initialization (name) VALUES ('initial_vehicles');
+(3, 'How many cars are available in your inventory and auctions?',
+ '<p>We usually have over a thousand cars in our regular inventory and access to about 100,000 cars weekly through various online auctions we cover. We are members of all auction houses in Japan.</p>', 3, 1),
+
+(4, 'How does auction work?',
+ '<p>You can buy cars from Japan''s auctions through Trade Japan.</p><p><br></p><p>To get involved, you have to:</p><ul><li>Register with Trade Japan</li><li>Be in touch with our sales representative</li><li>Pay a security deposit (100% refundable) to activate your bid permission</li></ul><p><br></p><p>With these steps, you will be granted full access to the main auction houses from Japan and you will be able to bid according to the credit limit of your account.</p><p><br></p><p>Right after winning a car from the auction, Trade Japan will ask you for the deposit to ship your vehicle. Once the vehicle is fully paid, Trade Japan will send the final documents to you and you will be able to release the car from the destination port.</p>', 4, 1),
+
+(5, 'What payment methods does Trade Japan accept?',
+ '<p>We accept payment via telegraphic transfer to our designated bank account. We accept Visa, Mastercard and PayPal payment as well.</p><p><br></p><p>For more details, please <a href="/pages/contact.html">contact us</a>.</p>', 5, 1),
+
+(6, 'How long does it take to receive my purchased car?',
+ '<p>The exact delivery time depends on the shipping schedule, but typically, it takes 4 to 8 weeks. Once the vehicle is fully paid, we strive to ship on the earliest available vessel.</p>', 6, 1),
+
+(7, 'Is there a registration fee?',
+ '<p>No, there are no registration fees or hidden charges. Sign up is free of charge.</p>', 7, 1),
+
+(8, 'What additional charges are there after the purchase of a vehicle?',
+ '<p>If your agreed price term is FOB, additional charges will include freight, clearance, import duty, registration, compliance fees, and other fees per your country''s import regulations.</p><p><br></p><p>If your agreed price term is C&amp;F, omit the freight charge, remaining charges will apply.</p><p><br></p><p>If your agreed price term is CIF, omit the freight and insurance charge, remaining charges will apply.</p>', 8, 1),
+
+(9, 'Can I purchase Left-Hand Drive (LHD) cars from Trade Japan?',
+ '<p>LHD cars are rare in Japan but can be found in our Korean and American inventory. They are usually imported from countries like the US, Europe, and Korea.</p>', 9, 1),
+
+(10, 'Can I cancel my purchase order?',
+ '<p>Yes, if you cancel your purchase order, you may need to pay the incurred costs, as we may have to resell the car.</p>', 10, 1),
+
+(11, 'Do you inspect cars before shipping?',
+ '<p>Yes, all cars undergo a thorough inspection to ensure they match the specifications on the sheet.</p>', 11, 1),
+
+(12, 'When can I use the online auction service?',
+ '<p>You can use our online auction service by signing in to your account anytime you want.</p>', 12, 1),
+
+(13, 'How can I know the indicative bidding price for a vehicle at an auction?',
+ '<p>We display prices of vehicles sold over the last 3 months, which is a good source of information.</p>', 13, 1),
+
+(14, 'How can Trade Japan find the best car for me?',
+ '<p>We have long-standing relationships with auction houses, local dealers, leasing and rental companies, and we use these trusted relationships to help provide our clients with the best possible options.</p>', 14, 1),
+
+(15, 'Who covers the bank transfer fees?',
+ '<p>It is the buyer''s responsibility to cover all bank fees. Please contact your bank to verify the exact amount.</p>', 15, 1),
+
+(16, 'Which services does Trade Japan provide?',
+ '<p>As part of the excellence efforts, Trade Japan offers:</p><ul><li>Global Car Sourcing</li><li>Professional multi language Customer Service</li><li>User-friendly state of the art System</li><li>Fast and Quality Shipping</li></ul>', 16, 1),
+
+(17, 'Do your staff inspect cars before bidding?',
+ '<p>Yes, our highly skilled professionals carefully inspect cars before deciding to bid.</p>', 17, 1);
+
+
