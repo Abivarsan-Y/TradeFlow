@@ -1,2 +1,2 @@
-package com.tradejapan.function4.entity;
+package com.tradejapan.part4.entity;
 public enum ContactStatus { NEW, READ, RESOLVED }

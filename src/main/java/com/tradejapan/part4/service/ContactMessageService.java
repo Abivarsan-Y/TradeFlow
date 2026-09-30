@@ -1,8 +1,8 @@
-package com.tradejapan.function4.service;
+package com.tradejapan.part4.service;
 
-import com.tradejapan.function4.entity.ContactMessage;
-import com.tradejapan.function4.entity.ContactStatus;
-import com.tradejapan.function4.repository.ContactMessageRepository;
+import com.tradejapan.part4.entity.ContactMessage;
+import com.tradejapan.part4.entity.ContactStatus;
+import com.tradejapan.part4.repository.ContactMessageRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
