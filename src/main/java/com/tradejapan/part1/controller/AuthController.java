@@ -1,12 +1,12 @@
-package com.admin.cms.controller;
+package com.tradejapan.cms.controller;
 
-import com.admin.cms.dto.*;
-import com.admin.cms.model.AuthProvider;
-import com.admin.cms.model.Role;
-import com.admin.cms.model.User;
-import com.admin.cms.model.UserStatus;
-import com.admin.cms.repository.UserRepository;
-import com.admin.cms.security.JwtTokenProvider;
+import com.tradejapan.cms.dto.*;
+import com.tradejapan.cms.model.AuthProvider;
+import com.tradejapan.cms.model.Role;
+import com.tradejapan.cms.model.User;
+import com.tradejapan.cms.model.UserStatus;
+import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.cms.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +44,14 @@ public class AuthController {
 
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
         if (userOptional.isPresent()) {
-            String role = userOptional.get().getRole().name();
+            Role userRole = userOptional.get().getRole();
+            // Admin and Super Admin accounts are not customers: they log in on the admin login page
+            // (checked after the password, so a wrong password never tells anyone that the account is staff)
+            if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_SUPER_ADMIN) {
+                SecurityContextHolder.clearContext();
+                return ResponseEntity.status(403).body("This is a staff account. Please use the admin login page.");
+            }
+            String role = userRole.name();
             String jwt = tokenProvider.generateToken(loginRequest.getEmail(), role);
             return ResponseEntity.ok(new AuthResponse(jwt, role));
         }

@@ -1,4 +1,4 @@
-package com.admin.cms.model;
+package com.tradejapan.cms.model;
 
 public enum AuthProvider {
     LOCAL,

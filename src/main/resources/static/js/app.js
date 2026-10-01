@@ -10,6 +10,16 @@ function setToken(token)  { localStorage.setItem('jwt_token', token); }
 function getRole()        { return localStorage.getItem('user_role'); }
 function setRole(role)    { localStorage.setItem('user_role', role); }
 function getUserName()    { return localStorage.getItem('user_name') || ''; }
+
+// Admin and Super Admin accounts are not customers: they cannot use the customer-only features
+// (inquiries, wishlist, testimonials). The server refuses them too; this keeps the buttons from failing.
+function isStaff() { const r = getRole(); return r === 'ROLE_ADMIN' || r === 'ROLE_SUPER_ADMIN'; }
+function staffBlocked() {
+    if (!isStaff()) return false;
+    const msg = 'Customer accounts only. Please log in with a customer account to use this.';
+    if (typeof tjToast === 'function') tjToast(msg, true); else alert(msg);
+    return true;
+}
 function setUserName(n)   { localStorage.setItem('user_name', n); }
 
 function logout() {
@@ -178,15 +188,16 @@ function renderNavbar() {
             </a>
             <div class="navbar-icons">
                                 <a href="#" title="Search" onclick="toggleSearch();return false;"><i class="bi bi-search"></i></a>
-                <a href="#" title="Cart"><i class="bi bi-cart3"></i></a>
+                ${isStaff() ? '' : '<a href="/pages/profile.html?tab=wishlist" title="Saved Vehicles"><i class="bi bi-cart3"></i></a>'}
                 ${rightIcons}
             </div>
         </nav>
         <div class="search-panel" id="search-panel">
             <div class="search-box">
                 <i class="bi bi-search"></i>
-                <input type="text" id="search-input" placeholder="Search About, Services, FAQ..."
-                       onkeydown="if(event.key==='Enter')runSearch();if(event.key==='Escape')toggleSearch();">
+                <input type="text" id="search-input" placeholder="Search vehicles: make, model, year, reference no..."
+                       oninput="searchTyping()"
+                       onkeydown="if(event.key==='Enter'){clearTimeout(_searchTimer);runSearch();}if(event.key==='Escape')toggleSearch();">
                 <button onclick="runSearch()">Search</button>
                 <button class="search-close" onclick="toggleSearch()"><i class="bi bi-x-lg"></i></button>
             </div>
@@ -200,9 +211,11 @@ function renderNavbar() {
             </div>
             <div class="menu-links-top">
                 <a class="menu-link" href="/">Home</a>
+                <a class="menu-link" href="/pages/inventory.html">Vehicles</a>
                 <a class="menu-link" href="/pages/content.html?page=about">About Us</a>
                 <a class="menu-link" href="/pages/content.html?page=services">Services</a>
                 <a class="menu-link" href="/pages/faq.html">FAQ</a>
+                <a class="menu-link" href="/pages/contact.html">Contact Us</a>
             </div>
             <div class="menu-links-bottom">
                 ${token
@@ -244,26 +257,27 @@ function renderFooter() {
                         <li><a href="/pages/content.html?page=about">About Us</a></li>
                         <li><a href="/pages/content.html?page=tc">Terms &amp; Conditions</a></li>
                         <li><a href="/pages/content.html?page=privacy">Privacy Policy</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="/pages/contact.html">Contact Us</a></li>
                     </ul>
                 </div>
                 <div>
                     <h6>Information</h6>
                     <ul>
                         <li><a href="/pages/faq.html">FAQ</a></li>
-                        <li><a href="#">How To Buy</a></li>
-                        <li><a href="#">Auction Service</a></li>
+                        <li><a href="/pages/inventory.html">Browse Vehicles</a></li>
+                        <li><a href="/pages/content.html?page=services">How To Buy</a></li>
+                        <li><a href="/pages/content.html?page=services">Auction Service</a></li>
                         <li><a href="/pages/content.html?page=services">Services</a></li>
                     </ul>
                 </div>
                 <div>
                     <h6>Brands</h6>
                     <ul>
-                        <li><a href="#">Toyota</a></li>
-                        <li><a href="#">Honda</a></li>
-                        <li><a href="#">Nissan</a></li>
-                        <li><a href="#">Mazda</a></li>
-                        <li><a href="#">Suzuki</a></li>
+                        <li><a href="/pages/inventory.html?make=Toyota">Toyota</a></li>
+                        <li><a href="/pages/inventory.html?make=Honda">Honda</a></li>
+                        <li><a href="/pages/inventory.html?make=Nissan">Nissan</a></li>
+                        <li><a href="/pages/inventory.html?make=Mazda">Mazda</a></li>
+                        <li><a href="/pages/inventory.html?make=Suzuki">Suzuki</a></li>
                     </ul>
                 </div>
                 <div>
@@ -325,6 +339,9 @@ function renderAdminSidebar(activeItem) {
                         </a>`).join('')}
                 ` : ''}
             </div>
+            <div class="sidebar-home">
+                <a href="/index.html" target="_blank" rel="noopener"><i class="bi bi-globe2"></i> Home</a>
+            </div>
             <div class="sidebar-user">
                 <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
                 <span class="user-name">${isSuperAdmin ? 'Super Admin' : 'Admin User'}</span>
@@ -357,65 +374,89 @@ function toggleSearch() {
     if (panel.classList.contains('open')) document.getElementById('search-input').focus();
 }
 
+/* ===SEARCH-VEHICLES-START=== */
+/* Navbar search: finds VEHICLES (make, model, year, body type, colour, fuel, transmission, reference no ...) */
 function _searchEsc(t) {
     const d = document.createElement('div');
-    d.textContent = t;
+    d.textContent = t == null ? '' : String(t);
     return d.innerHTML;
 }
 
-function _searchText(html) {
-    const d = document.createElement('div');
-    d.innerHTML = html || '';
-    return d.textContent || '';
+let _searchVehicles = null;   // the vehicle list, loaded once and reused
+let _searchTimer = null;
+
+// live search while typing (small delay so it does not search on every key)
+function searchTyping() {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(runSearch, 300);
 }
 
-function _searchSnippet(text, idx) {
-    if (idx < 0) return text.slice(0, 100);
-    const start = Math.max(0, idx - 40);
-    return (start > 0 ? '...' : '') + text.slice(start, idx + 90) + '...';
+// everything about a vehicle that a visitor may type, as one lower-case text
+function _searchHay(v) {
+    return [v.make, v.model, v.manufactureYear, v.category, v.exteriorColor, v.fuelType, v.transmission,
+            v.steering, v.driveType, v.refNo, v.grade, v.engineType,
+            (v.condition || '').toUpperCase() === 'NEW' ? 'new' : 'used']
+        .filter(x => x !== null && x !== undefined && x !== '')
+        .join(' ').toLowerCase();
 }
+
+// 1-2 letters (like "to") must start a word, longer words may be anywhere (so "au" does not match "automatic")
+function _searchHas(hay, w) {
+    return w.length > 2 ? hay.includes(w) : (' ' + hay).includes(' ' + w);
+}
+
+const SEARCH_MAX = 8;                                          // cards shown at most
+const SEARCH_SKIP = ['vehicle', 'vehicles', 'car', 'cars'];    // words that say nothing about which car
 
 async function runSearch() {
-    const q   = document.getElementById('search-input').value.trim().toLowerCase();
-    const out = document.getElementById('search-results');
-    if (q.length < 2) { out.innerHTML = '<div class="search-empty">Type at least 2 characters.</div>'; return; }
-    out.innerHTML = '<div class="search-empty">Searching...</div>';
-
-    const pages = [
-        { key: 'about',    label: 'About Us' },
-        { key: 'services', label: 'Services' },
-        { key: 'tc',       label: 'Terms & Conditions' },
-        { key: 'privacy',  label: 'Privacy Policy' }
-    ];
-
-    const [faqRes, ...pageRes] = await Promise.all([
-        apiFetch('/faqs'),
-        ...pages.map(p => apiFetch('/content/' + p.key))
-    ]);
-
-    const hits = [];
-    pages.forEach((p, i) => {
-        const r = pageRes[i];
-        const text = (r.ok && r.data && r.data.htmlContent) ? _searchText(r.data.htmlContent) : '';
-        const idx = text.toLowerCase().indexOf(q);
-        if (idx >= 0 || p.label.toLowerCase().includes(q)) {
-            hits.push({ title: p.label, url: '/pages/content.html?page=' + p.key, text: _searchSnippet(text, idx) });
-        }
-    });
-    if (faqRes.ok && Array.isArray(faqRes.data)) {
-        faqRes.data.forEach(f => {
-            const ans = _searchText(f.answer);
-            const inQ = (f.question || '').toLowerCase().includes(q);
-            const idx = ans.toLowerCase().indexOf(q);
-            if (inQ || idx >= 0) {
-                hits.push({ title: 'FAQ: ' + f.question, url: '/pages/faq.html', text: _searchSnippet(ans, idx) });
-            }
-        });
+    const input = document.getElementById('search-input');
+    const out   = document.getElementById('search-results');
+    if (!input || !out) return;
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 2) {
+        out.innerHTML = '<div class="search-empty">Type a make, model, year or reference number (at least 2 characters).</div>';
+        return;
     }
+    if (_searchVehicles === null) {
+        out.innerHTML = '<div class="search-empty">Searching...</div>';
+        const res = await apiFetch('/vehicles?page=0&size=500');
+        if (!res.ok || !Array.isArray(res.data)) {
+            out.innerHTML = '<div class="search-empty">Could not load vehicles. Please try again.</div>';
+            return;
+        }
+        _searchVehicles = res.data;
+    }
+    if (input.value.trim().toLowerCase() !== q) return;   // the visitor kept typing: a newer search is running
 
-    out.innerHTML = hits.length
-        ? hits.map(h => `<a class="search-hit" href="${h.url}">
-              <div class="search-hit-title">${_searchEsc(h.title)}</div>
-              <div class="search-hit-text">${_searchEsc(h.text)}</div></a>`).join('')
-        : '<div class="search-empty">No results found.</div>';
+    // every word typed must match: "toyota corolla 2018" finds only vehicles with all three
+    const words = q.split(/\s+/).filter(w => w && !SEARCH_SKIP.includes(w));
+    const rank  = { AVAILABLE: 0, RESERVED: 1, SOLD: 2 };
+    const hits  = _searchVehicles
+        .filter(v => { const hay = _searchHay(v); return words.every(w => _searchHas(hay, w)); })
+        .sort((a, b) => (rank[(a.status || 'AVAILABLE').toUpperCase()] ?? 3) - (rank[(b.status || 'AVAILABLE').toUpperCase()] ?? 3));
+
+    if (!hits.length) {
+        out.innerHTML = '<div class="search-empty">No vehicles found. Try a make, a model or a year (for example: toyota corolla 2018).</div>';
+        return;
+    }
+    const cards = hits.slice(0, SEARCH_MAX).map(v => {
+        const img    = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
+        const status = (v.status || 'AVAILABLE').toUpperCase();
+        const meta   = [v.manufactureYear, v.category,
+                        (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
+                        (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
+        return `<a class="search-vcard" href="/pages/vehicle-detail.html?id=${v.id}">
+              <div class="search-vimg">${img ? `<img src="${_searchEsc(img)}" alt="" loading="lazy">` : '<i class="bi bi-car-front"></i>'}</div>
+              <div class="search-vinfo">
+                  <div class="search-hit-title">${_searchEsc(v.make)} ${_searchEsc(v.model)}</div>
+                  <div class="search-hit-text">${_searchEsc(meta)}</div>
+                  <div class="search-vprice">$${Number(v.fobPrice || 0).toLocaleString('en-US')}
+                      <span class="search-vstatus ${status.toLowerCase()}">${status.charAt(0) + status.slice(1).toLowerCase()}</span></div>
+              </div></a>`;
+    }).join('');
+    const note = hits.length > SEARCH_MAX
+        ? `<div class="search-note">Showing ${SEARCH_MAX} of ${hits.length} vehicles. Add more words to narrow down (for example: toyota corolla 2018).</div>`
+        : `<div class="search-note">${hits.length} vehicle${hits.length === 1 ? '' : 's'} found.</div>`;
+    out.innerHTML = note + cards;
 }
+/* ===SEARCH-VEHICLES-END=== */

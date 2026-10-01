@@ -1,4 +1,4 @@
-package com.admin.cms.dto;
+package com.tradejapan.cms.dto;
 public class AuthResponse {
     private String token;
     private String role;

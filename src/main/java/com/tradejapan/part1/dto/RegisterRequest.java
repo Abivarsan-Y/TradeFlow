@@ -1,4 +1,4 @@
-package com.admin.cms.dto;
+package com.tradejapan.cms.dto;
 
 import jakarta.validation.constraints.*;
 
