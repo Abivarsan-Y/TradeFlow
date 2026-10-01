@@ -1,7 +1,7 @@
-package com.admin.cms.security;
+package com.tradejapan.cms.security;
 
-import com.admin.cms.model.User;
-import com.admin.cms.repository.UserRepository;
+import com.tradejapan.cms.model.User;
+import com.tradejapan.cms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         if (!user.isActive()) {
-            throw new RuntimeException("User account is inactive");
+            throw new RuntimeException("Your account has been deactivated. Please contact us.");
         }
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(),
