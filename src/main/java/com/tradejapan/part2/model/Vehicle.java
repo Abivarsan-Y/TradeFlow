@@ -1,20 +1,14 @@
-package com.tradeflow.inventory.model;
+package com.tradejapan.inventory.model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.*;
 
 @Entity
 @Table(name = "vehicles")
 public class Vehicle {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vehicle_id")
@@ -109,15 +103,24 @@ public class Vehicle {
     private Boolean isNewArrival = false;
 
     @Column(name = "is_active")
+    @JsonProperty("active")
     private Boolean isActive = true;
 
     @Column(length = 20)
     private String status = "AVAILABLE";
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+
+    // NEW or USED. Shown as the badge on the vehicle page.
+    // (the column is not called "condition" because that is a reserved word in SQL)
+    @Column(name = "vehicle_condition", length = 10)
+    @JsonProperty("condition")
+    private String vehicleCondition = "USED";
+
+    @org.hibernate.annotations.CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<VehicleImage> images = new ArrayList<>();
 
@@ -126,13 +129,11 @@ public class Vehicle {
     public String getImageUrlsString() {
         if (images == null || images.isEmpty()) return null;
         List<String> urls = new ArrayList<>();
-        for (VehicleImage img : images) {
-            urls.add(img.getImageUrl());
-        }
+        for (VehicleImage img : images) urls.add(img.getImageUrl());
         return String.join(",", urls);
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "vehicle_features",
         joinColumns = @JoinColumn(name = "vehicle_id"),
@@ -140,7 +141,6 @@ public class Vehicle {
     )
     private Set<Feature> features = new HashSet<>();
 
-    // Basic Getters and Setters
     public Integer getVehicleId() { return vehicleId; }
     public void setVehicleId(Integer vehicleId) { this.vehicleId = vehicleId; }
     public Model getModel() { return model; }
@@ -193,6 +193,8 @@ public class Vehicle {
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getVehicleCondition() { return vehicleCondition; }
+    public void setVehicleCondition(String vehicleCondition) { this.vehicleCondition = vehicleCondition; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public List<VehicleImage> getImages() { return images; }

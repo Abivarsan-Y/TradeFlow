@@ -1,4 +1,4 @@
-package com.tradeflow.inventory.model;
+package com.tradejapan.inventory.model;
 
 import jakarta.persistence.*;
 
@@ -10,14 +10,13 @@ public class Model {
     @Column(name = "model_id")
     private Integer modelId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "make_id", nullable = false)
     private Make make;
 
     @Column(nullable = false, length = 50)
     private String name;
 
-    // Getters and Setters
     public Integer getModelId() { return modelId; }
     public void setModelId(Integer modelId) { this.modelId = modelId; }
     public Make getMake() { return make; }

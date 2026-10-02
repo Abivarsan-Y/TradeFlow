@@ -1,5 +1,6 @@
-package com.tradeflow.inventory.model;
+package com.tradejapan.inventory.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +13,7 @@ public class VehicleImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", nullable = false)
-    @com.fasterxml.jackson.annotation.JsonBackReference
+    @JsonBackReference
     private Vehicle vehicle;
 
     @Column(name = "image_url", nullable = false, length = 255)
@@ -24,7 +25,6 @@ public class VehicleImage {
     @Column(name = "sort_order")
     private Integer sortOrder = 0;
 
-    // Getters and Setters
     public Integer getImageId() { return imageId; }
     public void setImageId(Integer imageId) { this.imageId = imageId; }
     public Vehicle getVehicle() { return vehicle; }

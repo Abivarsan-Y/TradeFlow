@@ -1,8 +1,6 @@
-package com.tradeflow.inventory.model;
+package com.tradejapan.inventory.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "makes")
@@ -15,7 +13,6 @@ public class Make {
     @Column(unique = true, nullable = false, length = 50)
     private String name;
 
-    // Getters and Setters
     public Integer getMakeId() { return makeId; }
     public void setMakeId(Integer makeId) { this.makeId = makeId; }
     public String getName() { return name; }

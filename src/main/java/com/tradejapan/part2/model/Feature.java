@@ -1,21 +1,20 @@
-package com.tradeflow.inventory.model;
+package com.tradejapan.inventory.model;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "features")
-public class Feature {
+@Table(name = "makes")
+public class Make {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feature_id")
-    private Integer featureId;
+    @Column(name = "make_id")
+    private Integer makeId;
 
     @Column(unique = true, nullable = false, length = 50)
     private String name;
 
-    // Getters and Setters
-    public Integer getFeatureId() { return featureId; }
-    public void setFeatureId(Integer featureId) { this.featureId = featureId; }
+    public Integer getMakeId() { return makeId; }
+    public void setMakeId(Integer makeId) { this.makeId = makeId; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 }
