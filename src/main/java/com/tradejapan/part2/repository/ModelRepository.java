@@ -1,7 +1,4 @@
-package com.tradeflow.inventory.repository;
-
-import com.tradeflow.inventory.model.Model;
+package com.tradejapan.inventory.repository;
+import com.tradejapan.inventory.model.Model;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface ModelRepository extends JpaRepository<Model, Integer> {
-}
+public interface ModelRepository extends JpaRepository<Model, Integer> {}

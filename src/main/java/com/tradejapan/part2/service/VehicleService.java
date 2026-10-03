@@ -1,10 +1,9 @@
-package com.tradeflow.inventory.service;
+package com.tradejapan.inventory.service;
 
-import com.tradeflow.inventory.model.Vehicle;
+import com.tradejapan.inventory.model.Vehicle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.math.BigDecimal;
+import com.tradejapan.inventory.model.Feature;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +15,15 @@ public interface VehicleService {
     void delete(Integer id);
     void setStatus(Integer id, String status);
     List<Vehicle> getNewArrivals();
+    List<Feature> getAllFeatures();
     Vehicle addImages(Integer id, List<String> imageUrls);
     Vehicle assignFeatures(Integer id, List<Integer> featureIds);
     void toggleNewArrival(Integer id);
     void deactivate(Integer id);
+    void setActive(Integer id, boolean active);
+    List<Vehicle> getAllForAdmin();
     void removeImage(Integer id, Integer imageId);
-    void saveToWishlist(Integer userId, Integer vehicleId);
-    void removeFromWishlist(Integer userId, Integer vehicleId);
-    List<Vehicle> getSavedVehicles(Integer userId);
+    void saveToWishlist(Long userId, Integer vehicleId);
+    void removeFromWishlist(Long userId, Integer vehicleId);
+    List<Vehicle> getSavedVehicles(Long userId);
 }

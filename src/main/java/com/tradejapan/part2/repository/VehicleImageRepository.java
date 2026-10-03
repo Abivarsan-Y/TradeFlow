@@ -1,7 +1,4 @@
-package com.tradeflow.inventory.repository;
-
-import com.tradeflow.inventory.model.VehicleImage;
+package com.tradejapan.inventory.repository;
+import com.tradejapan.inventory.model.VehicleImage;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface VehicleImageRepository extends JpaRepository<VehicleImage, Integer> {
-}
+public interface VehicleImageRepository extends JpaRepository<VehicleImage, Integer> {}

@@ -1,7 +1,4 @@
-package com.tradeflow.inventory.repository;
-
-import com.tradeflow.inventory.model.Feature;
+package com.tradejapan.inventory.repository;
+import com.tradejapan.inventory.model.Feature;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface FeatureRepository extends JpaRepository<Feature, Integer> {
-}
+public interface FeatureRepository extends JpaRepository<Feature, Integer> {}
