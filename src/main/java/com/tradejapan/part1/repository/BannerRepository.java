@@ -1,6 +1,6 @@
-package com.tradejapan.cms.repository;
+package com.tradejapan.part1.repository;
 
-import com.tradejapan.cms.model.Banner;
+import com.tradejapan.part1.model.Banner;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

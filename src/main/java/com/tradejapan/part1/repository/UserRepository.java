@@ -1,6 +1,6 @@
-package com.tradejapan.cms.repository;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.model.Role;
+package com.tradejapan.part1.repository;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.List;

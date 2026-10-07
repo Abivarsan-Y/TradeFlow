@@ -1,7 +1,7 @@
-package com.tradejapan.cms.security;
+package com.tradejapan.part1.security;
 
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;

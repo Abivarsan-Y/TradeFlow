@@ -1,10 +1,10 @@
-package com.tradejapan.cms.config;
+package com.tradejapan.part1.config;
 
-import com.tradejapan.cms.model.AuthProvider;
-import com.tradejapan.cms.model.Role;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.model.UserStatus;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.model.AuthProvider;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.model.UserStatus;
+import com.tradejapan.part1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

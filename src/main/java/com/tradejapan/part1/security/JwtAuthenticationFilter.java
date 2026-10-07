@@ -1,4 +1,4 @@
-package com.tradejapan.cms.security;
+package com.tradejapan.part1.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

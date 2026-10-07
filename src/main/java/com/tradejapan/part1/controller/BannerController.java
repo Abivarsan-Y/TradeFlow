@@ -1,9 +1,9 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.model.Banner;
-import com.tradejapan.cms.model.BannerSize;
-import com.tradejapan.cms.model.MediaType;
-import com.tradejapan.cms.repository.BannerRepository;
+import com.tradejapan.part1.model.Banner;
+import com.tradejapan.part1.model.BannerSize;
+import com.tradejapan.part1.model.MediaType;
+import com.tradejapan.part1.repository.BannerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

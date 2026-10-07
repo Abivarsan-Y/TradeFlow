@@ -1,5 +1,5 @@
 /* ================================================
-   TRADE JAPAN CMS — Global JavaScript
+   TRADE JAPAN — Global JavaScript
    ================================================ */
 
 const API_URL = '/api';
