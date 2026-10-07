@@ -1,4 +1,4 @@
-package com.tradejapan.cms.model;
+package com.tradejapan.part1.model;
 
 public enum Role {
     ROLE_CUSTOMER,

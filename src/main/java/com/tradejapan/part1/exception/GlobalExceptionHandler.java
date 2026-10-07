@@ -1,4 +1,4 @@
-package com.tradejapan.cms.exception;
+package com.tradejapan.part1.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

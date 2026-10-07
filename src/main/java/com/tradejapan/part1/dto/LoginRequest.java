@@ -1,4 +1,4 @@
-package com.tradejapan.cms.dto;
+package com.tradejapan.part1.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

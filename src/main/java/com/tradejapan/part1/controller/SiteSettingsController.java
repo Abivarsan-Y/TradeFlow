@@ -1,4 +1,4 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

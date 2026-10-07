@@ -1,9 +1,9 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.model.Content;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.repository.ContentRepository;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.model.Content;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.repository.ContentRepository;
+import com.tradejapan.part1.repository.UserRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;

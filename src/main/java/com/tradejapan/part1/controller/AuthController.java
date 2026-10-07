@@ -1,12 +1,12 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.dto.*;
-import com.tradejapan.cms.model.AuthProvider;
-import com.tradejapan.cms.model.Role;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.model.UserStatus;
-import com.tradejapan.cms.repository.UserRepository;
-import com.tradejapan.cms.security.JwtTokenProvider;
+import com.tradejapan.part1.dto.*;
+import com.tradejapan.part1.model.AuthProvider;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.model.UserStatus;
+import com.tradejapan.part1.repository.UserRepository;
+import com.tradejapan.part1.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 
 -- ------------------------------------------------------------
--- SECTION 2: CMS / AUTH (Rahman)
+-- SECTION 2: part1 (Rahman)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     id                BIGINT AUTO_INCREMENT PRIMARY KEY,

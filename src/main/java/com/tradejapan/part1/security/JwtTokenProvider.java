@@ -1,4 +1,4 @@
-package com.tradejapan.cms.security;
+package com.tradejapan.part1.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

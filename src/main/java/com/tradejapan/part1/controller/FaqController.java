@@ -1,7 +1,7 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.model.FaqItem;
-import com.tradejapan.cms.repository.FaqItemRepository;
+import com.tradejapan.part1.model.FaqItem;
+import com.tradejapan.part1.repository.FaqItemRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;

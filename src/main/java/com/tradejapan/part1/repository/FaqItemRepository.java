@@ -1,5 +1,5 @@
-package com.tradejapan.cms.repository;
-import com.tradejapan.cms.model.FaqItem;
+package com.tradejapan.part1.repository;
+import com.tradejapan.part1.model.FaqItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

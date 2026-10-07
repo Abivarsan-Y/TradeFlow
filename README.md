@@ -6,7 +6,7 @@ Vehicle pages, Inquiries & Purchases and Contact Us / Testimonials / Reports wer
 | Member | Module | Package |
 |---|---|---|
 | 1 Abivarsan | Vehicle inventory | `com.tradejapan.inventory` |
-| 2 Rahman | Auth / CMS / Admin | `com.tradejapan.cms` |
+| 2 Rahman | TradeJapan | part1 | `com.tradejapan.part1` |
 | 3 Sarthani | Inquiries & Purchases | `com.tradejapan.part3` |
 | 4 Aazir | Contact Us, Testimonials, Dashboard & Reports | `com.tradejapan.part4` |
 
@@ -21,11 +21,11 @@ Hibernate is NOT allowed to create or change tables (`spring.jpa.hibernate.ddl-a
 **If you add a field to an entity, add the column to `schema.sql` too, then run `DROP DATABASE tradejapan;` and start again.**
 The super admin account and the 28 vehicle features are created by Java code at startup.
 
-## Logins (same as the original CMS)
+## Logins (same as the original )
 - Super Admin: `superadmin@example.com` / `superadmin123`  -> http://localhost:8081/pages/login.html (or /pages/admin/login.html)
 
 ## Pages
-- `/` Home (banners from CMS, live New Arrivals)
+- `/` Home (banners from , live New Arrivals)
 - `/pages/inventory.html` Vehicle catalogue (filters, load more)
 - `/pages/vehicle-detail.html?id=1`
 - `/pages/contact.html` Contact Us, `/pages/submit-testimonial.html` testimonial form (login needed); approved testimonials show on the home page

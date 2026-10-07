@@ -1,7 +1,7 @@
-package com.tradejapan.cms.controller;
-import com.tradejapan.cms.model.Role;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.repository.UserRepository;
+package com.tradejapan.part1.controller;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
