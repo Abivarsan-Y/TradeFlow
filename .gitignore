@@ -104,3 +104,4 @@ $RECYCLE.BIN/
 *.rest
 *.postman_collection.json
 *.postman_environment.json
+local.properties
