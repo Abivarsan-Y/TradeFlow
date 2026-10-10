@@ -1,4 +1,4 @@
-package com.tradejapan.part3.controller;
+ackage com.tradejapan.part3.controller;
 
 import com.tradejapan.part3.dto.CreateInquiryRequest;
 import com.tradejapan.part3.model.Inquiry;
