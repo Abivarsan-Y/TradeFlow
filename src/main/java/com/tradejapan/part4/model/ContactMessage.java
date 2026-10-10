@@ -1,4 +1,4 @@
-package com.tradejapan.part4.entity;
+package com.tradejapan.part4.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

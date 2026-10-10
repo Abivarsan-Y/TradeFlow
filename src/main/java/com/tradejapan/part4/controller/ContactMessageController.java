@@ -1,7 +1,7 @@
 package com.tradejapan.part4.controller;
 
-import com.tradejapan.part4.entity.ContactMessage;
-import com.tradejapan.part4.entity.ContactStatus;
+import com.tradejapan.part4.model.ContactMessage;
+import com.tradejapan.part4.model.ContactStatus;
 import com.tradejapan.part4.service.ContactMessageService;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
