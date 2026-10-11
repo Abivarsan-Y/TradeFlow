@@ -2,7 +2,8 @@ const API = {
     contact: '/api/contact-messages',
     testimonials: '/api/testimonials',
     approved: '/api/testimonials/approved',
-    adminTestimonials: '/api/admin/testimonials'
+    adminTestimonials: '/api/admin/testimonials',
+    adminContacts: '/api/admin/contact-messages'
 };
 
 
@@ -663,20 +664,18 @@ document.addEventListener(
 
         tabs();
 
+        contactTabs();
 
-        if (
-            $('#testimonialCards')
-        ) {
-
+        if ($('#testimonialCards')) {
             loadPublic();
         }
 
-
-        if (
-            $('#testimonialTableBody')
-        ) {
-
+        if ($('#testimonialTableBody')) {
             loadAdmin();
+        }
+
+        if ($('#contactMessageTableBody')) {
+            loadContactMessages();
         }
     }
 );
