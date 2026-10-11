@@ -15,9 +15,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/contact.html",
-                                "/home.html",
+                                "/",
                                 "/index.html",
+                                "/home.html",
+                                "/pages/**",
                                 "/css/**",
                                 "/js/**",
                                 "/api/contact-messages"
