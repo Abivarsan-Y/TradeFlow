@@ -9,11 +9,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -21,9 +24,14 @@ public class SecurityConfig {
                                 "/pages/**",
                                 "/css/**",
                                 "/js/**",
-                                "/api/contact-messages"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                                "/api/contact-messages",
+                                "/api/testimonials",
+                                "/api/testimonials/approved"
+                        )
+                        .permitAll()
+
+                        .anyRequest()
+                        .authenticated()
                 );
 
         return http.build();
