@@ -32,6 +32,15 @@ public class SecurityConfig {
 
                         .anyRequest()
                         .authenticated()
+                )
+
+                // Development login page
+                .formLogin(form -> form
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+                        .permitAll()
                 );
 
         return http.build();
