@@ -18,9 +18,9 @@ public class PasswordResetToken {
 
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiryDate;
-
     // When the token was actually used to reset a password.
     // NULL means "still valid / not used yet" -- checked before allowing reuse.
+    
     @Column(name = "used_at")
     private LocalDateTime usedAt;
 
