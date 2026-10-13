@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "makes")
-public class Make {
+public class Feature {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "make_id")

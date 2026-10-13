@@ -1,4 +1,4 @@
-/* ================================================
+vehicles.js/* ================================================
    TRADE JAPAN — Inquiries & Purchases (customer side)
    Uses apiFetch / showConfirm / getToken from app.js
    ================================================ */

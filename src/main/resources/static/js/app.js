@@ -211,18 +211,18 @@ function renderNavbar() {
             </div>
             <div class="menu-links-top">
                 <a class="menu-link" href="/">Home</a>
-                <a class="menu-link" href="/pages/inventory.html">Vehicles</a>
-                <a class="menu-link" href="/pages/content.html?page=about">About Us</a>
-                <a class="menu-link" href="/pages/content.html?page=services">Services</a>
-                <a class="menu-link" href="/pages/faq.html">FAQ</a>
-                <a class="menu-link" href="/pages/contact.html">Contact Us</a>
+                <a class="menu-link" href="/js/pages/inventory.html">Vehicles</a>
+                <a class="menu-link" href="/js/pages/content.html?page=about">About Us</a>
+                <a class="menu-link" href="/js/pages/content.html?page=services">Services</a>
+                <a class="menu-link" href="/js/pages/faq.html">FAQ</a>
+                <a class="menu-link" href="/js/pages/contact.html">Contact Us</a>
             </div>
             <div class="menu-links-bottom">
                 ${token
         ? `<a class="menu-link" href="/pages/profile.html">My Account</a>
                        <a class="menu-link" href="#" onclick="logout()" style="color:var(--tj-maroon)">Logout</a>`
         : `<a class="menu-link" href="/pages/login.html">Login</a>
-                       <a class="menu-link" href="/pages/register.html">Register</a>`
+                       <a class="menu-link" href="/js/pages/register.html">Register</a>`
     }
             </div>
         </div>`;
@@ -254,30 +254,30 @@ function renderFooter() {
                 <div>
                     <h6>Company</h6>
                     <ul>
-                        <li><a href="/pages/content.html?page=about">About Us</a></li>
-                        <li><a href="/pages/content.html?page=tc">Terms &amp; Conditions</a></li>
-                        <li><a href="/pages/content.html?page=privacy">Privacy Policy</a></li>
-                        <li><a href="/pages/contact.html">Contact Us</a></li>
+                        <li><a href="/js/pages/content.html?page=about">About Us</a></li>
+                        <li><a href="/js/pages/content.html?page=tc">Terms &amp; Conditions</a></li>
+                        <li><a href="/js/pages/content.html?page=privacy">Privacy Policy</a></li>
+                        <li><a href="/js/pages/contact.html">Contact Us</a></li>
                     </ul>
                 </div>
                 <div>
                     <h6>Information</h6>
                     <ul>
-                        <li><a href="/pages/faq.html">FAQ</a></li>
-                        <li><a href="/pages/inventory.html">Browse Vehicles</a></li>
-                        <li><a href="/pages/content.html?page=services">How To Buy</a></li>
-                        <li><a href="/pages/content.html?page=services">Auction Service</a></li>
-                        <li><a href="/pages/content.html?page=services">Services</a></li>
+                        <li><a href="/js/pages/faq.html">FAQ</a></li>
+                        <li><a href="/js/pages/inventory.html">Browse Vehicles</a></li>
+                        <li><a href="/js/pages/content.html?page=services">How To Buy</a></li>
+                        <li><a href="/js/pages/content.html?page=services">Auction Service</a></li>
+                        <li><a href="/js/pages/content.html?page=services">Services</a></li>
                     </ul>
                 </div>
                 <div>
                     <h6>Brands</h6>
                     <ul>
-                        <li><a href="/pages/inventory.html?make=Toyota">Toyota</a></li>
-                        <li><a href="/pages/inventory.html?make=Honda">Honda</a></li>
-                        <li><a href="/pages/inventory.html?make=Nissan">Nissan</a></li>
-                        <li><a href="/pages/inventory.html?make=Mazda">Mazda</a></li>
-                        <li><a href="/pages/inventory.html?make=Suzuki">Suzuki</a></li>
+                        <li><a href="/js/pages/inventory.html?make=Toyota">Toyota</a></li>
+                        <li><a href="/js/pages/inventory.html?make=Honda">Honda</a></li>
+                        <li><a href="/js/pages/inventory.html?make=Nissan">Nissan</a></li>
+                        <li><a href="/js/pages/inventory.html?make=Mazda">Mazda</a></li>
+                        <li><a href="/js/pages/inventory.html?make=Suzuki">Suzuki</a></li>
                     </ul>
                 </div>
                 <div>
