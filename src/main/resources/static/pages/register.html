@@ -68,11 +68,11 @@
                     </div>
                     <div class="terms-check">
                         <input type="checkbox" id="terms">
-                        <label for="terms">I agree to the <a href="/pages/content.html?page=tc">Terms &amp; Conditions</a> <span class="required">*</span></label>
+                        <label for="terms">I agree to the <a href="/pagesntent.html?page=tc">Terms &amp; Conditions</a> <span class="required">*</span></label>
                     </div>
                     <button class="btn-tj-primary w-100" onclick="doReg()">Register</button>
                     <div class="bottom-link" style="text-align:center;margin-top:20px;color:var(--tj-text-muted);">
-                        Already have an account? <a href="/pages/login.html" style="color:var(--tj-maroon);font-weight:600;">Login</a>
+                        Already have an account? <a href="/js/pagesges/login.html" style="color:var(--tj-maroon);font-weight:600;">Login</a>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                 acceptedTerms: document.getElementById('terms').checked
             };
             const res = await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(req) });
-            if (res.ok) window.location.href = '/pages/login.html';
+            if (res.ok) window.location.href = 'login.html';
             else msg.innerText = typeof res.data === 'string' ? res.data : 'Registration failed.';
         }
     </script>

@@ -75,6 +75,14 @@ INSERT IGNORE INTO content (id, page_name, title, html_content, updated_at) VALU
  NOW());
 
 
+INSERT IGNORE INTO vehicle_images (image_id, vehicle_id, image_url, is_main, sort_order) VALUES
+(1, 1, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.carjunction.com%2Fcar_images2%2F94990_106925%2F106925aa-(1).jpg&f=1&nofb=1&ipt=f49e0a682d692a1bcf2110b5cab97f324fbcdfbf70aab07ce500ccb39449f469&ipo=images', TRUE, 1),
+(2, 1, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fautovanjp.com%2Fwp-content%2Fuploads%2F2023%2F01%2FTOYOTA-COROLLA-AXIO-9.jpeg&f=1&nofb=1&ipt=460dae0f5f89799aa5443e4cf0146c64ed054ffaf46d35d508067f880cb771aa&ipo=images', FALSE, 2),
+(3, 2, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs1.cdn.autoevolution.com%2Fimages%2Fnews%2Fgallery%2F2019-nissan-x-trail-gets-17-liter-diesel-with-150-hp-13-turbo-with-160-hp_6.jpg&f=1&nofb=1&ipt=00a467b2a2cee306a39a958e45acc649b68f921ed317c428bf69ca98b98c66d9&ipo=images', TRUE, 1),
+(4, 2, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.motor1.com%2Fimages%2Fmgl%2Fz21Wb%2Fs1%2Fnissan-x-trail-2019-neue-motoren.jpg&f=1&nofb=1&ipt=a7767daa5aabb725ee3d15dc4886b5a55ee992183e7bfd72f7a8575387d8fc14&ipo=images', FALSE, 2),
+(5, 3, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars.mds.yandex.net%2Fget-autoru-vos%2F4946962%2F6777edce082bb5734befa67c28c346a7%2F1200x900&f=1&nofb=1&ipt=fc225c56ef35423033ffe52accb8d2dd0448b7b6d3a08ebbe1b0e620124c1e8e&ipo=images', TRUE, 1);
+
+
 INSERT IGNORE INTO faq_items (id, question, answer, display_order, active) VALUES
 (1, 'How can I start getting cars with Trade Japan?',
  '<p>5 Easy Buying Steps</p><p><br></p><p><strong>Search your desired vehicle &rarr; Inquire &rarr; Invoice &rarr; Payment &rarr; Shipment</strong></p><p><br></p><p>Visit <a href="/pages/content.html?page=services">How To Buy</a> for detailed information.</p>', 1, 1),
@@ -126,3 +134,5 @@ INSERT IGNORE INTO faq_items (id, question, answer, display_order, active) VALUE
 
 (17, 'Do your staff inspect cars before bidding?',
  '<p>Yes, our highly skilled professionals carefully inspect cars before deciding to bid.</p>', 17, 1);
+
+

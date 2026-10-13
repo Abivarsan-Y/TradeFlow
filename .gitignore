@@ -1,7 +1,87 @@
+# =========================
+# Java, Maven & Spring Boot
+# =========================
 target/
-.idea/
-*.iml
+build/
+out/
+
+# Allow nested target/build directories in src
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.class
+*.log
+
+# Local / Private Configuration
+application-local.properties
+local.properties
+.env
+
+# Application Private Data
 private-invoices/
 data/
-.env
-local.properties
+
+# Maven Wrapper
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# JVM Crash Logs
+hs_err_pid*
+replay_pid*
+
+# BlueJ & Mobile Tools
+*.ctxt
+.mtj.tmp/
+
+# =========================
+# IDEs & Code Editors
+# =========================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# Zed
+.zed/
+
+# Eclipse / STS / Microsoft Workbench
+.project
+.classpath
+.settings/
+.metadata/
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Terminal Editors
+*~
+*.swp
+*.swo
+.nano_history
+
+# =========================
+# Database Clients
+# =========================

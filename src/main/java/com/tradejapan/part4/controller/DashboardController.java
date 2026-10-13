@@ -1,0 +1,23 @@
+package com.tradejapan.part4.controller;
+
+import com.tradejapan.part4.dto.DashboardStats;
+import com.tradejapan.part4.service.DashboardService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/admin")
+public class DashboardController {
+
+    private final DashboardService service;
+
+    public DashboardController(DashboardService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/dashboard-stats")
+    public DashboardStats stats() {
+        return service.stats();
+    }
+}

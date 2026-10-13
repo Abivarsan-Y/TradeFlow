@@ -46,7 +46,7 @@
                     <button class="btn-tj-primary w-100" onclick="doLogin()">Login</button>
 
                     <div style="text-align:center;margin-top:20px;">
-                        <a href="/" style="color:var(--tj-text-muted);font-size:0.9rem;">
+                        <a href="/static" style="color:var(--tj-text-muted);font-size:0.9rem;">
                             <i class="bi bi-arrow-left"></i> Back to Home
                         </a>
                     </div>
@@ -68,7 +68,7 @@
             });
             if (res.ok) {
                 setToken(res.data.token); setRole(res.data.role);
-                window.location.href = '/pages/admin/dashboard.html';
+                window.location.href = 'dashboard.html';
             } else {
                 msg.innerText = (res.data && res.data.message) || (typeof res.data === 'string' ? res.data : 'Login failed.');
             }
