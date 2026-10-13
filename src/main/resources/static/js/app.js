@@ -461,3 +461,28 @@ async function runSearch() {
     out.innerHTML = note + cards;
 }
 /* ===SEARCH-VEHICLES-END=== */
+
+/* ---------- Date helpers: always YYYY-MM-DD (and YYYY-MM-DD HH:mm) ---------- */
+function tjDate(d) {
+    if (!d) return '';
+    const t = new Date(d);
+    if (isNaN(t)) return '';
+    const p = n => String(n).padStart(2, '0');
+    return `${t.getFullYear()}-${p(t.getMonth() + 1)}-${p(t.getDate())}`;
+}
+
+function tjDateTime(d) {
+    if (!d) return '';
+    const t = new Date(d);
+    if (isNaN(t)) return '';
+    const p = n => String(n).padStart(2, '0');
+    return `${tjDate(t)} ${p(t.getHours())}:${p(t.getMinutes())}`;
+}
+
+/* ---------- Global escapeHtml helper ---------- */
+function escapeHtml(text) {
+    if (text == null) return '';
+    const d = document.createElement('div');
+    d.textContent = String(text);
+    return d.innerHTML;
+}
