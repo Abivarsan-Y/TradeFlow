@@ -461,3 +461,13 @@ async function runSearch() {
     out.innerHTML = note + cards;
 }
 /* ===SEARCH-VEHICLES-END=== */
+
+/* ---------- Date helpers (used by admin tables) ---------- */
+function tjDate(d) {
+    const x = new Date(d);
+    return isNaN(x) ? '—' : x.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+function tjDateTime(d) {
+    const x = new Date(d);
+    return isNaN(x) ? '—' : x.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
