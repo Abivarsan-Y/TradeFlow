@@ -167,7 +167,7 @@ function renderNavbar() {
         rightIcons = `
             <a href="/pages/profile.html" title="My Account"><i class="bi bi-person"></i></a>
             ${(role === 'ROLE_ADMIN' || role === 'ROLE_SUPER_ADMIN')
-                ? '<a href="/pages/admin/dashboard.html" title="Admin"><i class="bi bi-gear"></i></a>' : ''}
+            ? '<a href="/pages/admin/dashboard.html" title="Admin"><i class="bi bi-gear"></i></a>' : ''}
             <button onclick="logout()" title="Logout"><i class="bi bi-box-arrow-right"></i></button>`;
     } else {
         rightIcons = `
@@ -211,18 +211,19 @@ function renderNavbar() {
             </div>
             <div class="menu-links-top">
                 <a class="menu-link" href="/">Home</a>
-                <a class="menu-link" href="/js/pages/inventory.html">Vehicles</a>
-                <a class="menu-link" href="/js/pages/content.html?page=about">About Us</a>
-                <a class="menu-link" href="/js/pages/content.html?page=services">Services</a>
-                <a class="menu-link" href="/js/pages/faq.html">FAQ</a>
-                <a class="menu-link" href="/js/pages/contact.html">Contact Us</a>
+                <a class="menu-link" href="/pages/inventory.html">Vehicles</a>
+                <a class="menu-link" href="/pages/content.html?page=about">About Us</a>
+                <a class="menu-link" href="/pages/content.html?page=services">Services</a>
+                <a class="menu-link" href="/pages/faq.html">FAQ</a>
+                <a class="menu-link" href="/pages/contact.html">Contact Us</a>
             </div>
             <div class="menu-links-bottom">
                 ${token
         ? `<a class="menu-link" href="/pages/profile.html">My Account</a>
                        <a class="menu-link" href="#" onclick="logout()" style="color:var(--tj-maroon)">Logout</a>`
         : `<a class="menu-link" href="/pages/login.html">Login</a>
-                       <a class="menu-link" href="/js/pages/register.html">Register</a>`
+           <a class="menu-link" href="/pages/register.html">Register</a>
+           <a class="menu-link" href="/pages/admin/login.html" style="color:var(--tj-navy);"><i class="bi bi-shield-lock"></i> Admin Login</a>`
     }
             </div>
         </div>`;
@@ -254,30 +255,30 @@ function renderFooter() {
                 <div>
                     <h6>Company</h6>
                     <ul>
-                        <li><a href="/js/pages/content.html?page=about">About Us</a></li>
-                        <li><a href="/js/pages/content.html?page=tc">Terms &amp; Conditions</a></li>
-                        <li><a href="/js/pages/content.html?page=privacy">Privacy Policy</a></li>
-                        <li><a href="/js/pages/contact.html">Contact Us</a></li>
+                        <li><a href="/pages/content.html?page=about">About Us</a></li>
+                        <li><a href="/pages/content.html?page=tc">Terms &amp; Conditions</a></li>
+                        <li><a href="/pages/content.html?page=privacy">Privacy Policy</a></li>
+                        <li><a href="/pages/contact.html">Contact Us</a></li>
                     </ul>
                 </div>
                 <div>
                     <h6>Information</h6>
                     <ul>
-                        <li><a href="/js/pages/faq.html">FAQ</a></li>
-                        <li><a href="/js/pages/inventory.html">Browse Vehicles</a></li>
-                        <li><a href="/js/pages/content.html?page=services">How To Buy</a></li>
-                        <li><a href="/js/pages/content.html?page=services">Auction Service</a></li>
-                        <li><a href="/js/pages/content.html?page=services">Services</a></li>
+                        <li><a href="/pages/faq.html">FAQ</a></li>
+                        <li><a href="/pages/inventory.html">Browse Vehicles</a></li>
+                        <li><a href="/pages/content.html?page=services">How To Buy</a></li>
+                        <li><a href="/pages/content.html?page=services">Auction Service</a></li>
+                        <li><a href="/pages/content.html?page=services">Services</a></li>
                     </ul>
                 </div>
                 <div>
                     <h6>Brands</h6>
                     <ul>
-                        <li><a href="/js/pages/inventory.html?make=Toyota">Toyota</a></li>
-                        <li><a href="/js/pages/inventory.html?make=Honda">Honda</a></li>
-                        <li><a href="/js/pages/inventory.html?make=Nissan">Nissan</a></li>
-                        <li><a href="/js/pages/inventory.html?make=Mazda">Mazda</a></li>
-                        <li><a href="/js/pages/inventory.html?make=Suzuki">Suzuki</a></li>
+                        <li><a href="/pages/inventory.html?make=Toyota">Toyota</a></li>
+                        <li><a href="/pages/inventory.html?make=Honda">Honda</a></li>
+                        <li><a href="/pages/inventory.html?make=Nissan">Nissan</a></li>
+                        <li><a href="/pages/inventory.html?make=Mazda">Mazda</a></li>
+                        <li><a href="/pages/inventory.html?make=Suzuki">Suzuki</a></li>
                     </ul>
                 </div>
                 <div>
@@ -394,8 +395,8 @@ function searchTyping() {
 // everything about a vehicle that a visitor may type, as one lower-case text
 function _searchHay(v) {
     return [v.make, v.model, v.manufactureYear, v.category, v.exteriorColor, v.fuelType, v.transmission,
-            v.steering, v.driveType, v.refNo, v.grade, v.engineType,
-            (v.condition || '').toUpperCase() === 'NEW' ? 'new' : 'used']
+        v.steering, v.driveType, v.refNo, v.grade, v.engineType,
+        (v.condition || '').toUpperCase() === 'NEW' ? 'new' : 'used']
         .filter(x => x !== null && x !== undefined && x !== '')
         .join(' ').toLowerCase();
 }
@@ -443,8 +444,8 @@ async function runSearch() {
         const img    = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
         const status = (v.status || 'AVAILABLE').toUpperCase();
         const meta   = [v.manufactureYear, v.category,
-                        (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
-                        (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
+            (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
+            (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
         return `<a class="search-vcard" href="/pages/vehicle-detail.html?id=${v.id}">
               <div class="search-vimg">${img ? `<img src="${_searchEsc(img)}" alt="" loading="lazy">` : '<i class="bi bi-car-front"></i>'}</div>
               <div class="search-vinfo">
