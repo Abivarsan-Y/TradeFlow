@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicles - Trade Japan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="navbar"></div>
+        <main class="page-body">
+            <div class="tj-breadcrumb">
+                <a href="/">Home</a> &nbsp;&raquo;&nbsp; Vehicles
+            </div>
+
+            <div class="home-section">
+                <div class="inv-layout">
+
+                    <!-- ===== Filters (left) ===== -->
+                    <aside class="inv-sidebar">
+                        <h3 class="inv-side-title">Filters</h3>
+
+                        <div class="inv-field">
+                            <label>Make</label>
+                            <select id="f-make"><option value="">All Makes</option></select>
+                        </div>
+                        <div class="inv-field">
+                            <label>Model</label>
+                            <select id="f-model"><option value="">All Models</option></select>
+                        </div>
+                        <div class="inv-field">
+                            <label>Year</label>
+                            <select id="f-year"><option value="">All Years</option></select>
+                        </div>
+                        <div class="inv-field">
+                            <label>Body Type</label>
+                            <select id="f-body"><option value="">All Body Types</option></select>
+                        </div>
+                        <div class="inv-field">
+                            <label>Steering Side</label>
+                            <select id="f-steering">
+                                <option value="">All (LHD &amp; RHD)</option>
+                                <option value="Right">Right (RHD)</option>
+                                <option value="Left">Left (LHD)</option>
+                            </select>
+                        </div>
+                        <div class="inv-field">
+                            <label>Status</label>
+                            <select id="f-status">
+                                <option value="">All Status</option>
+                                <option value="AVAILABLE">Available</option>
+                                <option value="RESERVED">Reserved</option>
+                                <option value="SOLD">Sold</option>
+                            </select>
+                        </div>
+                        <div class="inv-field">
+                            <label>Price Range (USD)</label>
+                            <div class="inv-price-inputs">
+                                <input type="number" id="f-min" min="0" placeholder="Min">
+                                <input type="number" id="f-max" min="0" placeholder="Max">
+                            </div>
+                            <input type="range" id="f-slider" class="inv-slider" min="0" max="50000" step="500" value="50000">
+                        </div>
+
+                        <button class="btn-tj-navy inv-btn" id="inv-search" type="button">Search</button>
+                        <button class="btn-tj-outline inv-btn" id="inv-clear" type="button">Clear Filters</button>
+                    </aside>
+
+                    <!-- ===== Results (right) ===== -->
+                    <section class="inv-content">
+                        <div class="inv-toolbar">
+                            <h2 id="inv-count">Vehicles Found</h2>
+                            <select id="f-sort" class="inv-sort">
+                                <option value="newest">Sort by: Newest</option>
+                                <option value="oldest">Sort by: Oldest</option>
+                                <option value="priceLow">Sort by: Price: Low to High</option>
+                                <option value="priceHigh">Sort by: Price: High to Low</option>
+                                <option value="yearNew">Sort by: Year: Newest</option>
+                                <option value="yearOld">Sort by: Year: Oldest</option>
+                            </select>
+                        </div>
+
+                        <div class="vehicle-grid" id="inv-grid"></div>
+                        <div class="vehicle-empty" id="inv-empty" style="display:none;">No vehicles match your search.</div>
+                        <div class="inv-loading" id="inv-loading" style="display:none;">
+                            <i class="bi bi-arrow-repeat"></i> Loading more vehicles...
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+        <div id="footer"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/vehicles.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', initInventory);</script>
+</body>
+</html>
