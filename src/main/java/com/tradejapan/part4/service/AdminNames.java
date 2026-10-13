@@ -8,6 +8,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class AdminNames {
 
@@ -76,11 +80,38 @@ public class AdminNames {
         }
 
         return userRepository.findById(userId)
-                .map(this::displayName)
+                .map(AdminNames::fullName)
                 .orElse("Unknown User");
     }
 
-    private String displayName(User user) {
+    public Map<Long, String> byId(List<Long> ids) {
+
+        Map<Long, String> names =
+                new HashMap<>();
+
+        if (ids == null) {
+            return names;
+        }
+
+        for (Long id : ids) {
+
+            if (id == null || names.containsKey(id)) {
+                continue;
+            }
+
+            userRepository.findById(id)
+                    .ifPresent(user ->
+                            names.put(
+                                    id,
+                                    fullName(user)
+                            )
+                    );
+        }
+
+        return names;
+    }
+
+    public static String fullName(User user) {
 
         String firstName =
                 user.getFirstName() == null
@@ -92,11 +123,11 @@ public class AdminNames {
                         ? ""
                         : user.getLastName().trim();
 
-        String fullName =
+        String name =
                 (firstName + " " + lastName).trim();
 
-        if (!fullName.isBlank()) {
-            return fullName;
+        if (!name.isBlank()) {
+            return name;
         }
 
         return user.getEmail();
