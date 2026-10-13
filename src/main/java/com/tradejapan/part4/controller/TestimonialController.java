@@ -4,6 +4,7 @@ import com.tradejapan.part4.dto.CreateTestimonialRequest;
 import com.tradejapan.part4.dto.PublicTestimonialView;
 import com.tradejapan.part4.dto.TestimonialView;
 import com.tradejapan.part4.model.Testimonial;
+import com.tradejapan.part4.service.AdminNames;
 import com.tradejapan.part4.service.TestimonialService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,33 +18,34 @@ import java.util.List;
 public class TestimonialController {
 
     private final TestimonialService testimonialService;
+    private final AdminNames adminNames;
 
-    public TestimonialController(TestimonialService testimonialService) {
+    public TestimonialController(
+            TestimonialService testimonialService,
+            AdminNames adminNames) {
+
         this.testimonialService = testimonialService;
+        this.adminNames = adminNames;
     }
 
-    /*
-     * CUSTOMER
-     * Submit a new testimonial.
-     *
-     * Authentication will later provide the actual customer ID.
-     */
     @PostMapping("/testimonials")
     public ResponseEntity<TestimonialView> submitTestimonial(
             @Valid @RequestBody CreateTestimonialRequest request) {
 
+        Long customerId =
+                adminNames.currentCustomerId();
+
         Testimonial testimonial =
-                testimonialService.submitTestimonial(request);
+                testimonialService.submitTestimonial(
+                        request,
+                        customerId
+                );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(toAdminView(testimonial));
     }
 
-    /*
-     * PUBLIC
-     * Only APPROVED testimonials are displayed.
-     */
     @GetMapping("/testimonials/approved")
     public List<PublicTestimonialView> getApprovedTestimonials() {
 
@@ -54,10 +56,19 @@ public class TestimonialController {
                 .toList();
     }
 
-    /*
-     * ADMIN
-     * View every submitted testimonial.
-     */
+    @GetMapping("/testimonials/me")
+    public List<TestimonialView> getMyTestimonials() {
+
+        Long customerId =
+                adminNames.currentCustomerId();
+
+        return testimonialService
+                .getTestimonialsByUser(customerId)
+                .stream()
+                .map(this::toAdminView)
+                .toList();
+    }
+
     @GetMapping("/admin/testimonials")
     public List<TestimonialView> getAllTestimonials() {
 
@@ -68,46 +79,38 @@ public class TestimonialController {
                 .toList();
     }
 
-    /*
-     * ADMIN
-     * Approve a testimonial.
-     *
-     * adminId will later come from JWT authentication.
-     */
     @PatchMapping("/admin/testimonials/{id}/approve")
     public TestimonialView approveTestimonial(
             @PathVariable Long id) {
 
+        Long adminId =
+                adminNames.currentAdminId();
+
         Testimonial testimonial =
                 testimonialService.approveTestimonial(
                         id,
-                        null
+                        adminId
                 );
 
         return toAdminView(testimonial);
     }
 
-    /*
-     * ADMIN
-     * Reject a testimonial.
-     */
     @PatchMapping("/admin/testimonials/{id}/reject")
     public TestimonialView rejectTestimonial(
             @PathVariable Long id) {
 
+        Long adminId =
+                adminNames.currentAdminId();
+
         Testimonial testimonial =
                 testimonialService.rejectTestimonial(
                         id,
-                        null
+                        adminId
                 );
 
         return toAdminView(testimonial);
     }
 
-    /*
-     * ADMIN
-     * Delete testimonial.
-     */
     @DeleteMapping("/admin/testimonials/{id}")
     public ResponseEntity<Void> deleteTestimonial(
             @PathVariable Long id) {
@@ -117,9 +120,6 @@ public class TestimonialController {
         return ResponseEntity.noContent().build();
     }
 
-    /*
-     * Converts database entity into safe public response.
-     */
     private PublicTestimonialView toPublicView(
             Testimonial testimonial) {
 
@@ -132,12 +132,6 @@ public class TestimonialController {
         );
     }
 
-    /*
-     * Converts database entity into admin response.
-     *
-     * reviewedByName remains null until the shared
-     * authentication/User module is integrated.
-     */
     private TestimonialView toAdminView(
             Testimonial testimonial) {
 
@@ -149,7 +143,9 @@ public class TestimonialController {
                 testimonial.getMessage(),
                 testimonial.getStatus(),
                 testimonial.getCreatedAt(),
-                null,
+                adminNames.nameOf(
+                        testimonial.getReviewedBy()
+                ),
                 testimonial.getReviewedAt()
         );
     }

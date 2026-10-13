@@ -58,3 +58,57 @@ CREATE TABLE IF NOT EXISTS faq_items (
     display_order INT,
     active        BOOLEAN NOT NULL DEFAULT TRUE
 );
+
+-- ------------------------------------------------------------
+-- SECTION 4: part4 - Customer Engagement & Reporting
+-- ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+    message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    subject VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'NEW',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    handled_by BIGINT NULL,
+    handled_at DATETIME NULL,
+
+    CONSTRAINT fk_contact_handled_by
+        FOREIGN KEY (handled_by)
+        REFERENCES users(id)
+        ON DELETE SET NULL,
+
+    INDEX idx_contact_status (status),
+    INDEX idx_contact_handled_by (handled_by)
+);
+
+CREATE TABLE IF NOT EXISTS testimonials (
+    testimonial_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NULL,
+    name VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    rating INT NOT NULL,
+    message VARCHAR(1000) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    reviewed_by BIGINT NULL,
+    reviewed_at DATETIME NULL,
+
+    CONSTRAINT fk_testimonial_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_testimonial_reviewed_by
+        FOREIGN KEY (reviewed_by)
+        REFERENCES users(id)
+        ON DELETE SET NULL,
+
+    INDEX idx_testimonial_status (status),
+    INDEX idx_testimonial_user (user_id),
+    INDEX idx_testimonial_reviewed_by (reviewed_by),
+
+    CONSTRAINT chk_testimonial_rating
+        CHECK (rating BETWEEN 1 AND 5)
+);
