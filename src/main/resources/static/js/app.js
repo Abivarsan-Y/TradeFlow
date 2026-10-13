@@ -167,7 +167,7 @@ function renderNavbar() {
         rightIcons = `
             <a href="/pages/profile.html" title="My Account"><i class="bi bi-person"></i></a>
             ${(role === 'ROLE_ADMIN' || role === 'ROLE_SUPER_ADMIN')
-                ? '<a href="/pages/admin/dashboard.html" title="Admin"><i class="bi bi-gear"></i></a>' : ''}
+            ? '<a href="/pages/admin/dashboard.html" title="Admin"><i class="bi bi-gear"></i></a>' : ''}
             <button onclick="logout()" title="Logout"><i class="bi bi-box-arrow-right"></i></button>`;
     } else {
         rightIcons = `
@@ -395,8 +395,8 @@ function searchTyping() {
 // everything about a vehicle that a visitor may type, as one lower-case text
 function _searchHay(v) {
     return [v.make, v.model, v.manufactureYear, v.category, v.exteriorColor, v.fuelType, v.transmission,
-            v.steering, v.driveType, v.refNo, v.grade, v.engineType,
-            (v.condition || '').toUpperCase() === 'NEW' ? 'new' : 'used']
+        v.steering, v.driveType, v.refNo, v.grade, v.engineType,
+        (v.condition || '').toUpperCase() === 'NEW' ? 'new' : 'used']
         .filter(x => x !== null && x !== undefined && x !== '')
         .join(' ').toLowerCase();
 }
@@ -444,8 +444,8 @@ async function runSearch() {
         const img    = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
         const status = (v.status || 'AVAILABLE').toUpperCase();
         const meta   = [v.manufactureYear, v.category,
-                        (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
-                        (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
+            (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
+            (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
         return `<a class="search-vcard" href="/pages/vehicle-detail.html?id=${v.id}">
               <div class="search-vimg">${img ? `<img src="${_searchEsc(img)}" alt="" loading="lazy">` : '<i class="bi bi-car-front"></i>'}</div>
               <div class="search-vinfo">
