@@ -1,4 +1,4 @@
-package com.tradejapan.inventory.model;
+package com.tradejapan.part2.model;
 
 import jakarta.persistence.*;
 

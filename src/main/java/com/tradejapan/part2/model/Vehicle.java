@@ -1,4 +1,4 @@
-package com.tradejapan.inventory.model;
+package com.tradejapan.part2.model;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;

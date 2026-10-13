@@ -1,4 +1,4 @@
-package com.tradejapan.inventory.config;
+package com.tradejapan.part2.config;
 
 import java.util.List;
 

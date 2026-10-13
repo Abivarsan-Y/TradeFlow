@@ -43,7 +43,7 @@ function createCard(vehicle) {
         </div>
     `;
 
-    const openDetails = () => { window.location.href = `/vehicle-detail.html?id=${vehicle.id}`; };
+    const openDetails = () => { window.location.href = `/pages/vehicle-detail.html?id=${vehicle.id}`; };
     article.addEventListener("click", openDetails);
     article.addEventListener("keydown", (event) => {
         if (event.target === article && (event.key === "Enter" || event.key === " ")) {
@@ -61,7 +61,7 @@ function renderAuthenticationNavigation() {
 
     if (localStorage.getItem("token")) {
         authActions.innerHTML = `
-            <a href="account.html"><i class="bi bi-person-circle"></i></a>
+            <a href="/pages/profile.html"><i class="bi bi-person-circle"></i></a>
             <button class="nav-button" id="logout-button" type="button">Logout</button>`;
         document.getElementById("logout-button").addEventListener("click", () => {
             localStorage.removeItem("token");
@@ -69,8 +69,8 @@ function renderAuthenticationNavigation() {
         });
     } else {
         authActions.innerHTML = `
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>`;
+            <a href="/pages/login.html">Login</a>
+            <a href="/pages/register.html">Register</a>`;
     }
 }
 
@@ -432,7 +432,7 @@ async function loadVehicleDetails() {
         link.addEventListener("click", (event) => {
             if (!localStorage.getItem("token")) {
                 event.preventDefault();
-                window.location.href = "login.html";
+                window.location.href = "/pages/login.html";
             }
         });
     });
@@ -458,7 +458,7 @@ async function loadSimilarVehicles(currentVehicle) {
             const images = parseImageUrls(v.imageUrls);
             const img = images[0] || "https://picsum.photos/id/111/400/250";
             return `
-                <a class="similar-card" href="/vehicle-detail.html?id=${v.id}">
+                <a class="similar-card" href="/pages/vehicle-detail.html?id=${v.id}">
                     <img src="${img}" alt="${v.make} ${v.model}">
                     <h4>${v.make} ${v.model} ${v.manufactureYear}</h4>
                     <p class="price">$USD ${Number(v.fobPrice).toLocaleString()}</p>
@@ -583,7 +583,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Vehicle detail
     loadVehicleDetails().catch((err) => {
         const detail = document.getElementById("vehicle-detail");
-        if (detail) detail.innerHTML = `<div style="padding:3rem;text-align:center;"><p class="msg err">${err.message}</p><a class="back-link" href="/inventory.html"><i class="bi bi-arrow-left"></i> Back to catalogue</a></div>`;
+        if (detail) detail.innerHTML = `<div style="padding:3rem;text-align:center;"><p class="msg err">${err.message}</p><a class="back-link" href="/pages/inventory.html"><i class="bi bi-arrow-left"></i> Back to catalogue</a></div>`;
     });
 
     // Vehicle form
