@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Japan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="navbar"></div>
+        <main class="page-body">
+            <div class="tj-breadcrumb">
+                <a href="/">Home</a> &nbsp;&raquo;&nbsp; <span id="breadcrumb-label">Loading...</span>
+            </div>
+            <div class="content-header">
+                <h1 id="content-title">Loading...</h1>
+            </div>
+            <div class="content-page" id="c-box">
+                <div style="text-align:center;padding:48px;color:var(--tj-text-muted);">
+                    <i class="bi bi-arrow-clockwise" style="font-size:2rem;"></i>
+                    <p>Loading content...</p>
+                </div>
+            </div>
+        </main>
+        <div id="footer"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        const pageLabels = {
+            about: 'About Us',
+            services: 'Services',
+            tc: 'Terms & Conditions',
+            privacy: 'Privacy Policy'
+        };
+        let currentPage = null;
+
+        async function loadContent() {
+            const box = document.getElementById('c-box');
+            const label = pageLabels[currentPage] || currentPage || 'Page';
+            const res = await apiFetch(`/content/${currentPage}`);
+            if (res.ok && res.data && res.data.htmlContent) {
+                box.innerHTML = res.data.htmlContent;
+            } else {
+                box.innerHTML = `
+                <div style="text-align:center;padding:48px;color:var(--tj-text-muted);">
+                    <i class="bi bi-file-earmark-x" style="font-size:2.5rem;"></i>
+                    <h3 style="margin-top:12px;">Content Not Found</h3>
+                    <p>The page "${label}" has no content yet.</p>
+                </div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            currentPage = params.get('page');
+            const label = pageLabels[currentPage] || currentPage || 'Page';
+            document.getElementById('breadcrumb-label').textContent = label;
+            document.getElementById('content-title').textContent = label;
+            document.title = label + ' - Trade Japan';
+            loadContent();
+        });
+    </script>
+</body>
+</html>

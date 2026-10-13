@@ -1,5 +1,5 @@
 /* ================================================
-   TRADE JAPAN — Global Stylesheet (merged)
+   TRADE JAPAN CMS — Global Stylesheet (merged)
    styles.css + modern.css combined into one file
    ================================================ */
 
@@ -147,18 +147,6 @@ a:hover { color: var(--tj-maroon); }
 .search-hit-title { font-weight: 700; color: var(--tj-navy); font-size: 1.1rem; }
 .search-hit-text { color: var(--tj-text-muted); font-size: .95rem; margin-top: .3rem; }
 .search-empty { color: var(--tj-text-muted); font-size: 1rem; padding: .6rem 0; }
-/* vehicle results in the navbar search */
-.search-vcard { display: flex; align-items: center; gap: 1rem; padding: .7rem; margin-bottom: .6rem; border: 1px solid #e3eaf1; border-radius: .9rem; text-decoration: none; background: #fff; }
-.search-vcard:hover { border-color: var(--tj-maroon); background: #fafbfd; }
-.search-vimg { flex: 0 0 auto; width: 7rem; height: 5rem; border-radius: .6rem; overflow: hidden; background: #eef2f6; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #9aa9ba; }
-.search-vimg img { width: 100%; height: 100%; object-fit: cover; }
-.search-vinfo { min-width: 0; }
-.search-vprice { font-weight: 800; color: #b30f1b; font-size: 1.05rem; margin-top: .25rem; }
-.search-vstatus { font-size: .75rem; font-weight: 700; padding: .15rem .55rem; border-radius: 1rem; margin-left: .5rem; vertical-align: middle; }
-.search-vstatus.available { background: #e6f6ec; color: #17803d; }
-.search-vstatus.reserved  { background: #fff3da; color: #9a6200; }
-.search-vstatus.sold      { background: #fde8e8; color: #b30f1b; }
-.search-note { color: var(--tj-text-muted); font-size: .9rem; padding: .1rem 0 .6rem; }
 
 /* ================================================
    PUBLIC FOOTER
@@ -349,9 +337,7 @@ a:hover { color: var(--tj-maroon); }
 .admin-main .form-select,
 .modal .form-control,
 .modal .form-select,
-.admin-main .tj-input-icon input { border: 1px solid var(--tj-border-strong); font-size: 1rem; padding: .7rem 1rem .7rem 3rem; border-radius: .6rem; }
-/* fields with an eye button on the right (password): keep the text clear of it */
-.admin-main .tj-input-icon:has(.input-icon-right) input { padding-right: 3rem; }
+.admin-main .tj-input-icon input { border: 1px solid var(--tj-border-strong); font-size: 1rem; padding: .7rem 1rem; border-radius: .6rem; }
 .admin-main .form-control:focus,
 .admin-main .form-select:focus,
 .modal .form-control:focus,
@@ -596,11 +582,7 @@ body .promo-grid .small-carousel-wrap .carousel-indicators { bottom: 1rem; }
    ================================================ */
 .auth-message { color: var(--tj-danger); font-size: 1rem; margin-bottom: 12px; }
 .auth-message.success { color: var(--tj-success); }
-.drag-handle { color: #b5bfcb; cursor: grab; font-size: 1.1rem; touch-action: none; user-select: none; }
-.drag-handle:hover { color: var(--tj-maroon); }
-.faq-pos { color: var(--tj-text-muted); font-size: .85rem; margin-left: .35rem; }
-tr.faq-dragging { background: #fff8e1; box-shadow: 0 .3rem .9rem rgba(0,0,0,.15); position: relative; z-index: 2; }
-body.faq-drag-active { cursor: grabbing; user-select: none; }
+.drag-handle { color: #ccc; cursor: grab; font-size: 1.1rem; }
 .section-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 
 /* Confirmation overlay */
@@ -1027,34 +1009,3 @@ body .tj-confirm-overlay .tj-confirm-box { max-width: none !important; padding: 
 #section-customers .vf-field.vf-date { min-width: 22rem; }
 /* dim the information cells only, so the Status dropdown still looks usable (to reactivate) */
 .row-inactive td:nth-child(-n+5) { opacity: .6; }
-
-/* ============ Date picker (js/datepicker.js) - sizes in rem, so it scales like the rest of the page ============ */
-.tj-date { position: relative; flex: 1; min-width: 0; }
-.tj-date input.tj-date-display { cursor: pointer; padding-right: 2.6rem; background: var(--tj-white); width: 100%; }
-.tj-date .tj-date-icon { position: absolute; right: .9rem; top: 50%; transform: translateY(-50%); color: var(--tj-text-muted); font-size: 1.05rem; cursor: pointer; }
-.tj-cal { position: fixed; z-index: 3000; display: none; width: 21rem; padding: 1rem; background: var(--tj-white);
-          border: 1px solid #d3dde8; border-radius: 1rem; box-shadow: 0 1rem 2.5rem rgba(10, 30, 60, .22); font-size: 1rem; }
-.tj-cal.open { display: block; }
-.tj-cal-head { display: flex; align-items: center; gap: .45rem; margin-bottom: .8rem; }
-.tj-cal-nav { flex: 0 0 auto; width: 2.3rem; height: 2.3rem; border: 1px solid #d3dde8; border-radius: .6rem; background: var(--tj-white);
-              color: var(--tj-navy); font-size: 1.3rem; line-height: 1; cursor: pointer; }
-.tj-cal-nav:hover { background: #eef2f7; }
-.tj-cal-head select { flex: 1; min-width: 0; height: 2.3rem; padding: 0 .4rem; border: 1px solid #d3dde8; border-radius: .6rem;
-                      background: var(--tj-white); color: var(--tj-navy); font-size: .95rem; font-weight: 700; }
-.tj-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .2rem; }
-.tj-cal-dows span { padding: .35rem 0; text-align: center; font-size: .8rem; font-weight: 700; color: var(--tj-text-muted); }
-.tj-cal-day { height: 2.5rem; border: 1px solid transparent; border-radius: .6rem; background: transparent; color: var(--tj-text); font-size: .95rem; cursor: pointer; }
-.tj-cal-day:hover:not(:disabled) { background: #eef2f7; }
-.tj-cal-day.today { border-color: var(--tj-maroon); font-weight: 700; }
-.tj-cal-day.selected { background: var(--tj-maroon); border-color: var(--tj-maroon); color: #fff; font-weight: 700; }
-.tj-cal-day:disabled { opacity: .35; cursor: not-allowed; }
-.tj-cal-foot { display: flex; justify-content: space-between; margin-top: .8rem; padding-top: .6rem; border-top: 1px solid var(--tj-border); }
-.tj-cal-foot button { padding: .3rem .7rem; border: 0; border-radius: .5rem; background: none; color: var(--tj-maroon); font-size: .95rem; font-weight: 700; cursor: pointer; }
-.tj-cal-foot button:hover { background: #fdecee; }
-
-/* Staff accounts: customer-only buttons are greyed out */
-.vd-btn.vd-btn-disabled, .vd-btn.vd-btn-disabled:hover { background: #e9edf2 !important; color: #8b97a6 !important; border: 2px solid #e1e7ee !important;
-    cursor: not-allowed; box-shadow: none; transform: none; filter: none; opacity: 1 !important; }
-.profile-wrap .profile-edit-btn:disabled, .profile-wrap .profile-edit-btn:disabled:hover { background: #e9edf2; color: #8b97a6; border-color: #e1e7ee; cursor: not-allowed; }
-.profile-lock-note { margin: 0 0 1rem; padding: .8rem 1.1rem; border: 1px solid #e1e7ee; border-radius: .7rem; background: #f4f6f9; color: var(--tj-text-muted); font-size: .95rem; }
-.profile-lock-note i { margin-right: .4rem; }
