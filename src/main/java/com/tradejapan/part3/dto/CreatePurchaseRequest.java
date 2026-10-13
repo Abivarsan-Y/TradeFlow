@@ -6,13 +6,18 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
+/**
+ * Either link an inquiry (buyer, vehicle and destination are taken from it),
+ * or give buyerEmail + vehicleId (+ optional destinationCountry) for a direct purchase.
+ * processedBy is always the logged-in admin.
+ */
 public record CreatePurchaseRequest(
-        @NotNull(message = "userId is required") Long userId,
-        @NotNull(message = "vehicleId is required") Long vehicleId,
-        @NotNull(message = "processedBy is required") Long processedBy,
         Long inquiryId,
-        @NotNull(message = "totalPrice is required")
-        @DecimalMin(value = "0.01", message = "totalPrice must be greater than 0") BigDecimal totalPrice,
-        @DecimalMin(value = "0.00", message = "advancePaid cannot be negative") BigDecimal advancePaid,
-        @Size(max = 2000, message = "notes must be 2000 characters or less") String notes
+        String buyerEmail,
+        Long vehicleId,
+        @Size(max = 100, message = "Destination country must be 100 characters or less") String destinationCountry,
+        @NotNull(message = "Total price is required")
+        @DecimalMin(value = "0.01", message = "Total price must be greater than 0") BigDecimal totalPrice,
+        @DecimalMin(value = "0.00", message = "Advance paid cannot be negative") BigDecimal advancePaid,
+        @Size(max = 2000, message = "Notes must be 2000 characters or less") String notes
 ) {}

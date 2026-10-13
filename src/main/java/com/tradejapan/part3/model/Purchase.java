@@ -51,6 +51,10 @@ public class Purchase {
     @Column(length = 2000)
     private String notes;
 
+    // where the vehicle is shipped (copied from the inquiry, or chosen by the admin for a direct purchase)
+    @Column(name = "destination_country", length = 100)
+    private String destinationCountry;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -89,4 +93,6 @@ public class Purchase {
     public void setNotes(String notes) { this.notes = notes; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getDestinationCountry() { return destinationCountry; }
+    public void setDestinationCountry(String destinationCountry) { this.destinationCountry = destinationCountry; }
 }
