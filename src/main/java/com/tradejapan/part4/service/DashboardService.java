@@ -2,7 +2,7 @@ package com.tradejapan.part4.service;
 
 import com.tradejapan.part1.model.Role;
 import com.tradejapan.part1.repository.UserRepository;
-import com.tradejapan.inventory.repository.VehicleRepository;
+import com.tradejapan.part2.repository.VehicleRepository;
 
 import com.tradejapan.part3.model.Inquiry;
 import com.tradejapan.part3.model.InquiryStatus;
