@@ -1,6 +1,0 @@
-target/
-data/
-private-invoices/
-.idea/
-*.iml
-.env
