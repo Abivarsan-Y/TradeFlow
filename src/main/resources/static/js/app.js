@@ -222,7 +222,8 @@ function renderNavbar() {
         ? `<a class="menu-link" href="/pages/profile.html">My Account</a>
                        <a class="menu-link" href="#" onclick="logout()" style="color:var(--tj-maroon)">Logout</a>`
         : `<a class="menu-link" href="/pages/login.html">Login</a>
-                       <a class="menu-link" href="/pages/register.html">Register</a>`
+           <a class="menu-link" href="/pages/register.html">Register</a>
+           <a class="menu-link" href="/pages/admin/login.html" style="color:var(--tj-navy);"><i class="bi bi-shield-lock"></i> Admin Login</a>`
     }
             </div>
         </div>`;
