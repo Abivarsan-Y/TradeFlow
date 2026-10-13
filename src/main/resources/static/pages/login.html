@@ -46,6 +46,12 @@
                             Continue with Google
                         </button>
                         <div class="bottom-link">Don't have an account? <a href="/pages/register.html">Register</a></div>
+                        <div class="admin-login-divider" style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--tj-border); text-align: center;">
+                            <div style="font-size: 0.85rem; color: var(--tj-text-muted); margin-bottom: 10px;">Looking for staff access?</div>
+                            <a href="/pages/admin/login.html" class="btn-tj-outline w-100" style="justify-content: center; text-decoration: none; font-weight: 600;">
+                                <i class="bi bi-shield-lock" style="font-size: 1rem;"></i> Admin / Staff Login
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -76,7 +82,14 @@
                 // go back to the page the customer came from (only paths on this site)
                 const back = new URLSearchParams(window.location.search).get('redirect');
                 window.location.href = (back && back.startsWith('/') && !back.startsWith('//')) ? back : '/';
-            } else { msg.innerText = (res.data && res.data.message) || (typeof res.data === 'string' ? res.data : 'Login failed.'); }
+            } else {
+                const errText = (res.data && res.data.message) || (typeof res.data === 'string' ? res.data : 'Login failed.');
+                if (res.status === 403 && errText.toLowerCase().includes('staff')) {
+                    msg.innerHTML = `${errText}<br><a href="/pages/admin/login.html" class="btn-tj-outline" style="margin-top:10px;display:inline-flex;padding:6px 16px;font-size:0.85rem;text-decoration:none;"><i class="bi bi-shield-lock"></i> Go to Admin Login</a>`;
+                } else {
+                    msg.innerText = errText;
+                }
+            }
         }
         document.getElementById('pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
     </script>
