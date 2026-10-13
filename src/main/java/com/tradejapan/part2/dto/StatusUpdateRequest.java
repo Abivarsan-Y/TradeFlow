@@ -1,4 +1,4 @@
-package com.tradejapan.inventory.dto;
+package com.tradejapan.part2.dto;
 import jakarta.validation.constraints.NotBlank;
 public class StatusUpdateRequest {
     @NotBlank private String status;

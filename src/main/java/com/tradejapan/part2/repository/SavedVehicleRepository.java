@@ -1,4 +1,4 @@
-package com.tradejapan.inventory.repository;
+package com.tradejapan.part2.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

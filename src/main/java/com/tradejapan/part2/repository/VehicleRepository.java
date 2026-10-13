@@ -1,5 +1,5 @@
-package com.tradejapan.inventory.repository;
-import com.tradejapan.inventory.model.Vehicle;
+package com.tradejapan.part2.repository;
+import com.tradejapan.part2.model.Vehicle;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.tradejapan.inventory.controller;
+package com.tradejapan.part2.controller;
 
-import com.tradejapan.inventory.model.Vehicle;
-import com.tradejapan.inventory.service.VehicleService;
+import com.tradejapan.part2.model.Vehicle;
+import com.tradejapan.part2.service.VehicleService;
 import com.tradejapan.part3.service.CurrentUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

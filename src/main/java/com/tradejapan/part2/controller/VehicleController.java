@@ -1,9 +1,9 @@
-package com.tradejapan.inventory.controller;
+package com.tradejapan.part2.controller;
 
-import com.tradejapan.inventory.dto.StatusUpdateRequest;
-import com.tradejapan.inventory.model.Feature;
-import com.tradejapan.inventory.model.Vehicle;
-import com.tradejapan.inventory.service.VehicleService;
+import com.tradejapan.part2.dto.StatusUpdateRequest;
+import com.tradejapan.part2.model.Feature;
+import com.tradejapan.part2.model.Vehicle;
+import com.tradejapan.part2.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;

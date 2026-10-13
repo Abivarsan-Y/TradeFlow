@@ -1,4 +1,4 @@
-package com.tradejapan.inventory.dto;
+package com.tradejapan.part2.dto;
 import java.math.BigDecimal;
 import java.util.List;
 public class VehicleDTO {
