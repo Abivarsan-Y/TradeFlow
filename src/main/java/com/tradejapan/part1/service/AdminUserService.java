@@ -1,12 +1,12 @@
-package com.tradejapan.cms.service;
+package com.tradejapan.part1.service;
 
-import com.tradejapan.cms.dto.CreateAdminRequest;
-import com.tradejapan.cms.dto.UpdateAdminRequest;
-import com.tradejapan.cms.model.AuthProvider;
-import com.tradejapan.cms.model.Role;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.model.UserStatus;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.dto.CreateAdminRequest;
+import com.tradejapan.part1.dto.UpdateAdminRequest;
+import com.tradejapan.part1.model.AuthProvider;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.model.UserStatus;
+import com.tradejapan.part1.repository.UserRepository;
 import com.tradejapan.part3.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,9 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Super Admin rules for managing Admin accounts.
- */
 @Service
 public class AdminUserService {
 
@@ -70,7 +67,6 @@ public class AdminUserService {
         return userRepository.save(user);
     }
 
-    // Staff have no self-service reset, so the Super Admin sets a new password
     public void resetPassword(Long id, String newPassword) {
         if (newPassword == null || newPassword.isBlank()) {
             throw new IllegalArgumentException("Password is required");

@@ -1,11 +1,11 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.dto.CustomerDetailView;
-import com.tradejapan.cms.dto.CustomerView;
-import com.tradejapan.cms.dto.UpdateCustomerStatusRequest;
-import com.tradejapan.cms.model.Role;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.dto.CustomerDetailView;
+import com.tradejapan.part1.dto.CustomerView;
+import com.tradejapan.part1.dto.UpdateCustomerStatusRequest;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.repository.UserRepository;
 import com.tradejapan.part3.exception.ResourceNotFoundException;
 import com.tradejapan.part3.repository.InquiryRepository;
 import com.tradejapan.part3.repository.PurchaseRepository;

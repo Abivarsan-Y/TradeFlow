@@ -1,9 +1,9 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.dto.AuthResponse;
-import com.tradejapan.cms.dto.LoginRequest;
-import com.tradejapan.cms.dto.RegisterRequest;
-import com.tradejapan.cms.service.AuthService;
+import com.tradejapan.part1.dto.AuthResponse;
+import com.tradejapan.part1.dto.LoginRequest;
+import com.tradejapan.part1.dto.RegisterRequest;
+import com.tradejapan.part1.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +29,12 @@ public class AuthController {
             authService.register(registerRequest);
             return ResponseEntity.ok("User registered successfully");
         } catch (IllegalArgumentException ex) {
-            // Plain text, because register.html shows it directly
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
     @PostMapping("/admin/login")
     public ResponseEntity<AuthResponse> authenticateAdmin(@Valid @RequestBody LoginRequest loginRequest) {
-        // Non-admin -> 403 "Access Denied" (thrown by the service)
         return ResponseEntity.ok(authService.adminLogin(loginRequest));
     }
-}s
+}

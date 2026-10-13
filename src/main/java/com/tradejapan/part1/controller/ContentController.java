@@ -1,7 +1,7 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.model.Content;
-import com.tradejapan.cms.service.ContentService;
+import com.tradejapan.part1.model.Content;
+import com.tradejapan.part1.service.ContentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;

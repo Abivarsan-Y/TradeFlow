@@ -1,9 +1,9 @@
-package com.tradejapan.cms.service;
+package com.tradejapan.part1.service;
 
-import com.tradejapan.cms.model.Content;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.repository.ContentRepository;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.model.Content;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.repository.ContentRepository;
+import com.tradejapan.part1.repository.UserRepository;
 import com.tradejapan.part3.exception.ResourceNotFoundException;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -12,10 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Business logic for the editable pages (About Us, Services, T&C ...).
- * The HTML is sanitised before saving to block XSS.
- */
 @Service
 public class ContentService {
 
@@ -36,16 +32,12 @@ public class ContentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Page not found: " + pageName));
     }
 
-    /**
-     * Creates the page if it does not exist, otherwise updates it.
-     * adminEmail comes from the controller, so this class stays easy to unit test.
-     */
+    // Creates the page if missing, otherwise updates it
     public Content saveContent(Content request, String adminEmail) {
         String html = request.getHtmlContent() != null ? request.getHtmlContent() : "";
         String cleanHtml = Jsoup.clean(html, Safelist.relaxed());
 
         Long adminId = userRepository.findByEmail(adminEmail).map(User::getId).orElse(null);
-        LocalDateTime now = LocalDateTime.now();
 
         Content content = contentRepository.findByPageName(request.getPageName())
                 .orElseGet(() -> {
@@ -57,7 +49,7 @@ public class ContentService {
         content.setTitle(request.getTitle());
         content.setHtmlContent(cleanHtml);
         content.setUpdatedBy(adminId);
-        content.setUpdatedAt(now);
+        content.setUpdatedAt(LocalDateTime.now());
         return contentRepository.save(content);
     }
 }

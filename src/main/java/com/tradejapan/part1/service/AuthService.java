@@ -1,14 +1,14 @@
-package com.tradejapan.cms.service;
+package com.tradejapan.part1.service;
 
-import com.tradejapan.cms.dto.AuthResponse;
-import com.tradejapan.cms.dto.LoginRequest;
-import com.tradejapan.cms.dto.RegisterRequest;
-import com.tradejapan.cms.model.AuthProvider;
-import com.tradejapan.cms.model.Role;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.model.UserStatus;
-import com.tradejapan.cms.repository.UserRepository;
-import com.tradejapan.cms.security.JwtTokenProvider;
+import com.tradejapan.part1.dto.AuthResponse;
+import com.tradejapan.part1.dto.LoginRequest;
+import com.tradejapan.part1.dto.RegisterRequest;
+import com.tradejapan.part1.model.AuthProvider;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.model.UserStatus;
+import com.tradejapan.part1.repository.UserRepository;
+import com.tradejapan.part1.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

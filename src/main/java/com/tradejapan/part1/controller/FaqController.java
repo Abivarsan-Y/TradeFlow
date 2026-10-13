@@ -1,7 +1,7 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.model.FaqItem;
-import com.tradejapan.cms.service.FaqService;
+import com.tradejapan.part1.model.FaqItem;
+import com.tradejapan.part1.service.FaqService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +30,13 @@ public class FaqController {
     @PostMapping
     public ResponseEntity<?> addFaq(@RequestBody FaqItem faq) {
         return ResponseEntity.ok(faqService.addFaq(faq));
+    }
+
+    // Drag and drop in the admin panel: the body is the list of FAQ ids in the new order
+    @PutMapping("/reorder")
+    public ResponseEntity<?> reorderFaqs(@RequestBody List<Long> ids) {
+        faqService.reorderFaqs(ids);
+        return ResponseEntity.ok("Order saved");
     }
 
     @PutMapping("/{id}")
