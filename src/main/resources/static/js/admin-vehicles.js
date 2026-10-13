@@ -47,7 +47,7 @@ const VEHICLE_SORTERS = {
 
 /* ======================= LIST ======================= */
 async function loadVehicles() {
-    const res = await apiFetch('/vehicles?page=0&size=500');
+    const res = await apiFetch('/admin/vehicles');
     const tbody = document.getElementById('vehicles-list');
     if (res.ok && Array.isArray(res.data)) {
         allVehicles = res.data;
@@ -130,7 +130,7 @@ function getFilteredVehicles() {
 
     const get = VEHICLE_SORTERS[vehicleSort.key];
     const dir = vehicleSort.dir === 'asc' ? 1 : -1;
-    list.sort((a, b) => { const x = get(a), y = get(b); return (x < y ? -1 : x > y ? 1 : 0) * dir; });
+    list.sort((a, b) => { const x = get(a), y = get(b); return ((x < y ? -1 : x > y ? 1 : 0) || (a.id - b.id)) * dir; });
     return list;
 }
 
@@ -156,12 +156,12 @@ function renderVehicles() {
     tbody.innerHTML = rows.map(v => {
         const img = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
         const st = (v.status || 'AVAILABLE').toUpperCase();
-        const added = v.createdAt ? new Date(v.createdAt).toLocaleDateString('en-US') : '—';
+        const added = v.createdAt ? tjDate(v.createdAt) : '—';
         return `
-            <tr>
+            <tr style="${v.active === false ? 'opacity:.55;' : ''}">
                 <td><div class="vehicle-thumb">${img ? `<img src="${escapeHtml(img)}" alt="">` : '<i class="bi bi-car-front"></i>'}</div></td>
                 <td>
-                    <div class="vt-name">${escapeHtml(v.make || '')} ${escapeHtml(v.model || '')} ${escapeHtml(v.category || '')}</div>
+                    <div class="vt-name">${escapeHtml(v.make || '')} ${escapeHtml(v.model || '')} ${escapeHtml(v.category || '')}${v.active === false ? ' <span style="font-size:11px;color:#b00020;font-weight:600;">(Inactive)</span>' : ''}</div>
                     <div class="vt-sub">Ref No: ${escapeHtml(v.refNo || ('TJ' + v.id))}</div>
                 </td>
                 <td>
@@ -181,6 +181,8 @@ function renderVehicles() {
                 <td>
                     <div style="display:flex;gap:8px;align-items:center;">
                         <button class="action-btn" title="Edit" onclick="openVehicleModal(${v.id})"><i class="bi bi-pencil"></i></button>
+                        <button class="action-btn" title="${v.isNewArrival ? 'Remove New Arrival tag' : 'Mark as New Arrival'}" onclick="toggleNewArrival(${v.id})"><i class="bi ${v.isNewArrival ? 'bi-star-fill' : 'bi-star'}" style="${v.isNewArrival ? 'color:#f5a623;' : ''}"></i></button>
+                        <button class="action-btn" title="${v.active === false ? 'Activate (show in inventory)' : 'Deactivate (hide from inventory)'}" onclick="toggleVehicleActive(${v.id})"><i class="bi ${v.active === false ? 'bi-eye' : 'bi-eye-slash'}"></i></button>
                         <button class="action-btn delete" title="Delete" onclick="deleteVehicle(${v.id})"><i class="bi bi-trash"></i></button>
                     </div>
                 </td>
@@ -227,7 +229,35 @@ function confirmVehicleStatus(id, select) {
     );
 }
 
+/* ======================= NEW ARRIVAL flag ======================= */
+async function toggleNewArrival(id) {
+    const v = allVehicles.find(x => x.id === id);
+    const res = await apiFetch(`/admin/vehicles/${id}/new-arrival`, { method: 'PATCH' });
+    if (res.ok) {
+        showToast(v && v.isNewArrival ? 'New Arrival tag removed.' : 'Marked as New Arrival.');
+        loadVehicles();
+    } else showToast(tjErr(res, 'Failed to update New Arrival.'), true);
+}
+
+/* ======================= DEACTIVATE / ACTIVATE (keeps the record for purchase history) ======================= */
+function toggleVehicleActive(id) {
+    const v = allVehicles.find(x => x.id === id);
+    const deactivating = !v || v.active !== false;
+    const name = v ? `${v.make} ${v.model}` : 'this vehicle';
+    showConfirm(
+        deactivating
+            ? `Deactivate ${name}? It will be hidden from the inventory page but kept in the database.`
+            : `Activate ${name}? It will show on the inventory page again.`,
+        async () => {
+            const res = await apiFetch(`/admin/vehicles/${id}/${deactivating ? 'deactivate' : 'activate'}`, { method: 'PATCH' });
+            if (res.ok) { showToast(deactivating ? 'Vehicle deactivated.' : 'Vehicle activated.', deactivating); loadVehicles(); }
+            else showToast(tjErr(res, 'Failed to update vehicle.'), true);
+        }
+    );
+}
+
 /* ======================= DELETE ======================= */
+
 function deleteVehicle(id) {
     const v = allVehicles.find(x => x.id === id);
     showConfirm(`Delete ${v ? v.make + ' ' + v.model : 'this vehicle'} permanently?`, async () => {

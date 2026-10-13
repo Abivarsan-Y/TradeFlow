@@ -1,4 +1,4 @@
-vehicles.js/* ================================================
+/* ================================================
    TRADE JAPAN — Inquiries & Purchases (customer side)
    Uses apiFetch / showConfirm / getToken from app.js
    ================================================ */
@@ -10,8 +10,8 @@ function oEsc(t) {
     return d.innerHTML;
 }
 function oMoney(n) { return '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
-function oDate(d) { return d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '—'; }
-function oDateTime(d) { return d ? new Date(d).toLocaleString('en-US', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : ''; }
+function oDate(d) { return d ? tjDate(d) : '—'; }
+function oDateTime(d) { return tjDateTime(d); }
 
 /* error text from an apiFetch result ({message} or {field: message}) */
 function tjErr(res, fallback) {
@@ -55,6 +55,10 @@ function openInquiryModal(btn) {
 
     if (!getToken()) {
         showConfirm('Please log in to send an inquiry about this vehicle.', () => { window.location.href = '/pages/login.html'; });
+        return;
+    }
+    if (/ADMIN/.test(getRole() || '')) {
+        showConfirm('Inquire functionality works.', () => {});
         return;
     }
 

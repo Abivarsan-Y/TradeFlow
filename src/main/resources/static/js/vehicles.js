@@ -21,9 +21,9 @@ function vStatusBadge(status) {
 }
 
 /* ---------- Vehicle card (uses existing .vehicle-card design) ---------- */
-// "NEW ARRIVAL" tag = vehicle was added in the last 7 days
+// "NEW ARRIVAL" tag = the admin marked this vehicle as a new arrival
 function vIsNewArrival(v) {
-    return !!v.createdAt && (Date.now() - new Date(v.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000;
+    return v.isNewArrival === true;
 }
 
 function vehicleCardHtml(v, showNewTag) {
@@ -59,8 +59,8 @@ async function loadNewArrivals(containerId) {
 const INV = { all: [], filtered: [], shown: 0, step: 12, busy: false };
 
 const INV_SORTS = {
-    newest:    (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
-    oldest:    (a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0),
+    newest:    (a, b) => (new Date(b.createdAt || 0) - new Date(a.createdAt || 0)) || (b.id - a.id),
+    oldest:    (a, b) => (new Date(a.createdAt || 0) - new Date(b.createdAt || 0)) || (a.id - b.id),
     priceLow:  (a, b) => Number(a.fobPrice) - Number(b.fobPrice),
     priceHigh: (a, b) => Number(b.fobPrice) - Number(a.fobPrice),
     yearNew:   (a, b) => Number(b.manufactureYear) - Number(a.manufactureYear),

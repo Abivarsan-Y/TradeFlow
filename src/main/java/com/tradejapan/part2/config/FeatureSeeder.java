@@ -1,9 +1,9 @@
-package com.tradejapan.inventory.config;
+package com.tradejapan.part2.config;
 
-import com.tradejapan.inventory.model.Feature;
-import com.tradejapan.inventory.model.Vehicle;
-import com.tradejapan.inventory.repository.FeatureRepository;
-import com.tradejapan.inventory.repository.VehicleRepository;
+import com.tradejapan.part2.model.Feature;
+import com.tradejapan.part2.model.Vehicle;
+import com.tradejapan.part2.repository.FeatureRepository;
+import com.tradejapan.part2.repository.VehicleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

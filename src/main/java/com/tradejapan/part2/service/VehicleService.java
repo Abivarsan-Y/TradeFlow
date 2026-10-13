@@ -1,9 +1,9 @@
-package com.tradejapan.inventory.service;
+package com.tradejapan.part2.service;
 
-import com.tradejapan.inventory.model.Vehicle;
+import com.tradejapan.part2.model.Vehicle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.tradejapan.inventory.model.Feature;
+import com.tradejapan.part2.model.Feature;
 import java.util.List;
 import java.util.Map;
 

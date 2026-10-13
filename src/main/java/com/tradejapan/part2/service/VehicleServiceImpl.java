@@ -1,9 +1,9 @@
-package com.tradejapan.inventory.service;
+package com.tradejapan.part2.service;
 
-import com.tradejapan.cms.repository.UserRepository;
-import com.tradejapan.inventory.config.FeatureCatalog;
-import com.tradejapan.inventory.model.*;
-import com.tradejapan.inventory.repository.*;
+import com.tradejapan.part1.repository.UserRepository;
+import com.tradejapan.part2.config.FeatureCatalog;
+import com.tradejapan.part2.model.*;
+import com.tradejapan.part2.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -153,11 +153,11 @@ public class VehicleServiceImpl implements VehicleService {
             Make make = makeRepository.findAll().stream()
                     .filter(m -> m.getName().equalsIgnoreCase(makeName)).findFirst()
                     .orElseGet(() -> { Make nm = new Make(); nm.setName(makeName); return makeRepository.save(nm); });
-            com.tradejapan.inventory.model.Model model = modelRepository.findAll().stream()
+            com.tradejapan.part2.model.Model model = modelRepository.findAll().stream()
                     .filter(m -> m.getName().equalsIgnoreCase(modelName) && m.getMake().getMakeId().equals(make.getMakeId()))
                     .findFirst()
                     .orElseGet(() -> {
-                        com.tradejapan.inventory.model.Model nm = new com.tradejapan.inventory.model.Model();
+                        com.tradejapan.part2.model.Model nm = new com.tradejapan.part2.model.Model();
                         nm.setName(modelName); nm.setMake(make); return modelRepository.save(nm);
                     });
             v.setModel(model);

@@ -1,4 +1,4 @@
-admin-orders.js/* ================================================
+/* ================================================
    TRADE JAPAN — Admin: Dashboard cards, Testimonials, Contact Messages, Reports
    Uses apiFetch / showToast / showConfirm / escapeHtml from the dashboard + app.js,
    oMoney / oDate / oDateTime / tjErr from orders.js,

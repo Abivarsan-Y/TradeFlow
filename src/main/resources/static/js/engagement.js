@@ -35,7 +35,7 @@ function egNotice(el, message, type) {
 }
 
 function egDate(d) {
-    return d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '';
+    return tjDate(d);
 }
 
 /* a name like "Kamal S." from the profile, so the customer does not have to type it */

@@ -1,3 +1,61 @@
+-- ============================================================
+-- TradeJapan — Seed Data
+--   Section 1: vehicle catalogue (Abivarsan)
+--   Section 2: website pages and FAQs (written by the team, see the bottom of this file)
+-- Features (the 28 options) are created by FeatureSeeder.java.
+-- The Super Admin account is created by DataInitializer.java.
+-- This file runs on every start. INSERT IGNORE means a row that already exists
+-- (same id) is left alone, so anything an admin edited in the website is never overwritten.
+-- ============================================================
+
+INSERT IGNORE INTO makes (make_id, name) VALUES
+(1, 'Toyota'), (2, 'Nissan'), (3, 'Honda'), (4, 'Mazda'), (5, 'Subaru');
+
+INSERT IGNORE INTO models (model_id, make_id, name) VALUES
+(1, 1, 'Corolla Axio'), (2, 2, 'X-Trail'), (3, 3, 'Stepwgn Spada'),
+(4, 4, 'CX-5'), (5, 5, 'Forester');
+
+INSERT IGNORE INTO vehicles
+(vehicle_id, model_id, year, price_usd, ref_no, body_type, fuel_type, steering,
+ transmission, drive_type, chassis_no, model_code, grade, engine_model,
+ odometer_km, displacement_cc, doors, passengers, dimension, size, exterior_color, location,
+ description, is_new_arrival, is_active, status, created_at)
+VALUES
+(1, 1, 2018, 9800.00,  'TJ00001', 'Sedan', 'Petrol', 'Right', 'CVT', '2WD',
+ 'NRE161-123456', 'DBA-NRE161', 'X',        '1NR-FE',  42000, 1496, 4, 5, '4,495 x 1,695 x 1,460 mm', 'Compact',
+ 'White',  'Japan', 'Great condition family sedan.',
+ TRUE,  TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+
+(2, 2, 2019, 15450.00, 'TJ00002', 'SUV',   'Hybrid', 'Right', 'CVT', '4WD',
+ 'HNT32-123456',  'DAA-HNT32',  '20X',      'MR20DD',  61000, 1997, 5, 5, '4,690 x 1,820 x 1,740 mm', 'Mid-size',
+ 'Black',  'Japan', 'Spacious hybrid SUV with premium finish.',
+ FALSE, TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 20 DAY)),
+
+(3, 3, 2017, 11200.00, 'TJ00003', 'Van',   'Petrol', 'Right', 'CVT', '2WD',
+ 'RP3-123456',    'DBA-RP3',    'Spada',    'L15B',    88000, 1496, 5, 7, '4,690 x 1,695 x 1,840 mm', 'Mid-size',
+ 'Silver', 'Japan', 'Family van with lots of space.',
+ FALSE, TRUE,  'RESERVED',  DATE_SUB(NOW(), INTERVAL 45 DAY)),
+
+(4, 4, 2021, 22500.00, 'TJ00004', 'SUV',   'Petrol', 'Right', 'Auto', '4WD',
+ 'KF2FW-100001',  'DBA-KF2FW',  '25S',      'PY-VPS',  18000, 2488, 5, 5, '4,545 x 1,840 x 1,690 mm', 'Mid-size',
+ 'Red',    'Japan', 'Near-new Mazda CX-5 in excellent condition.',
+ TRUE,  TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 3 DAY)),
+
+(5, 5, 2020, 17800.00, 'TJ00005', 'SUV',   'Petrol', 'Right', 'CVT', '4WD',
+ 'SK9-200001',    'DBA-SK9',    'X-Break',  'FB25',    35000, 2498, 5, 5, '4,625 x 1,815 x 1,730 mm', 'Mid-size',
+ 'Blue',   'Japan', 'Subaru Forester with EyeSight safety system.',
+ FALSE, TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 10 DAY));
+
+INSERT IGNORE INTO vehicle_images (image_id, vehicle_id, image_url, is_main, sort_order) VALUES
+(1, 1, 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80', TRUE,  1),
+(2, 1, 'https://picsum.photos/id/111/800/500',                                      FALSE, 2),
+(3, 2, 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80',     TRUE,  1),
+(4, 2, 'https://picsum.photos/id/1071/800/500',                                     FALSE, 2),
+(5, 3, 'https://images.unsplash.com/photo-1570733577524-3a047079e80d?w=800&q=80',  TRUE,  1),
+(6, 4, 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80',  TRUE,  1),
+(7, 5, 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80',  TRUE,  1);
+
+
 
 INSERT IGNORE INTO content (id, page_name, title, html_content, updated_at) VALUES
 (1, 'about', 'About Us',
@@ -76,3 +134,5 @@ INSERT IGNORE INTO faq_items (id, question, answer, display_order, active) VALUE
 
 (17, 'Do your staff inspect cars before bidding?',
  '<p>Yes, our highly skilled professionals carefully inspect cars before deciding to bid.</p>', 17, 1);
+
+
