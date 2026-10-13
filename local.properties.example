@@ -1,0 +1,16 @@
+# Copy this file to "local.properties" (same folder as pom.xml) and fill in YOUR values.
+# local.properties is git-ignored, so your real passwords never go to GitHub.
+# Every line is optional: anything you leave out uses the default from application.properties.
+
+# Your MySQL root password
+spring.datasource.password=your-mysql-password
+
+# Any long random text, AT LEAST 64 characters (used to sign login tokens)
+app.jwt.secret=type-a-long-random-text-here-at-least-64-characters-0123456789-abcdef
+
+# Password for the first Super Admin account (superadmin@example.com).
+# It is only used the first time the app creates that account.
+app.superadmin.password=choose-a-strong-password
+
+# WhatsApp number for the vehicle page button: country code + number, digits only
+app.whatsapp-number=94771234567

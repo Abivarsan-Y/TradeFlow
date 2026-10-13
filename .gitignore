@@ -1,6 +1,7 @@
 target/
-data/
-private-invoices/
 .idea/
 *.iml
+private-invoices/
+data/
 .env
+local.properties

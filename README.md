@@ -1,162 +1,69 @@
-# Trade Japan — Member 3: Inquiries & Purchases
+# Trade Japan — Combined Project (Members 1, 2, 3 and 4)
 
-This folder contains **Member 3 only**, based on the final EER section **PART 3 - Inquiries & Purchases**.
+UI = Rahman's original UI (navbar, footer, login/register, profile, FAQ, content, admin dashboard).
+Vehicle pages, Inquiries & Purchases and Contact Us / Testimonials / Reports were added in the same design.
 
-## Member 3 database entities
-
-### Inquiry
-- inquiry_id
-- user_id
-- vehicle_id
-- subject
-- message
-- destination_country
-- status
-- created_at
-
-### Inquiry Reply
-- reply_id
-- inquiry_id
-- user_id
-- message
-- created_at
-
-### Purchase
-- purchase_id
-- user_id (buyer)
-- vehicle_id
-- processed_by (admin user)
-- inquiry_id (optional and unique: 0..1 inquiry -> 0..1 purchase)
-- invoice_no
-- invoice_file_url
-- total_price
-- advance_paid
-- status
-- notes
-- created_at
-
-The Purchase entity intentionally does **not** include shipping/logistics fields because those belong to Member 4.
-
-## Backend files
-
-```text
-src/main/java/com/tradejapan/member3/
-├── TradeJapanMember3Application.java
-├── entity/
-│   ├── Inquiry.java
-│   ├── InquiryReply.java
-│   ├── InquiryStatus.java
-│   ├── Purchase.java
-│   └── PurchaseStatus.java
-├── repository/
-│   ├── InquiryRepository.java
-│   ├── InquiryReplyRepository.java
-│   └── PurchaseRepository.java
-├── service/
-│   ├── InquiryService.java
-│   ├── PurchaseService.java
-│   └── InvoiceStorageService.java
-├── controller/
-│   ├── InquiryController.java
-│   ├── AdminInquiryController.java
-│   ├── PurchaseController.java
-│   └── AdminPurchaseController.java
-├── dto/
-│   ├── CreateInquiryRequest.java
-│   ├── CreateReplyRequest.java
-│   ├── UpdateInquiryStatusRequest.java
-│   ├── CreatePurchaseRequest.java
-│   ├── UpdateAdvancePaymentRequest.java
-│   └── UpdatePurchaseStatusRequest.java
-└── exception/
-    ├── ResourceNotFoundException.java
-    └── GlobalExceptionHandler.java
-```
-
-## Frontend files
-
-```text
-src/main/resources/static/
-├── index.html
-├── inquiry.html
-├── my-inquiries.html
-├── my-purchases.html
-├── admin-inquiries.html
-├── admin-purchases.html
-├── css/
-│   └── styles.css
-└── js/
-    ├── inquiry.js
-    ├── my-inquiries.js
-    ├── admin-inquiries.js
-    ├── my-purchases.js
-    └── admin-purchases.js
-```
-
-## Database SQL
-
-```text
-src/main/resources/database/member3-mysql.sql
-```
-
-Run that SQL only after the team's `users` and `vehicles` tables exist.
-
-## Purchase workflow
-
-```text
-PENDING
-   ↓
-ADVANCE_PAID
-   ↓
-FULLY_PAID
-   ↓
-DELIVERED
-```
-
-An inquiry can optionally lead to one purchase. Once an inquiry is linked to a purchase, the admin inquiry delete endpoint refuses to delete it so purchase history is not broken.
-
-## Main purchase APIs
-
-| Method | Endpoint | Purpose |
+| Member | Module | Package |
 |---|---|---|
-| POST | `/api/admin/purchases` | Admin creates purchase |
-| GET | `/api/admin/purchases` | Admin lists purchases |
-| GET | `/api/admin/purchases?status=PENDING` | Filter purchase status |
-| PATCH | `/api/admin/purchases/{id}/advance` | Record advance amount |
-| PATCH | `/api/admin/purchases/{id}/status` | Move purchase to next status |
-| POST | `/api/admin/purchases/{id}/invoice` | Upload invoice PDF |
-| GET | `/api/purchases/user/{userId}` | Customer purchase history demo |
-| GET | `/api/purchases/{id}` | Purchase details |
-| GET | `/api/purchases/{id}/invoice` | Download invoice PDF |
+| 1 Abivarsan | Vehicle inventory | `com.tradejapan.inventory` |
+| 2 Rahman | TradeJapan | part1 | `com.tradejapan.part1` |
+| 3 Sarthani | Inquiries & Purchases | `com.tradejapan.part3` |
+| 4 Aazir | Contact Us, Testimonials, Dashboard & Reports | `com.tradejapan.part4` |
 
-## Run in VS Code / IntelliJ
+## Run
+1. Start MySQL (XAMPP or MySQL Server) on port 3306.
+2. Set `spring.datasource.password` in `src/main/resources/application.properties` if your root user has one.
+3. Run `TradeJapanApplication.java`  ->  http://localhost:8081  (change `server.port` if needed)
 
-Open the folder that contains `pom.xml`, then run the Spring Boot main class:
+The database `tradejapan` is created automatically, and **all tables come from `schema.sql`** (seed data from `data.sql`).
+Hibernate is NOT allowed to create or change tables (`spring.jpa.hibernate.ddl-auto=none`).
 
-```text
-TradeJapanMember3Application.java
-```
+**If you add a field to an entity, add the column to `schema.sql` too, then run `DROP DATABASE tradejapan;` and start again.**
+The super admin account and the 28 vehicle features are created by Java code at startup.
 
-Open the website through Spring Boot (not the VS Code/IntelliJ static preview server):
+## Logins (same as the original )
+- Super Admin: `superadmin@example.com` / `superadmin123`  -> http://localhost:8081/pages/login.html (or /pages/admin/login.html)
 
-```text
-http://localhost:8080/
-http://localhost:8080/inquiry.html
-http://localhost:8080/my-inquiries.html
-http://localhost:8080/my-purchases.html
-http://localhost:8080/admin-inquiries.html
-http://localhost:8080/admin-purchases.html
-```
+## Pages
+- `/` Home (banners from , live New Arrivals)
+- `/pages/inventory.html` Vehicle catalogue (filters, load more)
+- `/pages/vehicle-detail.html?id=1`
+- `/pages/contact.html` Contact Us, `/pages/submit-testimonial.html` testimonial form (login needed); approved testimonials show on the home page
+- `/pages/admin/dashboard.html` -> Dashboard (live numbers), Vehicles, Messages (Inquiries + Contact Messages tabs), Purchases, Testimonials, Content, FAQ, Admins, Reports
 
-Default local development uses H2. MySQL configuration is in `application-mysql.properties`.
+## API (unchanged from original + inventory)
+- Public: `GET /api/vehicles`, `/api/vehicles/{id}`, `/api/vehicles/new-arrivals`
+- Admin / Super Admin: `/api/admin/vehicles/**`
+- Super Admin only: `/api/admin/users/**`, `/api/admin/reports/**`
 
-Invoice PDFs are stored in `private-invoices/`, which is ignored by Git. Do not commit real customer invoices, `.env`, `data/`, or `target/`.
+## Inquiries & Purchases (Member 3)
+Customer flow: Vehicle page -> **Send Inquiry** -> My Account -> **Message** tab (conversation with replies) -> **Purchase History** tab (progress, balance, invoice PDF).
+Admin flow: Dashboard -> **Messages** (reply, change status, create purchase from an inquiry) -> **Purchases** (advance payment, invoice upload, move status).
 
-## Group integration
+Purchase status order: PENDING -> ADVANCE_PAID -> FULLY_PAID -> DELIVERED.
 
-- Member 1 owns the real Vehicle entity/table.
-- Member 2 owns User/login/security.
-- Member 3 owns Inquiry, InquiryReply and Purchase.
-- Member 4 owns export compliance and logistics/shipping tracking.
+Customer endpoints (JWT login required, always scoped to the logged-in user — no userId in URLs):
+- `POST /api/inquiries`, `GET /api/inquiries/me`, `GET /api/inquiries/{id}`, `GET /api/inquiries/{id}/replies`
+- `GET /api/purchases/me`, `GET /api/purchases/{id}`, `GET /api/purchases/{id}/invoice`
 
-When the group merges the project, replace the temporary numeric user/vehicle demo handling with the group's real authenticated User and Vehicle integration. Do not create duplicate JPA mappings for the same shared tables.
+Admin / Super Admin endpoints:
+- `GET /api/admin/inquiries[?status=]`, `PATCH /api/admin/inquiries/{id}/status`, `POST /api/admin/inquiries/{id}/replies`, `DELETE /api/admin/inquiries/{id}`
+- `POST /api/admin/purchases`, `GET /api/admin/purchases[?status=]`, `PATCH .../{id}/advance`, `PATCH .../{id}/status`, `POST .../{id}/invoice`
+
+Invoice PDFs are stored in `private-invoices/` (git-ignored).
+
+## Vehicle page & Edit Vehicle form
+- Vehicle page: gallery, key facts, **Inquire Now**, **WhatsApp**, tabs **Overview / Specifications (18) / Features (28 ON-OFF)**.
+- WhatsApp number: `TJ_WHATSAPP_NUMBER` at the top of the detail-page section in `static/js/vehicles.js` (digits only, with country code).
+- Admin -> Vehicles -> Add/Edit uses the same three tabs. Every field on Overview and all 18 Specification fields are required (checked in the browser and again on the server).
+- The 28 features are defined once in `inventory/config/FeatureCatalog.java` and created automatically at startup by `FeatureSeeder.java`.
+- Changing a vehicle's (or inquiry's) status from the table asks for confirmation first.
+- `PATCH /api/admin/vehicles/{id}/status`, `GET /api/features` (public), `PUT /api/admin/vehicles/{id}` now takes the full payload incl. `featureIds`.
+
+## Contact Us, Testimonials, Dashboard & Reports (Member 4)
+- Public: `POST /api/contact-messages` (Contact Us form), `GET /api/testimonials/approved` (home page).
+- Customer (login): `POST /api/testimonials` (starts PENDING, max 3 waiting), `GET /api/testimonials/me`.
+- Admin / Super Admin: `GET /api/admin/contact-messages`, `PATCH .../{id}/status` (NEW / READ / RESOLVED), `DELETE .../{id}`;
+  `GET /api/admin/testimonials`, `PATCH .../{id}/approve|reject`, `DELETE .../{id}`; `GET /api/admin/dashboard-stats`.
+- Super Admin only: `GET /api/admin/reports/sales-summary`, `GET /api/admin/reports/admin-activity`.
+- Inquiry chat: customers and admins can both send any number of messages; the admin table shows how many customer messages are unread. Messages and Purchases pages have search / filter bars (customer, make, destination, status, date range, and an Admin filter for the Super Admin).
