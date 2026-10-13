@@ -67,11 +67,13 @@ CREATE TABLE IF NOT EXISTS vehicles (
 CREATE TABLE IF NOT EXISTS vehicle_images (
     image_id INT AUTO_INCREMENT PRIMARY KEY,
     vehicle_id INT NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
+    image_url TEXT NOT NULL,
     is_main BOOLEAN DEFAULT FALSE,
     sort_order INT DEFAULT 0,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
-    );
+);
+
+ALTER TABLE vehicle_images MODIFY COLUMN image_url TEXT NOT NULL;
 
 CREATE TABLE IF NOT EXISTS vehicle_features (
     vehicle_id INT NOT NULL,
