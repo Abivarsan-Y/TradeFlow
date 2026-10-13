@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Trade Japan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="admin-layout">
+    <div id="admin-sidebar"></div>
+    <div class="admin-main" id="admin-main">
+
+        <!-- ============ DASHBOARD ============ -->
+        <div id="section-dashboard" class="admin-section-panel" style="display:none;">
+            <h1 class="page-title">Dashboard</h1>
+
+            <div class="stat-grid">
+                <div class="stat-card" onclick="showAdminSection('vehicles')">
+                    <div class="stat-icon"><i class="bi bi-truck"></i></div>
+                    <div><div class="stat-num" id="st-vehicles">–</div><div class="stat-label">Total Vehicles</div></div>
+                </div>
+                <div class="stat-card" onclick="showAdminSection('customers')">
+                    <div class="stat-icon"><i class="bi bi-people"></i></div>
+                    <div><div class="stat-num" id="st-customers">–</div><div class="stat-label">Registered Customers</div></div>
+                </div>
+                <div class="stat-card red" onclick="showAdminSection('messages')">
+                    <div class="stat-icon"><i class="bi bi-chat-square-text"></i></div>
+                    <div><div class="stat-num" id="st-open">–</div><div class="stat-label">Open Inquiries</div></div>
+                </div>
+                <div class="stat-card" onclick="showAdminSection('purchases')">
+                    <div class="stat-icon"><i class="bi bi-bag-check"></i></div>
+                    <div><div class="stat-num" id="st-purchases">–</div><div class="stat-label">Purchases (last 30 days)</div></div>
+                </div>
+            </div>
+
+            <div class="dash-row">
+                <div class="admin-card">
+                    <h5>Inquiries &ndash; Last 7 Days</h5>
+                    <div class="bar-chart" id="st-chart"></div>
+                </div>
+                <div class="admin-card">
+                    <h5>Messages &amp; Testimonials</h5>
+                    <div class="dash-line" onclick="showAdminSection('messages');showMessagesTab('contact')"><span>New contact messages</span><b id="st-contact">–</b></div>
+                    <div class="dash-line" onclick="showAdminSection('testimonials');setTestimonialFilter('PENDING')"><span>Pending testimonials</span><b id="st-pending">–</b></div>
+                    <div class="dash-line" onclick="showAdminSection('testimonials');setTestimonialFilter('APPROVED')"><span>Approved testimonials</span><b id="st-approved">–</b></div>
+                    <div class="dash-line" onclick="showAdminSection('testimonials');setTestimonialFilter('REJECTED')"><span>Rejected testimonials</span><b id="st-rejected">–</b></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ CONTENT ============ -->
+        <div id="section-content" class="admin-section-panel">
+            <h1 class="page-title">Manage Content</h1>
+            <div class="admin-tabs">
+                <button class="tab-item active" onclick="showContentTab('pages')">Pages</button>
+                <button class="tab-item" onclick="showContentTab('banners')">Banners</button>
+                <button class="tab-item" onclick="showContentTab('faqs')">FAQ</button>
+            </div>
+
+            <!-- ---- Pages Tab ---- -->
+            <div id="tab-pages" class="content-tab-panel">
+                <div class="admin-card">
+                    <div class="tj-form-group" style="max-width:320px;">
+                        <label>Select Page</label>
+                        <select id="page-name" class="form-select" onchange="loadPage()">
+                            <option value="about">About Us</option>
+                            <option value="services">Services</option>
+                            <option value="tc">Terms &amp; Conditions</option>
+                            <option value="privacy">Privacy Policy</option>
+                        </select>
+                    </div>
+                    <div id="editor" style="min-height:300px;background:#fff;"></div>
+                    <div style="text-align:right;margin-top:20px;">
+                        <button class="btn btn-secondary" id="page-cancel-btn" style="display:none;margin-right:10px;" onclick="cancelEditPage()">Cancel</button>
+                        <button class="btn-tj-primary" id="page-action-btn" onclick="pageAction()"><i class="bi bi-pencil"></i> Edit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---- Banners Tab ---- -->
+            <div id="tab-banners" class="content-tab-panel" style="display:none;">
+                <div class="section-top-bar">
+                    <div id="banner-counts" style="font-size:0.85rem;color:var(--tj-text-muted);"></div>
+                    <button class="btn-tj-primary" onclick="toggleBannerForm()"><i class="bi bi-plus-lg"></i> Add Banner</button>
+                </div>
+
+                <!-- Add Banner Form -->
+                <div id="banner-form" class="admin-card" style="display:none;">
+                    <h4 class="text-tj-navy mb-3">Add New Banner</h4>
+                    <div class="row g-3">
+                        <!-- Section -->
+                        <div class="col-md-6">
+                            <div class="tj-form-group">
+                                <label>Banner Type <span class="required">*</span></label>
+                                <select id="b-section" class="form-select" onchange="onAddSectionChange()">
+                                    <option value="">-- Select type --</option>
+                                    <option value="BIG">BIG — Hero (full width, max 5)</option>
+                                    <option value="SMALL1">SMALL — Left section (max 3)</option>
+                                    <option value="SMALL2">SMALL — Right section (max 3)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Media Type (BIG only) -->
+                        <div class="col-md-6" id="b-mediatype-wrap">
+                            <div class="tj-form-group">
+                                <label>Media Type</label>
+                                <select id="b-mediatype" class="form-select">
+                                    <option value="IMAGE">IMAGE</option>
+                                    <option value="VIDEO">VIDEO</option>
+                                </select>
+                                <small class="text-muted">BIG banners support IMAGE or VIDEO. SMALL is IMAGE only.</small>
+                            </div>
+                        </div>
+                        <!-- Image URL -->
+                        <div class="col-md-12">
+                            <div class="tj-form-group">
+                                <label>Image / Video URL <span class="required">*</span></label>
+                                <input type="text" id="b-img" class="form-control" placeholder="https://...">
+                            </div>
+                        </div>
+                        <!-- Title -->
+                        <div class="col-md-6">
+                            <div class="tj-form-group">
+                                <label>Title <span class="required">*</span></label>
+                                <input type="text" id="b-title" class="form-control" placeholder="e.g. Quality Japanese Vehicles">
+                            </div>
+                        </div>
+                        <!-- Subtitle -->
+                        <div class="col-md-6">
+                            <div class="tj-form-group">
+                                <label>Subtitle / Description</label>
+                                <input type="text" id="b-subtitle" class="form-control" placeholder="e.g. Trusted cars · Competitive prices">
+                            </div>
+                        </div>
+                        <!-- Link URL -->
+                        <div class="col-md-6">
+                            <div class="tj-form-group">
+                                <label>Link URL</label>
+                                <input type="text" id="b-link" class="form-control" placeholder="https://...">
+                            </div>
+                        </div>
+                        <!-- Link Type -->
+                        <div class="col-md-3">
+                            <div class="tj-form-group">
+                                <label>Link Type</label>
+                                <select id="b-type" class="form-select">
+                                    <option value="INTERNAL">Internal (same tab)</option>
+                                    <option value="EXTERNAL">External (new tab)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Button Text -->
+                        <div class="col-md-3">
+                            <div class="tj-form-group">
+                                <label>Button Text</label>
+                                <input type="text" id="b-btn" class="form-control" placeholder="Details">
+                            </div>
+                        </div>
+                        <!-- Sort Order -->
+                        <div class="col-md-3">
+                            <div class="tj-form-group">
+                                <label>Sort Order</label>
+                                <select id="b-order" class="form-select"><option value="">Select banner type first</option></select>
+                                <small class="text-muted">BIG: 1 to 5, SMALL: 1 to 3 (1 is shown first)</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn-tj-primary" onclick="addBanner()">Add Banner</button>
+                            <button class="btn btn-secondary ms-2" onclick="toggleBannerForm()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Banner Modal -->
+                <div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editBannerModalLabel">Edit Banner</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editBannerId" />
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Banner Type <span class="required">*</span></label>
+                                        <select class="form-select" id="editBannerSection" onchange="onEditSectionChange()">
+                                            <option value="BIG">BIG — Hero (full width)</option>
+                                            <option value="SMALL1">SMALL — Left section</option>
+                                            <option value="SMALL2">SMALL — Right section</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6" id="editBannerMediaWrap">
+                                        <label class="form-label">Media Type</label>
+                                        <select class="form-select" id="editBannerMediaType">
+                                            <option value="IMAGE">IMAGE</option>
+                                            <option value="VIDEO">VIDEO</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Image / Video URL <span class="required">*</span></label>
+                                        <input type="text" class="form-control" id="editBannerImageUrl" placeholder="https://..." />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Title <span class="required">*</span></label>
+                                        <input type="text" class="form-control" id="editBannerTitle" placeholder="Banner heading" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Subtitle / Description</label>
+                                        <input type="text" class="form-control" id="editBannerSubtitle" placeholder="Short description" />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Link URL</label>
+                                        <input type="text" class="form-control" id="editBannerLinkUrl" placeholder="https://..." />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Link Type</label>
+                                        <select class="form-select" id="editBannerLinkType">
+                                            <option value="INTERNAL">Internal (same tab)</option>
+                                            <option value="EXTERNAL">External (new tab)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Button Text</label>
+                                        <input type="text" class="form-control" id="editBannerButtonText" placeholder="Details" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Sort Order</label>
+                                        <select class="form-select" id="editBannerSortOrder"><option value="1">1</option></select>
+                                        <small class="text-muted">BIG: 1 to 5, SMALL: 1 to 3</small>
+                                    </div>
+                                </div>
+                                <div id="editBannerError" class="text-danger small mt-3" style="display:none;"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="saveEditBanner()">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BIG Banners -->
+                <div style="margin-top:24px;">
+                    <h3 class="text-tj-navy mb-2">BIG Banners <small class="text-muted" style="font-size:0.8rem;" id="big-count-label"></small></h3>
+                    <div class="banner-grid" id="banners-big">
+                        <p class="text-muted">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- SMALL Left -->
+                <div style="margin-top:28px;">
+                    <h3 class="text-tj-navy mb-2">SMALL Banners — Left Section <small class="text-muted" style="font-size:0.8rem;" id="small1-count-label"></small></h3>
+                    <div class="banner-grid" id="banners-small1">
+                        <p class="text-muted">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- SMALL Right -->
+                <div style="margin-top:28px;">
+                    <h3 class="text-tj-navy mb-2">SMALL Banners — Right Section <small class="text-muted" style="font-size:0.8rem;" id="small2-count-label"></small></h3>
+                    <div class="banner-grid" id="banners-small2">
+                        <p class="text-muted">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit FAQ Modal -->
+            <div class="modal fade" id="editFaqModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit FAQ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="editFaqId" />
+                            <div class="mb-3">
+                                <label class="form-label">Question <span class="required">*</span></label>
+                                <input type="text" class="form-control" id="editFaqQuestion" placeholder="Enter question..." />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Answer <span class="text-muted">(HTML allowed)</span></label>
+                                <div id="editFaqAnswerEditor" style="height:150px;"></div>
+                                <input type="hidden" id="editFaqAnswer">
+                            </div>
+                            <div id="editFaqError" class="text-danger small mt-2" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="saveEditFaq()">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---- FAQ Tab ---- -->
+            <div id="tab-faqs" class="content-tab-panel" style="display:none;">
+                <div class="section-top-bar">
+                    <button class="btn-tj-primary" onclick="toggleFaqForm()"><i class="bi bi-plus-lg"></i> Add FAQ</button>
+                </div>
+
+                <!-- Add FAQ Form -->
+                <div id="faq-form" class="admin-card" style="display:none;">
+                    <h4 class="text-tj-navy mb-3">Add New FAQ</h4>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="tj-form-group">
+                                <label>Question</label>
+                                <input type="text" id="f-q" class="form-control" placeholder="Enter question...">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="tj-form-group">
+                                <label>Answer (HTML allowed)</label>
+                                <div id="addFaqEditor" style="height:150px;"></div>
+                                <input type="hidden" id="f-a">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn-tj-primary" onclick="addFaq()">Add FAQ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card" style="padding:0;overflow:hidden;">
+                    <table class="admin-table" id="faq-table">
+                        <thead>
+                        <tr>
+                            <th style="width:80px;" title="Drag the handle to change the order">Order</th>
+                            <th>Question</th>
+                            <th style="width:140px;">Status</th>
+                            <th style="width:120px;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="faq-list">
+                        <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading FAQs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ ADMINS (Super Admin) ============ -->
+        <div id="section-admins" class="admin-section-panel" style="display:none;">
+            <div class="section-top-bar">
+                <h1 class="page-title" style="margin-bottom:0;">Manage Admins</h1>
+                <button class="btn-tj-primary" onclick="toggleAdminForm()"><i class="bi bi-plus-lg"></i> Add Admin</button>
+            </div>
+
+            <!-- Create Admin Form -->
+            <div id="admin-form" class="admin-card" style="display:none;">
+                <h4 class="text-tj-navy mb-3">Create New Admin</h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="tj-form-group">
+                            <label>First Name <span class="required">*</span></label>
+                            <div class="tj-input-icon">
+                                <i class="bi bi-person input-icon-left"></i>
+                                <input type="text" id="a-fn" placeholder="Enter first name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tj-form-group">
+                            <label>Last Name <span class="required">*</span></label>
+                            <div class="tj-input-icon">
+                                <i class="bi bi-person input-icon-left"></i>
+                                <input type="text" id="a-ln" placeholder="Enter last name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tj-form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <div class="tj-input-icon">
+                                <i class="bi bi-envelope input-icon-left"></i>
+                                <input type="email" id="a-e" placeholder="admin@tradejapan.com">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tj-form-group">
+                            <label>WhatsApp Number (optional)</label>
+                            <div class="tj-input-icon">
+                                <i class="bi bi-whatsapp input-icon-left"></i>
+                                <input type="tel" id="a-w" placeholder="Enter WhatsApp number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tj-form-group">
+                            <label>Password <span class="required">*</span></label>
+                            <div class="tj-input-icon">
+                                <i class="bi bi-lock input-icon-left"></i>
+                                <input type="password" id="a-p" placeholder="Min 8 characters">
+                                <button type="button" class="input-icon-right" onclick="togglePassword('a-p')"><i class="bi bi-eye"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tj-form-group">
+                            <label>Confirm Password <span class="required">*</span></label>
+                            <div class="tj-input-icon">
+                                <i class="bi bi-lock input-icon-left"></i>
+                                <input type="password" id="a-p2" placeholder="Re-enter password">
+                                <button type="button" class="input-icon-right" onclick="togglePassword('a-p2')"><i class="bi bi-eye"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn-tj-primary" onclick="createAdmin()">Create Admin</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Admin Modal -->
+            <div class="modal fade" id="editAdminModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Admin</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="editAdminId" />
+                            <div class="mb-3">
+                                <label class="form-label">First Name <span class="required">*</span></label>
+                                <input type="text" class="form-control" id="editAdminFirstName" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Last Name <span class="required">*</span></label>
+                                <input type="text" class="form-control" id="editAdminLastName" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email <span class="required">*</span></label>
+                                <input type="email" class="form-control" id="editAdminEmail" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">WhatsApp No <span class="text-muted">(optional)</span></label>
+                                <input type="text" class="form-control" id="editAdminWhatsapp" placeholder="+81 90 0000 0000" />
+                            </div>
+                            <div id="editAdminError" class="text-danger small mt-2" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="saveEditAdmin()">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Admin</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="admins-list">
+                    <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading admins...</td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination-nav" id="admins-pagination"></div>
+            </div>
+        </div>
+
+        <!-- ============ REPORTS ============ -->
+        <div id="section-reports" class="admin-section-panel" style="display:none;">
+            <h1 class="page-title">Reports</h1>
+
+            <h3 class="text-tj-navy" style="margin-bottom:16px;">Quick Reports</h3>
+            <div class="report-grid">
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="report-icon"><i class="bi bi-chat-square-text-fill"></i></div>
+                        <div class="report-info"><h4>Admin Activity</h4><p>What each admin did: replies, purchases, reviews</p></div>
+                    </div>
+                    <a href="#" class="report-link" onclick="loadActivityReport();return false;">View Report <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="report-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+                        <div class="report-info"><h4>Sales Summary</h4><p>Sales totals, destinations, makes and monthly trend</p></div>
+                    </div>
+                    <a href="#" class="report-link" onclick="loadSalesReport();return false;">View Report <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="admin-card" style="margin-top:24px;">
+                <div style="display:flex;gap:12px;margin-bottom:20px;">
+                    <button class="btn-tj-primary" onclick="loadReports()"><i class="bi bi-arrow-clockwise"></i> Load All Reports</button>
+                </div>
+                <div id="rep-out"><p class="text-muted">Choose a report above, or press &ldquo;Load All Reports&rdquo;.</p></div>
+            </div>
+        </div>
+
+        <!-- ============ PLACEHOLDERS ============ -->
+        <div id="section-vehicles" class="admin-section-panel" style="display:none;">
+            <div class="section-top-bar">
+                <h1 class="page-title" style="margin-bottom:0;">Manage Vehicles</h1>
+                <button class="btn-tj-primary" onclick="openVehicleModal()"><i class="bi bi-plus-lg"></i> Add Vehicle</button>
+            </div>
+
+            <!-- Add / Edit Vehicle Modal (tabs mirror the vehicle page: Overview / Specification / Features) -->
+            <div class="modal fade" id="vehicleModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="vehicleModalTitle">Add Vehicle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="v-id" />
+
+                            <div class="admin-tabs" id="v-tabs">
+                                <button class="tab-item active" data-tab="overview" onclick="showVehicleTab('overview', this)">Overview</button>
+                                <button class="tab-item" data-tab="spec" onclick="showVehicleTab('spec', this)">Specification</button>
+                                <button class="tab-item" data-tab="features" onclick="showVehicleTab('features', this)">Features</button>
+                            </div>
+
+                            <!-- OVERVIEW -->
+                            <div id="vtab-overview">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Make <span class="required">*</span></label>
+                                        <input type="text" class="form-control" id="v-make" placeholder="Toyota" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Model <span class="required">*</span></label>
+                                        <input type="text" class="form-control" id="v-model" placeholder="Corolla Axio" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Manufacture Year <span class="required">*</span></label>
+                                        <input type="number" class="form-control" id="v-year" min="1950" max="2035" placeholder="2020" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">FOB Price (USD) <span class="required">*</span></label>
+                                        <input type="number" class="form-control" id="v-price" min="1" step="0.01" placeholder="12500" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Condition <span class="required">*</span></label>
+                                        <select class="form-control" id="v-condition">
+                                            <option value="">Select condition</option>
+                                            <option value="NEW">New</option>
+                                            <option value="USED">Used</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Status</label>
+                                        <select class="form-control" id="v-status">
+                                            <option value="AVAILABLE">Available</option>
+                                            <option value="RESERVED">Reserved</option>
+                                            <option value="SOLD">Sold</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Image URLs <span class="text-muted">(comma-separated, first is the main photo)</span></label>
+                                        <textarea class="form-control" id="v-images" rows="2" placeholder="https://example.com/car1.jpg, https://example.com/car2.jpg"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Overview <span class="required">*</span> <span class="text-muted">(shown on the vehicle page, Overview tab)</span></label>
+                                        <textarea class="form-control" id="v-overview" rows="7" placeholder="Describe the vehicle: condition, history, highlights, what makes it a good buy..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SPECIFICATION (18 fields, all required) -->
+                            <div id="vtab-spec" style="display:none;">
+                                <p class="text-muted small mb-3">All 18 specification fields are required. They appear on the vehicle page, Specifications tab.</p>
+                                <div class="row g-3" id="v-spec-fields"></div>
+                            </div>
+
+                            <!-- FEATURES (28 on / off) -->
+                            <div id="vtab-features" style="display:none;">
+                                <div class="feature-toolbar">
+                                    <span id="v-feature-count" class="text-muted small"></span>
+                                    <span>
+                                        <button type="button" class="btn-tj-outline" style="padding:6px 14px;" onclick="setAllFeatures(true)">All ON</button>
+                                        <button type="button" class="btn-tj-outline" style="padding:6px 14px;" onclick="setAllFeatures(false)">All OFF</button>
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-3">Switch ON the options this vehicle has. ON options are highlighted on the vehicle page, Features tab.</p>
+                                <div class="feature-toggle-grid" id="v-feature-list"></div>
+                            </div>
+
+                            <div id="vehicleError" class="text-danger small mt-3" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="saveVehicle()">Save Vehicle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search / filter bar -->
+            <div class="admin-card vehicle-filter-bar">
+                <div class="vf-row">
+                    <div class="vf-field vf-search">
+                        <label>Search</label>
+                        <input type="text" id="vf-search" placeholder="Search by name or ref no." oninput="vehicleFiltersChanged()">
+                    </div>
+                    <div class="vf-field">
+                        <label>Make</label>
+                        <select id="vf-make" onchange="vehicleMakeChanged()"><option value="">All Makes</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Model</label>
+                        <select id="vf-model" onchange="vehicleFiltersChanged()"><option value="">All Models</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Year</label>
+                        <select id="vf-year" onchange="vehicleFiltersChanged()"><option value="">All Years</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Status</label>
+                        <select id="vf-status" onchange="vehicleFiltersChanged()">
+                            <option value="">All Status</option>
+                            <option value="AVAILABLE">Available</option>
+                            <option value="RESERVED">Reserved</option>
+                            <option value="SOLD">Sold</option>
+                        </select>
+                    </div>
+                    <div class="vf-field vf-price">
+                        <label>Price Range (USD)</label>
+                        <div class="vf-price-inputs">
+                            <input type="number" id="vf-min" min="0" placeholder="Min" oninput="vehicleFiltersChanged()">
+                            <span>-</span>
+                            <input type="number" id="vf-max" min="0" placeholder="Max" oninput="vehicleFiltersChanged()">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-tj-outline" type="button" onclick="refreshVehicles()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+            </div>
+
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th class="sortable" data-sort="name" onclick="sortVehicles('name')">Vehicle Name <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                        <th class="sortable" data-sort="makeModel" onclick="sortVehicles('makeModel')">Make/Model <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                        <th class="sortable" data-sort="year" onclick="sortVehicles('year')">Year <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                        <th class="sortable" data-sort="price" onclick="sortVehicles('price')">Price (USD) <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                        <th class="sortable" data-sort="status" onclick="sortVehicles('status')">Status <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                        <th class="sortable" data-sort="added" onclick="sortVehicles('added')">Added On <i class="bi bi-arrow-down-up sort-icon"></i></th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="vehicles-list">
+                    <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading vehicles...</td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination-nav" id="vehicles-pagination"></div>
+            </div>
+        </div>
+        <div id="section-messages" class="admin-section-panel" style="display:none;">
+            <div class="section-top-bar">
+                <h1 class="page-title" style="margin-bottom:0;">Messages</h1>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-item active" id="msgtab-inquiries" onclick="showMessagesTab('inquiries')">Inquiries</button>
+                <button class="tab-item" id="msgtab-contact" onclick="showMessagesTab('contact')">Contact Messages <span class="tab-badge" id="con-new-count" style="display:none;"></span></button>
+            </div>
+
+            <div id="msg-tab-inquiries">
+
+            <!-- Search / filter bar -->
+            <div class="admin-card vehicle-filter-bar">
+                <div class="vf-row">
+                    <div class="vf-field vf-search">
+                        <label>Customer</label>
+                        <input type="text" id="inq-f-search" placeholder="Search customer name or email" oninput="inquiryFiltersChanged()">
+                    </div>
+                    <div class="vf-field">
+                        <label>Make</label>
+                        <select id="inq-f-make" onchange="inquiryFiltersChanged()"><option value="">All Makes</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Destination</label>
+                        <select id="inq-f-dest" onchange="inquiryFiltersChanged()"><option value="">All Countries</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Status</label>
+                        <select id="inq-f-status" onchange="inquiryFiltersChanged()">
+                            <option value="">All Status</option>
+                            <option value="NEW">New</option>
+                            <option value="CONTACTED">Contacted</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
+                    </div>
+                    <div class="vf-field vf-date">
+                        <label>Date Range</label>
+                        <div class="vf-price-inputs">
+                            <input type="date" id="inq-f-from" title="From" onchange="inquiryFiltersChanged()">
+                            <span>-</span>
+                            <input type="date" id="inq-f-to" title="To" onchange="inquiryFiltersChanged()">
+                        </div>
+                    </div>
+                    <div class="vf-field" id="inq-f-admin-wrap" style="display:none;">
+                        <label>Admin</label>
+                        <select id="inq-f-admin" onchange="inquiryFiltersChanged()"><option value="">All Admins</option></select>
+                    </div>
+                </div>
+                <button class="btn-tj-outline" type="button" onclick="refreshInquiries()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                <button class="btn-tj-outline" type="button" onclick="clearInquiryFilters()" style="margin-left:8px;">Clear Filters</button>
+            </div>
+
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Inquiry</th>
+                        <th>Destination</th>
+                        <th>Status</th>
+                        <th>Received</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="inquiries-list">
+                    <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading inquiries...</td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination-nav" id="inquiries-footer"></div>
+            </div>
+            </div><!-- /msg-tab-inquiries -->
+
+            <!-- ===== Contact Us messages ===== -->
+            <div id="msg-tab-contact" style="display:none;">
+                <div class="admin-card vehicle-filter-bar">
+                    <div class="vf-row">
+                        <div class="vf-field vf-search">
+                            <label>Sender</label>
+                            <input type="text" id="con-f-search" placeholder="Search name, email or subject" oninput="contactFiltersChanged()">
+                        </div>
+                        <div class="vf-field">
+                            <label>Status</label>
+                            <select id="con-f-status" onchange="contactFiltersChanged()">
+                                <option value="">All Status</option>
+                                <option value="NEW">New</option>
+                                <option value="READ">Read</option>
+                                <option value="RESOLVED">Resolved</option>
+                            </select>
+                        </div>
+                        <div class="vf-field vf-date">
+                            <label>Date Range</label>
+                            <div class="vf-price-inputs">
+                                <input type="date" id="con-f-from" title="From" onchange="contactFiltersChanged()">
+                                <span>-</span>
+                                <input type="date" id="con-f-to" title="To" onchange="contactFiltersChanged()">
+                            </div>
+                        </div>
+                        <div class="vf-field" id="con-f-admin-wrap" style="display:none;">
+                            <label>Admin</label>
+                            <select id="con-f-admin" onchange="contactFiltersChanged()"><option value="">All Admins</option></select>
+                        </div>
+                    </div>
+                    <button class="btn-tj-outline" type="button" onclick="refreshContacts()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                    <button class="btn-tj-outline" type="button" onclick="clearContactFilters()" style="margin-left:8px;">Clear Filters</button>
+                </div>
+
+                <div class="admin-card" style="padding:0;overflow:hidden;">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Received</th>
+                            <th>Status</th>
+                            <th>Handled By</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="contacts-list">
+                        <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading messages...</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination-nav" id="contacts-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div id="section-customers" class="admin-section-panel" style="display:none;">
+            <div class="section-top-bar">
+                <h1 class="page-title" style="margin-bottom:0;">Customers</h1>
+            </div>
+
+            <!-- Search / filter bar -->
+            <div class="admin-card vehicle-filter-bar">
+                <div class="vf-row">
+                    <div class="vf-field vf-search">
+                        <label>Customer</label>
+                        <input type="text" id="cus-f-search" placeholder="Search name, email or WhatsApp" oninput="customerFiltersChanged()">
+                    </div>
+                    <div class="vf-field">
+                        <label>Status</label>
+                        <select id="cus-f-status" onchange="customerFiltersChanged()">
+                            <option value="">All Status</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="INACTIVE">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="vf-field vf-date">
+                        <label>Joined</label>
+                        <div class="vf-price-inputs">
+                            <input type="date" id="cus-f-from" title="From" onchange="customerFiltersChanged()">
+                            <span>-</span>
+                            <input type="date" id="cus-f-to" title="To" onchange="customerFiltersChanged()">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-tj-outline" type="button" onclick="refreshCustomers()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                <button class="btn-tj-outline" type="button" onclick="clearCustomerFilters()" style="margin-left:8px;">Clear Filters</button>
+            </div>
+
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>WhatsApp</th>
+                        <th>Joined</th>
+                        <th>Inquiries</th>
+                        <th>Purchases</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="customers-list">
+                    <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading customers...</td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination-nav" id="customers-footer"></div>
+            </div>
+        </div>
+
+        <!-- ============ CUSTOMER DETAIL MODAL (read-only) ============ -->
+        <div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cusModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="cusModalInfo"></div>
+                        <div class="admin-tabs" style="margin-top:1.2rem;">
+                            <button class="tab-item active" id="custab-inq" onclick="showCustomerTab('inq')">Inquiries</button>
+                            <button class="tab-item" id="custab-pur" onclick="showCustomerTab('pur')">Purchases</button>
+                        </div>
+                        <div id="cus-tab-inq"></div>
+                        <div id="cus-tab-pur" style="display:none;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="section-purchases" class="admin-section-panel" style="display:none;">
+            <div class="section-top-bar">
+                <h1 class="page-title" style="margin-bottom:0;">Purchases</h1>
+                <button class="btn-tj-primary" onclick="openCreatePurchase()"><i class="bi bi-plus-lg"></i> Add Purchase</button>
+            </div>
+
+            <!-- Search / filter bar -->
+            <div class="admin-card vehicle-filter-bar">
+                <div class="vf-row">
+                    <div class="vf-field vf-search">
+                        <label>Customer</label>
+                        <input type="text" id="pur-f-search" placeholder="Search customer name or email" oninput="purchaseFiltersChanged()">
+                    </div>
+                    <div class="vf-field">
+                        <label>Make</label>
+                        <select id="pur-f-make" onchange="purchaseFiltersChanged()"><option value="">All Makes</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Destination</label>
+                        <select id="pur-f-dest" onchange="purchaseFiltersChanged()"><option value="">All Countries</option></select>
+                    </div>
+                    <div class="vf-field">
+                        <label>Status</label>
+                        <select id="pur-f-status" onchange="purchaseFiltersChanged()">
+                            <option value="">All Status</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="ADVANCE_PAID">Advance Paid</option>
+                            <option value="FULLY_PAID">Fully Paid</option>
+                            <option value="DELIVERED">Delivered</option>
+                        </select>
+                    </div>
+                    <div class="vf-field vf-date">
+                        <label>Date Range</label>
+                        <div class="vf-price-inputs">
+                            <input type="date" id="pur-f-from" title="From" onchange="purchaseFiltersChanged()">
+                            <span>-</span>
+                            <input type="date" id="pur-f-to" title="To" onchange="purchaseFiltersChanged()">
+                        </div>
+                    </div>
+                    <div class="vf-field" id="pur-f-admin-wrap" style="display:none;">
+                        <label>Admin</label>
+                        <select id="pur-f-admin" onchange="purchaseFiltersChanged()"><option value="">All Admins</option></select>
+                    </div>
+                </div>
+                <button class="btn-tj-outline" type="button" onclick="refreshPurchases()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                <button class="btn-tj-outline" type="button" onclick="clearPurchaseFilters()" style="margin-left:8px;">Clear Filters</button>
+            </div>
+
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Total</th>
+                        <th>Advance</th>
+                        <th>Status</th>
+                        <th>Invoice</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="purchases-list">
+                    <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading purchases...</td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination-nav" id="purchases-footer"></div>
+            </div>
+        </div>
+        <div id="section-testimonials" class="admin-section-panel" style="display:none;">
+            <div class="section-top-bar">
+                <h1 class="page-title" style="margin-bottom:0;">Testimonials</h1>
+            </div>
+            <div class="admin-tabs">
+                <button class="tab-item active" id="tm-tab-ALL" onclick="setTestimonialFilter('ALL')">All</button>
+                <button class="tab-item" id="tm-tab-PENDING" onclick="setTestimonialFilter('PENDING')">Pending</button>
+                <button class="tab-item" id="tm-tab-APPROVED" onclick="setTestimonialFilter('APPROVED')">Approved</button>
+                <button class="tab-item" id="tm-tab-REJECTED" onclick="setTestimonialFilter('REJECTED')">Rejected</button>
+            </div>
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Rating</th>
+                        <th>Testimonial</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Reviewed By</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="testimonials-list">
+                    <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Loading testimonials...</td></tr>
+                    </tbody>
+                </table>
+                <div class="pagination-nav" id="testimonials-footer"></div>
+            </div>
+        </div>
+
+        <!-- ============ CONTACT MESSAGE MODAL ============ -->
+        <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="conModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="conModalBody"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a id="conReplyLink" class="btn-tj-primary" href="#"><i class="bi bi-reply"></i> Reply by Email</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ============ INQUIRY / PURCHASE MODALS ============ -->
+        <div class="modal fade" id="inquiryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inqModalTitle">Inquiry</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="inqModalInfo"></div>
+                        <div class="msg-thread" id="inqThread" style="margin:1.2rem 0;"></div>
+                        <label class="form-label">Your reply</label>
+                        <textarea class="form-control" id="inqReplyText" rows="3" maxlength="2000" placeholder="Type your reply to the customer..."></textarea>
+                        <div id="inqReplyError" class="text-danger small mt-2" style="display:none;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="sendInquiryReply()">Send Reply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="purchaseCreateModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Purchase</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="pc-inquiry" />
+                        <div id="pc-linked" class="purchase-notes" style="display:none;margin-bottom:1rem;"></div>
+                        <div id="pc-direct" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1rem;">
+                            <div>
+                                <label class="form-label">Buyer email <span class="required">*</span></label>
+                                <input type="email" class="form-control" id="pc-email" placeholder="customer@example.com" />
+                            </div>
+                            <div>
+                                <label class="form-label">Vehicle ID <span class="required">*</span></label>
+                                <input type="number" class="form-control" id="pc-vehicle" min="1" placeholder="e.g. 3" />
+                            </div>
+            <div>
+                <label class="form-label">Destination country <span class="text-muted">(optional)</span></label>
+                <select class="form-control" id="pc-destination"></select>
+            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Total price (USD) <span class="required">*</span></label>
+                                <input type="number" class="form-control" id="pc-total" min="0.01" step="0.01" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Advance paid (USD)</label>
+                                <input type="number" class="form-control" id="pc-advance" min="0" step="0.01" placeholder="0" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Notes <span class="text-muted">(optional)</span></label>
+                                <textarea class="form-control" id="pc-notes" rows="2" maxlength="2000"></textarea>
+                            </div>
+                        </div>
+                        <div id="purchaseCreateError" class="text-danger small mt-3" style="display:none;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveNewPurchase()">Create Purchase</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purModalTitle">Purchase</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="purModalBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script src="/js/app.js"></script>
+    <script src="/js/datepicker.js"></script>
+<script src="/js/orders.js"></script>
+<script src="/js/admin-orders.js"></script>
+<script src="/js/admin-vehicles.js"></script>
+<script src="/js/admin-engagement.js"></script>
+<script src="/js/admin-customers.js"></script>
+<script>
+    let quill, faqQuill, addFaqQuill;
+    let currentFaqLang = 'en';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderAdminSidebar('dashboard');
+        initQuill();
+        loadPage();
+        loadBanners();
+        loadFaqs();
+        if (getRole() === 'ROLE_SUPER_ADMIN') loadAdminsList();
+        showAdminSection('dashboard');   // the admin panel opens on the Dashboard
+    });
+
+    function initQuill() {
+        quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: { toolbar: [['bold','italic'],[{header:[1,2,3,false]}],[{list:'ordered'},{list:'bullet'}],['link'],['clean']] }
+        });
+        setPageEditMode(false);
+    }
+
+    /* ---- Pages tab: Edit / Save mode ---- */
+    let pageEditing = false;
+    let pageBackup = '';
+
+    function setPageEditMode(on) {
+        pageEditing = on;
+        quill.enable(on);
+        const tb = quill.getModule('toolbar').container;
+        tb.style.opacity = on ? '1' : '.45';
+        tb.style.pointerEvents = on ? 'auto' : 'none';
+        document.getElementById('page-action-btn').innerHTML =
+            on ? '<i class="bi bi-save"></i> Save Changes' : '<i class="bi bi-pencil"></i> Edit';
+        document.getElementById('page-cancel-btn').style.display = on ? 'inline-block' : 'none';
+    }
+
+    function pageAction() {
+        if (!pageEditing) {
+            pageBackup = quill.root.innerHTML;
+            setPageEditMode(true);
+            quill.focus();
+        } else {
+            savePage();
+        }
+    }
+
+    function cancelEditPage() {
+        quill.root.innerHTML = pageBackup;
+        setPageEditMode(false);
+    }
+
+    /* ========== NAVIGATION ========== */
+    function showAdminSection(sectionId) {
+        document.querySelectorAll('.admin-section-panel').forEach(el => el.style.display = 'none');
+        const target = document.getElementById('section-' + sectionId);
+        if (target) target.style.display = 'block';
+        if (sectionId === 'dashboard') loadDashboardStats();
+        if (sectionId === 'vehicles') loadVehicles();
+        if (sectionId === 'messages') { loadAdminInquiries(); loadAdminContacts(); }
+        if (sectionId === 'purchases') loadAdminPurchases();
+        if (sectionId === 'testimonials') loadAdminTestimonials();
+        if (sectionId === 'customers') loadAdminCustomers();
+        document.querySelectorAll('.admin-sidebar .sidebar-nav a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.admin-sidebar .sidebar-nav a[onclick*="'${sectionId}'"]`);
+        if (link) link.classList.add('active');
+    }
+
+    function showContentTab(tabId) {
+        document.querySelectorAll('.content-tab-panel').forEach(el => el.style.display = 'none');
+        document.getElementById('tab-' + tabId).style.display = 'block';
+        document.querySelectorAll('#section-content .admin-tabs .tab-item').forEach(t => t.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    /* ========== PAGES ========== */
+
+    async function loadPage() {
+        const p = document.getElementById('page-name').value;
+        const res = await apiFetch(`/content/${p}`, { method: 'GET' });
+        quill.root.innerHTML = (res.ok && res.data.htmlContent) ? res.data.htmlContent : '';
+        setPageEditMode(false);
+    }
+
+    function savePage() {
+        showConfirm('Save changes to this page? This will update the live site.', async () => {
+            const p = document.getElementById('page-name').value;
+            const res = await apiFetch('/content', {
+                method: 'POST',
+                body: JSON.stringify({ pageName: p, htmlContent: quill.root.innerHTML })
+            });
+            showToast(res.ok ? 'Content saved successfully!' : 'Failed to save content.', !res.ok);
+            if (res.ok) setPageEditMode(false);
+        });
+    }
+
+    /* ========== BANNERS ========== */
+    function toggleBannerForm() {
+        const form = document.getElementById('banner-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // How many banners each group has now (set by loadBanners); used to suggest the next free position
+    let bannerCounts = { BIG: 0, SMALL1: 0, SMALL2: 0 };
+
+    // Sort order drop-down: BIG banners 1 to 5, SMALL banners 1 to 3
+    function fillSortOrder(selectId, sectionVal, selected) {
+        const sel = document.getElementById(selectId);
+        const max = sectionVal === 'BIG' ? 5 : (sectionVal ? 3 : 0);
+        if (!max) { sel.innerHTML = '<option value="">Select banner type first</option>'; return; }
+        let html = '';
+        for (let n = 1; n <= max; n++) html += `<option value="${n}">${n}</option>`;
+        sel.innerHTML = html;
+        sel.value = (selected >= 1 && selected <= max) ? String(selected) : '1';
+    }
+
+    function onAddSectionChange() {
+        const val = document.getElementById('b-section').value;
+        const mediaWrap = document.getElementById('b-mediatype-wrap');
+        if (val === 'BIG') {
+            mediaWrap.style.display = 'block';
+        } else {
+            mediaWrap.style.display = 'none';
+            document.getElementById('b-mediatype').value = 'IMAGE';
+        }
+        fillSortOrder('b-order', val, Math.min((bannerCounts[val] || 0) + 1, val === 'BIG' ? 5 : 3));
+    }
+
+    function onEditSectionChange() {
+        const val = document.getElementById('editBannerSection').value;
+        const mediaWrap = document.getElementById('editBannerMediaWrap');
+        if (val === 'BIG') {
+            mediaWrap.style.display = 'block';
+        } else {
+            mediaWrap.style.display = 'none';
+            document.getElementById('editBannerMediaType').value = 'IMAGE';
+        }
+        fillSortOrder('editBannerSortOrder', val, parseInt(document.getElementById('editBannerSortOrder').value) || 1);
+    }
+
+    // Convert sectionNum (null/1/2) to select value (BIG/SMALL1/SMALL2)
+    function sectionToSelect(sectionNum) {
+        if (sectionNum === null || sectionNum === undefined) return 'BIG';
+        if (sectionNum === 1) return 'SMALL1';
+        if (sectionNum === 2) return 'SMALL2';
+        return 'BIG';
+    }
+
+    // Convert select value to sectionNum
+    function selectToSection(val) {
+        if (val === 'BIG')    return null;
+        if (val === 'SMALL1') return 1;
+        if (val === 'SMALL2') return 2;
+        return null;
+    }
+
+    async function loadBanners() {
+        const res = await apiFetch('/banners');
+        if (!res.ok) return;
+
+        const big    = res.data.big    || [];
+        const small1 = res.data.small1 || [];
+        const small2 = res.data.small2 || [];
+        bannerCounts = { BIG: big.length, SMALL1: small1.length, SMALL2: small2.length };
+
+        // Update count labels
+        document.getElementById('big-count-label').textContent    = `(${big.length}/5)`;
+        document.getElementById('small1-count-label').textContent  = `(${small1.length}/3)`;
+        document.getElementById('small2-count-label').textContent  = `(${small2.length}/3)`;
+
+        renderBannerGroup('banners-big',    big,    'BIG');
+        renderBannerGroup('banners-small1', small1, 'SMALL — Left');
+        renderBannerGroup('banners-small2', small2, 'SMALL — Right');
+    }
+
+    function renderBannerGroup(containerId, banners, label) {
+        const container = document.getElementById(containerId);
+        if (!banners.length) {
+            container.innerHTML = `<p class="text-muted" style="padding:16px 0;">No ${label} banners yet.</p>`;
+            return;
+        }
+        container.innerHTML = banners.map((b, i) => `
+                <div class="banner-card">
+                    <div class="banner-preview" style="background-image:url('${b.imageUrl || ''}');">
+                        <h4>${escapeHtml(b.title || '(no title)')}</h4>
+                    </div>
+                    <div class="banner-meta">
+                        <div>
+                            <div class="banner-title">
+                                ${label} ${i + 1}
+                                &nbsp;<span class="badge bg-secondary" style="font-size:0.7rem;">${b.mediaType || ''}</span>
+                            </div>
+                            <span class="banner-link-badge">${escapeHtml(b.subtitle || '')}</span>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="action-btn" title="Edit"
+                                onclick="openEditBanner(${b.id},'${escapeJs(sectionToSelect(b.sectionNum))}','${escapeJs(b.mediaType||'')}','${escapeJs(b.imageUrl||'')}','${escapeJs(b.title||'')}','${escapeJs(b.subtitle||'')}','${escapeJs(b.linkUrl||'')}','${escapeJs(b.linkType||'')}','${escapeJs(b.buttonText||'')}',${b.sortOrder||0})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="action-btn delete" title="Delete" onclick="deleteBanner(${b.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    async function addBanner() {
+        const section   = document.getElementById('b-section').value;
+        const mediaType = document.getElementById('b-mediatype').value;
+        const imageUrl  = document.getElementById('b-img').value.trim();
+        const title     = document.getElementById('b-title').value.trim();
+        const subtitle  = document.getElementById('b-subtitle').value.trim();
+        const linkUrl   = document.getElementById('b-link').value.trim();
+        const linkType  = document.getElementById('b-type').value;
+        const buttonText= document.getElementById('b-btn').value.trim();
+        const sortOrder = parseInt(document.getElementById('b-order').value) || 1;
+
+        if (!section)   { showToast('Please select a banner type.', true); return; }
+        if (!imageUrl)  { showToast('Image / Video URL is required.', true); return; }
+        if (!title)     { showToast('Title is required.', true); return; }
+
+        const body = {
+            imageUrl, title, subtitle, linkUrl, linkType,
+            buttonText: buttonText || 'Details',
+            sortOrder,
+            active: true,
+            sectionNum: selectToSection(section),
+            size: section === 'BIG' ? 'BIG' : 'SMALL',
+            mediaType: section === 'BIG' ? mediaType : 'IMAGE'
+        };
+
+        const res = await apiFetch('/banners', { method: 'POST', body: JSON.stringify(body) });
+        if (res.ok) {
+            showToast('Banner added!');
+            ['b-img','b-title','b-subtitle','b-link','b-btn'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('b-section').value = '';
+            fillSortOrder('b-order', '', 0);
+            document.getElementById('banner-form').style.display = 'none';
+            loadBanners();
+        } else {
+            showToast(typeof res.data === 'string' ? res.data : 'Failed to add banner.', true);
+        }
+    }
+
+    function deleteBanner(id) {
+        showConfirm('Delete this banner? This cannot be undone.', async () => {
+            await apiFetch('/banners/' + id, { method: 'DELETE' });
+            showToast('Banner deleted.');
+            loadBanners();
+        });
+    }
+
+    /* ---- Edit Banner ---- */
+    function openEditBanner(id, section, mediaType, imageUrl, title, subtitle, linkUrl, linkType, buttonText, sortOrder) {
+        document.getElementById('editBannerId').value         = id;
+        document.getElementById('editBannerSection').value    = section;
+        document.getElementById('editBannerMediaType').value  = mediaType;
+        document.getElementById('editBannerImageUrl').value   = imageUrl;
+        document.getElementById('editBannerTitle').value      = title;
+        document.getElementById('editBannerSubtitle').value   = subtitle;
+        document.getElementById('editBannerLinkUrl').value    = linkUrl;
+        document.getElementById('editBannerLinkType').value   = linkType;
+        document.getElementById('editBannerButtonText').value = buttonText;
+        fillSortOrder('editBannerSortOrder', section, parseInt(sortOrder) || 1);   // old banners with 0 start at 1
+        document.getElementById('editBannerError').style.display = 'none';
+        onEditSectionChange();
+        new bootstrap.Modal(document.getElementById('editBannerModal')).show();
+    }
+
+    async function saveEditBanner() {
+        const id        = document.getElementById('editBannerId').value;
+        const section   = document.getElementById('editBannerSection').value;
+        const mediaType = document.getElementById('editBannerMediaType').value;
+        const imageUrl  = document.getElementById('editBannerImageUrl').value.trim();
+        const title     = document.getElementById('editBannerTitle').value.trim();
+        const subtitle  = document.getElementById('editBannerSubtitle').value.trim();
+        const linkUrl   = document.getElementById('editBannerLinkUrl').value.trim();
+        const linkType  = document.getElementById('editBannerLinkType').value;
+        const buttonText= document.getElementById('editBannerButtonText').value.trim();
+        const sortOrder = parseInt(document.getElementById('editBannerSortOrder').value) || 1;
+        const errEl     = document.getElementById('editBannerError');
+
+        if (!imageUrl) { errEl.textContent = 'Image / Video URL is required.'; errEl.style.display = 'block'; return; }
+        if (!title)    { errEl.textContent = 'Title is required.'; errEl.style.display = 'block'; return; }
+
+        showConfirm('Save changes to this banner?', async () => {
+            const res = await apiFetch(`/banners/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    imageUrl, title, subtitle, linkUrl, linkType,
+                    buttonText: buttonText || 'Details',
+                    sortOrder, active: true,
+                    sectionNum: selectToSection(section),
+                    size: section === 'BIG' ? 'BIG' : 'SMALL',
+                    mediaType: section === 'BIG' ? mediaType : 'IMAGE'
+                })
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('editBannerModal')).hide();
+                showToast('Banner updated!');
+                loadBanners();
+            } else {
+                errEl.textContent = typeof res.data === 'string' ? res.data : 'Failed to update banner.';
+                errEl.style.display = 'block';
+            }
+        });
+    }
+
+    /* ========== FAQ ========== */
+    function toggleFaqForm() {
+        const form = document.getElementById('faq-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        if (form.style.display === 'block' && !addFaqQuill) {
+            addFaqQuill = new Quill('#addFaqEditor', {
+                theme: 'snow',
+                modules: { toolbar: [['bold','italic','underline'],[{header:[1,2,3,false]}],[{list:'ordered'},{list:'bullet'}],['link'],['clean']] }
+            });
+        }
+    }
+
+
+    async function loadFaqs() {
+        const res = await apiFetch('/faqs/all');
+        const tbody = document.getElementById('faq-list');
+        if (res.ok && res.data.length > 0) {
+            faqCache = {};
+            res.data.forEach(f => { faqCache[f.id] = f; });
+            tbody.innerHTML = res.data.map((f, i) => `
+            <tr data-id="${f.id}">
+                <td style="white-space:nowrap;"><i class="bi bi-grip-vertical drag-handle" title="Drag to change the order"></i><span class="faq-pos">${i + 1}</span></td>
+                <td><strong>${escapeHtml(f.question)}</strong></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${f.active ? 'checked' : ''} onchange="toggleFaqStatus(${f.id}, this)">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="${f.active ? 'badge-active' : 'badge-inactive'}">${f.active ? 'Active' : 'Inactive'}</span>
+                    </div>
+                </td>
+                <td>
+                    <div style="display:flex;gap:8px;">
+                        <button class="action-btn" title="Edit" onclick="openEditFaq(${f.id})"><i class="bi bi-pencil"></i></button>
+                        <button class="action-btn delete" title="Delete" onclick="deleteFaq(${f.id})"><i class="bi bi-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+            initFaqDrag();
+        } else if (res.ok) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--tj-text-muted);">No FAQs found.</td></tr>';
+        }
+    }
+
+    /* ---- Drag a row by its handle to change the FAQ order (works with mouse and touch) ---- */
+    function initFaqDrag() {
+        const tbody = document.getElementById('faq-list');
+
+        // the element that scrolls the list (the admin panel or the whole page)
+        function scrollParent() {
+            let p = tbody.parentElement;
+            while (p && p !== document.body) {
+                const o = getComputedStyle(p).overflowY;
+                if ((o === 'auto' || o === 'scroll') && p.scrollHeight > p.clientHeight) return p;
+                p = p.parentElement;
+            }
+            return null;
+        }
+
+        tbody.querySelectorAll('.drag-handle').forEach(handle => {
+            handle.addEventListener('pointerdown', e => {
+                e.preventDefault();
+                const row = handle.closest('tr');
+                const scroller = scrollParent();
+                let lastY = e.clientY, frame = null;
+                row.classList.add('faq-dragging');
+                document.body.classList.add('faq-drag-active');
+
+                // put the dragged row where the pointer is
+                const place = () => {
+                    const others = [...tbody.querySelectorAll('tr')].filter(r => r !== row);
+                    const next = others.find(r => {
+                        const b = r.getBoundingClientRect();
+                        return lastY < b.top + b.height / 2;
+                    });
+                    if (next) tbody.insertBefore(row, next); else tbody.appendChild(row);
+                };
+                // scroll by itself (about 800 px per second) while the pointer is near the top or bottom edge
+                let prev = null;
+                const tick = () => {
+                    const ts = performance.now();
+                    const dt = prev === null ? 0 : Math.min(ts - prev, 100);
+                    prev = ts;
+                    const box = scroller ? scroller.getBoundingClientRect() : { top: 0, bottom: window.innerHeight };
+                    let dy = 0;
+                    if (lastY < box.top + 90) dy = -0.8 * dt; else if (lastY > box.bottom - 90) dy = 0.8 * dt;
+                    if (dy) {
+                        // 'instant': Bootstrap turns on smooth scrolling, which would restart on every step
+                        if (scroller) scroller.scrollTo({ top: scroller.scrollTop + dy, behavior: 'instant' });
+                        else window.scrollTo({ top: window.scrollY + dy, behavior: 'instant' });
+                        place();
+                    }
+                };
+                frame = setInterval(tick, 16);
+
+                const move = ev => { lastY = ev.clientY; place(); };
+                const up = async () => {
+                    clearInterval(frame);
+                    document.removeEventListener('pointermove', move);
+                    document.removeEventListener('pointerup', up);
+                    document.removeEventListener('pointercancel', up);
+                    row.classList.remove('faq-dragging');
+                    document.body.classList.remove('faq-drag-active');
+                    await saveFaqOrder();
+                };
+                document.addEventListener('pointermove', move);
+                document.addEventListener('pointerup', up);
+                document.addEventListener('pointercancel', up);
+            });
+        });
+    }
+
+    async function saveFaqOrder() {
+        const rows = [...document.querySelectorAll('#faq-list tr[data-id]')];
+        rows.forEach((r, i) => { r.querySelector('.faq-pos').textContent = i + 1; });
+        const res = await apiFetch('/faqs/reorder', { method: 'PUT', body: JSON.stringify(rows.map(r => Number(r.dataset.id))) });
+        if (res.ok) {
+            showToast('FAQ order saved.');
+        } else {
+            showToast('Could not save the order.', true);
+            loadFaqs();
+        }
+    }
+
+    async function addFaq() {
+        const q = document.getElementById('f-q').value;
+        const a = addFaqQuill ? addFaqQuill.root.innerHTML : '';
+        if (!q) { showToast('Question is required.', true); return; }
+        const res = await apiFetch('/faqs', {
+            method: 'POST',
+            body: JSON.stringify({ question: q, answer: a })      // the server puts it at the end of the list
+        });
+        if (res.ok) {
+            showToast('FAQ added!');
+            document.getElementById('f-q').value = '';
+            document.getElementById('f-a').value = '';
+            if (addFaqQuill) addFaqQuill.setText('');
+            loadFaqs();
+        } else {
+            showToast('Failed to add FAQ.', true);
+        }
+    }
+
+    function deleteFaq(id) {
+        showConfirm('Delete this FAQ? This cannot be undone.', async () => {
+            await apiFetch('/faqs/' + id, { method: 'DELETE' });
+            loadFaqs();
+        });
+    }
+
+    let faqCache = {};
+    let editFaqModalInstance = null;
+
+    function openEditFaq(id) {
+        const f = faqCache[id];
+        if (!f) return;
+        document.getElementById('editFaqId').value       = id;
+        document.getElementById('editFaqQuestion').value = f.question || '';
+        document.getElementById('editFaqError').style.display = 'none';
+
+        const modalEl = document.getElementById('editFaqModal');
+        if (!editFaqModalInstance) editFaqModalInstance = new bootstrap.Modal(modalEl);
+        editFaqModalInstance.show();
+
+        // fill the editor a moment after the modal is visible
+        setTimeout(() => {
+            if (!faqQuill) {
+                faqQuill = new Quill('#editFaqAnswerEditor', {
+                    theme: 'snow',
+                    modules: { toolbar: [['bold','italic','underline'],[{header:[1,2,3,false]}],[{list:'ordered'},{list:'bullet'}],['link'],['clean']] }
+                });
+            }
+            faqQuill.setContents([]);
+            faqQuill.clipboard.dangerouslyPasteHTML(0, f.answer || '');
+        }, 300);
+    }
+
+    async function saveEditFaq() {
+        const id       = document.getElementById('editFaqId').value;
+        const question = document.getElementById('editFaqQuestion').value.trim();
+        const answer = faqQuill.root.innerHTML.trim();
+        const errEl    = document.getElementById('editFaqError');
+        if (!question) {
+            errEl.textContent = 'Question is required.';
+            errEl.style.display = 'block';
+            return;
+        }
+        const res = await apiFetch('/faqs/' + id, {
+            method: 'PUT',
+            body: JSON.stringify({ question, answer })
+        });
+        if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('editFaqModal')).hide();
+            showToast('FAQ updated!');
+            loadFaqs();
+        } else {
+            errEl.textContent = typeof res.data === 'string' ? res.data : 'Failed to update FAQ.';
+            errEl.style.display = 'block';
+        }
+    }
+
+    async function toggleFaqStatus(id, checkbox) {
+        const active = checkbox.checked;
+        const res = await apiFetch('/faqs/' + id + '/toggle?active=' + active, { method: 'PUT' });
+        if (res.ok) {
+            showToast(active ? 'FAQ activated.' : 'FAQ deactivated.', !active);
+            loadFaqs();
+        } else {
+            checkbox.checked = !active;
+            showToast('Failed to update FAQ status.', true);
+        }
+    }
+
+    /* ========== ADMINS ========== */
+    function toggleAdminForm() {
+        const form = document.getElementById('admin-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function loadAdminsList() {
+        const res = await apiFetch('/admin/users');
+        const tbody = document.getElementById('admins-list');
+        if (res.ok && Array.isArray(res.data)) {
+            tbody.innerHTML = res.data.map(u => `
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
+                                <div class="user-info">
+                                    <div class="user-name">${escapeHtml(u.firstName||'')} ${escapeHtml(u.lastName||'')}</div>
+                                    <div class="user-role">${u.role === 'ROLE_SUPER_ADMIN' ? 'Super Admin' : 'Admin'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${escapeHtml(u.email||'')}</td>
+                        <td>${escapeHtml(u.whatsappNo||'—')}</td>
+                        <td><span class="${u.active !== false ? 'badge-active' : 'badge-inactive'}">${u.active !== false ? 'Active' : 'Inactive'}</span></td>
+                        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}) : '—'}</td>
+                        <td>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <button class="action-btn" title="Edit"
+                                    onclick="openEditAdmin(${u.id},'${escapeJs(u.firstName||'')}','${escapeJs(u.lastName||'')}','${escapeJs(u.email||'')}','${escapeJs(u.whatsappNo||'')}')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="action-btn" title="Reset Password" onclick="resetAdminPassword(${u.id})"><i class="bi bi-key"></i></button>
+                                <label class="toggle-switch toggle-switch-maroon">
+                                    <input type="checkbox" ${u.active !== false ? 'checked' : ''} onchange="toggleAdminStatus(${u.id}, this)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            document.getElementById('admins-pagination').innerHTML =
+                `<span class="pager-text">${res.data.length === 0 ? 'No admins yet' : `Showing 1 to ${res.data.length} of ${res.data.length} admins`}</span>`;
+        } else {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--tj-text-muted);">No admins found or insufficient permissions.</td></tr>';
+        }
+    }
+
+    async function createAdmin() {
+        const fn = document.getElementById('a-fn').value.trim();
+        const ln = document.getElementById('a-ln').value.trim();
+        const e  = document.getElementById('a-e').value.trim();
+        const w  = document.getElementById('a-w').value.trim();
+        const p  = document.getElementById('a-p').value;
+        const p2 = document.getElementById('a-p2').value;
+        if (!fn||!ln||!e||!p) { showToast('Name, email and password are required.', true); return; }
+        if (!/^\S+@\S+\.\S+$/.test(e)) { showToast('Enter a valid email address.', true); return; }
+        if (p.length < 8) { showToast('Password must be at least 8 characters.', true); return; }
+        if (p !== p2) { showToast('Passwords do not match.', true); return; }
+        const res = await apiFetch('/admin/users', {
+            method: 'POST',
+            body: JSON.stringify({ firstName:fn, lastName:ln, email:e, whatsappNo:w||null, password:p })
+        });
+        if (res.ok) {
+            showToast('Admin created successfully!');
+            ['a-fn','a-ln','a-e','a-w','a-p','a-p2'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('admin-form').style.display = 'none';
+            loadAdminsList();
+        } else {
+            showToast(typeof res.data === 'string' ? res.data : 'Failed to create admin.', true);
+        }
+    }
+
+    function openEditAdmin(id, firstName, lastName, email, whatsappNo) {
+        document.getElementById('editAdminId').value        = id;
+        document.getElementById('editAdminFirstName').value = firstName;
+        document.getElementById('editAdminLastName').value  = lastName;
+        document.getElementById('editAdminEmail').value     = email;
+        document.getElementById('editAdminWhatsapp').value  = whatsappNo;
+        document.getElementById('editAdminError').style.display = 'none';
+        new bootstrap.Modal(document.getElementById('editAdminModal')).show();
+    }
+
+    async function saveEditAdmin() {
+        const id = document.getElementById('editAdminId').value;
+        const fn = document.getElementById('editAdminFirstName').value.trim();
+        const ln = document.getElementById('editAdminLastName').value.trim();
+        const em = document.getElementById('editAdminEmail').value.trim();
+        const wa = document.getElementById('editAdminWhatsapp').value.trim();
+        const errEl = document.getElementById('editAdminError');
+        if (!fn||!ln||!em) { errEl.textContent = 'First name, last name and email are required.'; errEl.style.display = 'block'; return; }
+        if (!/^\S+@\S+\.\S+$/.test(em)) { errEl.textContent = 'Enter a valid email address.'; errEl.style.display = 'block'; return; }
+        const res = await apiFetch(`/admin/users/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ firstName:fn, lastName:ln, email:em, whatsappNo:wa||null })
+        });
+        if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('editAdminModal')).hide();
+            showToast('Admin updated successfully!');
+            loadAdminsList();
+        } else {
+            errEl.textContent = typeof res.data === 'string' ? res.data : 'Failed to update admin.';
+            errEl.style.display = 'block';
+        }
+    }
+
+    function toggleAdminStatus(id, checkbox) {
+        const activate = checkbox.checked;
+        showConfirm(
+            activate ? 'Activate this admin?' : 'Deactivate this admin?',
+            async () => {
+                const res = await apiFetch(`/admin/users/${id}/status?active=${activate}`, { method: 'PUT' });
+                if (res.ok) {
+                    showToast(activate ? 'Admin activated.' : 'Admin deactivated.', !activate);
+                } else {
+                    checkbox.checked = !activate;
+                    showToast(typeof res.data === 'string' ? res.data : 'Failed to update status.', true);
+                }
+                loadAdminsList();
+            },
+            () => { checkbox.checked = !activate; }
+        );
+    }
+
+    function resetAdminPassword(id) {
+        showPasswordPrompt(
+            'Enter a new password for this admin.',
+            async (newPassword) => {
+                const res = await apiFetch(
+                    `/admin/users/${id}/reset-password`,
+                    { method: 'PUT', body: JSON.stringify({ newPassword }) }
+                );
+                showToast(res.ok ? 'Password reset successfully.' : 'Failed to reset password.', !res.ok);
+            }
+        );
+    }
+
+    /* ========== UTILITIES ========== */
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function escapeJs(str) {
+        return (str || '')
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '');
+    }
+
+
+    function showToast(message, isError = false) {
+        const toast = document.createElement('div');
+        toast.style.cssText = `position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:8px;color:#fff;font-size:0.9rem;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:opacity .3s;background:${isError?'var(--tj-danger)':'var(--tj-success)'};`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.style.opacity='0'; setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ target/
 build/
 out/
 
-# Allow nested target/build directories in src (from Initializr)
+# Allow nested target/build directories in src
 !**/src/main/**/target/
 !**/src/test/**/target/
 !**/src/main/**/build/
@@ -21,7 +21,15 @@ out/
 *.rar
 *.class
 *.log
+
+# Local / Private Configuration
 application-local.properties
+local.properties
+.env
+
+# Application Private Data
+private-invoices/
+data/
 
 # Maven Wrapper
 .mvn/
@@ -38,6 +46,7 @@ replay_pid*
 # =========================
 # IDEs & Code Editors
 # =========================
+
 # IntelliJ IDEA
 .idea/
 *.iml
@@ -67,41 +76,12 @@ replay_pid*
 /nbdist/
 /.nb-gradle/
 
-# Terminal Editors (Vim & Nano)
+# Terminal Editors
 *~
 *.swp
 *.swo
 .nano_history
 
 # =========================
-# Database Clients (DBeaver)
+# Database Clients
 # =========================
-.dbeaver/
-Scripts/
-
-# =========================
-# MySQL Workbench
-# =========================
-*.mwb.bak
-
-# =========================
-# Operating Systems
-# =========================
-# Windows 11
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Linux (Nobara)
-.directory
-.Trash-*
-
-# =========================
-# API Testing Tools
-# =========================
-*.http
-*.rest
-*.postman_collection.json
-*.postman_environment.json
-local.properties
