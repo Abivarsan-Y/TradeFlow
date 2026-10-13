@@ -1,4 +1,4 @@
-package com.tradejapan.cms.dto;
+package com.tradejapan.part1.dto;
 
 import com.tradejapan.part3.dto.InquiryView;
 import com.tradejapan.part3.dto.PurchaseView;

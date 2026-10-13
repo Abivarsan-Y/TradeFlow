@@ -1,7 +1,7 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.dto.BannerRequest;
-import com.tradejapan.cms.service.BannerService;
+import com.tradejapan.part1.dto.BannerRequest;
+import com.tradejapan.part1.service.BannerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,6 @@ public class BannerController {
         this.bannerService = bannerService;
     }
 
-    // Returns banners grouped: { big: [...], small1: [...], small2: [...] }
     @GetMapping
     public ResponseEntity<Map<String, Object>> getBanners() {
         return ResponseEntity.ok(bannerService.getGroupedBanners());
@@ -28,15 +27,18 @@ public class BannerController {
         try {
             return ResponseEntity.ok(bannerService.addBanner(request));
         } catch (IllegalArgumentException ex) {
-            // Plain text message, because dashboard.html shows it directly in a toast
+            // plain text, because dashboard.html shows it directly in a toast
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBanner(@PathVariable Long id, @RequestBody BannerRequest request) {
-        // Missing banner -> ResourceNotFoundException -> 404 (GlobalExceptionHandler)
-        return ResponseEntity.ok(bannerService.updateBanner(id, request));
+        try {
+            return ResponseEntity.ok(bannerService.updateBanner(id, request));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

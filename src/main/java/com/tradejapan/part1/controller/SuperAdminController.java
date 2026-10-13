@@ -1,9 +1,9 @@
-package com.tradejapan.cms.controller;
+package com.tradejapan.part1.controller;
 
-import com.tradejapan.cms.dto.CreateAdminRequest;
-import com.tradejapan.cms.dto.UpdateAdminRequest;
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.service.AdminUserService;
+import com.tradejapan.part1.dto.CreateAdminRequest;
+import com.tradejapan.part1.dto.UpdateAdminRequest;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.service.AdminUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,6 @@ public class SuperAdminController {
         try {
             return ResponseEntity.ok(adminUserService.createAdmin(request));
         } catch (IllegalArgumentException ex) {
-            // Plain text, because the dashboard shows it directly
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }

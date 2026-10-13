@@ -1,4 +1,4 @@
-package com.tradejapan.cms.dto;
+package com.tradejapan.part1.dto;
 
 import java.time.LocalDateTime;
 

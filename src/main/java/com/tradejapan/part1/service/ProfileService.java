@@ -1,15 +1,14 @@
-package com.tradejapan.cms.service;
+package com.tradejapan.part1.service;
 
-import com.tradejapan.cms.model.User;
-import com.tradejapan.cms.repository.UserRepository;
+import com.tradejapan.part1.model.Role;
+import com.tradejapan.part1.model.User;
+import com.tradejapan.part1.repository.UserRepository;
 import com.tradejapan.part3.exception.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-/**
- * Logged-in user's own profile: view, edit, change password.
- * The email always comes from the JWT (via the controller), never from the request body.
- */
 @Service
 public class ProfileService {
 
@@ -21,21 +20,24 @@ public class ProfileService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // The password hash is never sent: User.password is WRITE_ONLY in JSON
+    // Password hash is never sent: User.password is WRITE_ONLY in JSON
     public User getProfile(String email) {
         return findOrThrow(email);
     }
 
-    // Only these three fields can be edited (role, status, email stay untouched)
     public User updateProfile(String email, User updated) {
         User user = findOrThrow(email);
+        // An Admin cannot edit the profile here: the Super Admin changes admin details in Admin panel > Admins
+        if (user.getRole() == Role.ROLE_ADMIN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Admin profiles are managed by the Super Admin (Admin panel > Admins).");
+        }
         user.setFirstName(updated.getFirstName());
         user.setLastName(updated.getLastName());
         user.setWhatsappNo(updated.getWhatsappNo());
         return userRepository.save(user);
     }
 
-    // Needs the current password first, so a stolen session can't lock the owner out
     public void changePassword(String email, String currentPassword, String newPassword) {
         User user = findOrThrow(email);
 

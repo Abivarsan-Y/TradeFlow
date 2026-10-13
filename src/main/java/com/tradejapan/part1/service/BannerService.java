@@ -1,21 +1,16 @@
-package com.tradejapan.cms.service;
+package com.tradejapan.part1.service;
 
-import com.tradejapan.cms.dto.BannerRequest;
-import com.tradejapan.cms.model.Banner;
-import com.tradejapan.cms.model.BannerSize;
-import com.tradejapan.cms.model.MediaType;
-import com.tradejapan.cms.repository.BannerRepository;
+import com.tradejapan.part1.dto.BannerRequest;
+import com.tradejapan.part1.model.Banner;
+import com.tradejapan.part1.model.BannerSize;
+import com.tradejapan.part1.model.MediaType;
+import com.tradejapan.part1.repository.BannerRepository;
 import com.tradejapan.part3.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-/**
- * Business logic for banners. The controller only handles HTTP,
- * this class decides the rules (limits, defaults, not-found).
- */
 @Service
 public class BannerService {
 
@@ -24,7 +19,6 @@ public class BannerService {
 
     private final BannerRepository bannerRepository;
 
-    // Constructor injection (better than @Autowired on a field, and easy to mock in tests)
     public BannerService(BannerRepository bannerRepository) {
         this.bannerRepository = bannerRepository;
     }
@@ -39,18 +33,18 @@ public class BannerService {
     }
 
     public Banner addBanner(BannerRequest request) {
+        validateSortOrder(request.getSectionNum(), request.getSortOrder());
+
         Banner banner = new Banner();
         copyFields(request, banner);
 
         if (request.getSectionNum() == null) {
-            // BIG hero banner
             if (bannerRepository.countByActiveTrueAndSectionNumIsNull() >= MAX_BIG) {
                 throw new IllegalArgumentException("Maximum " + MAX_BIG + " BIG banners allowed.");
             }
             banner.setSize(BannerSize.BIG);
             banner.setMediaType(request.getMediaType() != null ? request.getMediaType() : MediaType.IMAGE);
         } else {
-            // SMALL banner (section 1 = left, 2 = right)
             if (bannerRepository.countByActiveTrueAndSectionNum(request.getSectionNum()) >= MAX_SMALL) {
                 throw new IllegalArgumentException("Maximum " + MAX_SMALL + " SMALL banners allowed per section.");
             }
@@ -62,15 +56,14 @@ public class BannerService {
     }
 
     public Banner updateBanner(Long id, BannerRequest request) {
+        validateSortOrder(request.getSectionNum(), request.getSortOrder());
         Banner banner = findOrThrow(id);
         copyFields(request, banner);
         return bannerRepository.save(banner);
     }
 
     public void deleteBanner(Long id) {
-        // Fixes the old bug: deleting a missing banner now gives a clear 404
-        Banner banner = findOrThrow(id);
-        bannerRepository.delete(banner);
+        bannerRepository.delete(findOrThrow(id));
     }
 
     private Banner findOrThrow(Long id) {
@@ -78,7 +71,15 @@ public class BannerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Banner not found with id " + id));
     }
 
-    // Copies the editable fields from the request onto the entity
+    // Sort order is the position inside its group: BIG 1 to 5, SMALL 1 to 3
+    private void validateSortOrder(Integer sectionNum, Integer sortOrder) {
+        int max = (sectionNum == null) ? MAX_BIG : MAX_SMALL;
+        if (sortOrder == null || sortOrder < 1 || sortOrder > max) {
+            throw new IllegalArgumentException("Sort order for " + (sectionNum == null ? "BIG" : "SMALL")
+                    + " banners must be between 1 and " + max + ".");
+        }
+    }
+
     private void copyFields(BannerRequest request, Banner banner) {
         banner.setSize(request.getSize());
         banner.setMediaType(request.getMediaType());
@@ -89,7 +90,7 @@ public class BannerService {
         banner.setTitle(request.getTitle());
         banner.setSubtitle(request.getSubtitle());
         banner.setSectionNum(request.getSectionNum());
-        banner.setSortOrder(request.getSortOrder() != null ? request.getSortOrder() : 0);
+        banner.setSortOrder(request.getSortOrder());
         banner.setActive(request.isActive());
     }
 }
