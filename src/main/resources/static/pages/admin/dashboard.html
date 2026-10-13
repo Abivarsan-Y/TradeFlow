@@ -164,8 +164,7 @@
                         <div class="col-md-3">
                             <div class="tj-form-group">
                                 <label>Sort Order</label>
-                                <select id="b-order" class="form-select"><option value="">Select banner type first</option></select>
-                                <small class="text-muted">BIG: 1 to 5, SMALL: 1 to 3 (1 is shown first)</small>
+                                <input type="number" id="b-order" class="form-control" value="0">
                             </div>
                         </div>
                         <div class="col-12">
@@ -230,8 +229,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Sort Order</label>
-                                        <select class="form-select" id="editBannerSortOrder"><option value="1">1</option></select>
-                                        <small class="text-muted">BIG: 1 to 5, SMALL: 1 to 3</small>
+                                        <input type="number" class="form-control" id="editBannerSortOrder" value="0" />
                                     </div>
                                 </div>
                                 <div id="editBannerError" class="text-danger small mt-3" style="display:none;"></div>
@@ -288,6 +286,10 @@
                                 <div id="editFaqAnswerEditor" style="height:150px;"></div>
                                 <input type="hidden" id="editFaqAnswer">
                             </div>
+                            <div class="mb-3" style="max-width:160px;">
+                                <label class="form-label">Order</label>
+                                <input type="number" class="form-control" id="editFaqOrder" value="1" />
+                            </div>
                             <div id="editFaqError" class="text-danger small mt-2" style="display:none;"></div>
                         </div>
                         <div class="modal-footer">
@@ -308,10 +310,16 @@
                 <div id="faq-form" class="admin-card" style="display:none;">
                     <h4 class="text-tj-navy mb-3">Add New FAQ</h4>
                     <div class="row g-3">
-                        <div class="col-12">
+                        <div class="col-md-8">
                             <div class="tj-form-group">
                                 <label>Question</label>
                                 <input type="text" id="f-q" class="form-control" placeholder="Enter question...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tj-form-group">
+                                <label>Order</label>
+                                <input type="number" id="f-o" class="form-control" placeholder="1" value="1">
                             </div>
                         </div>
                         <div class="col-12">
@@ -331,7 +339,7 @@
                     <table class="admin-table" id="faq-table">
                         <thead>
                         <tr>
-                            <th style="width:80px;" title="Drag the handle to change the order">Order</th>
+                            <th style="width:40px;">#</th>
                             <th>Question</th>
                             <th style="width:140px;">Status</th>
                             <th style="width:120px;">Actions</th>
@@ -1077,7 +1085,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script src="/js/app.js"></script>
-    <script src="/js/datepicker.js"></script>
 <script src="/js/orders.js"></script>
 <script src="/js/admin-orders.js"></script>
 <script src="/js/admin-vehicles.js"></script>
@@ -1185,20 +1192,6 @@
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    // How many banners each group has now (set by loadBanners); used to suggest the next free position
-    let bannerCounts = { BIG: 0, SMALL1: 0, SMALL2: 0 };
-
-    // Sort order drop-down: BIG banners 1 to 5, SMALL banners 1 to 3
-    function fillSortOrder(selectId, sectionVal, selected) {
-        const sel = document.getElementById(selectId);
-        const max = sectionVal === 'BIG' ? 5 : (sectionVal ? 3 : 0);
-        if (!max) { sel.innerHTML = '<option value="">Select banner type first</option>'; return; }
-        let html = '';
-        for (let n = 1; n <= max; n++) html += `<option value="${n}">${n}</option>`;
-        sel.innerHTML = html;
-        sel.value = (selected >= 1 && selected <= max) ? String(selected) : '1';
-    }
-
     function onAddSectionChange() {
         const val = document.getElementById('b-section').value;
         const mediaWrap = document.getElementById('b-mediatype-wrap');
@@ -1208,7 +1201,6 @@
             mediaWrap.style.display = 'none';
             document.getElementById('b-mediatype').value = 'IMAGE';
         }
-        fillSortOrder('b-order', val, Math.min((bannerCounts[val] || 0) + 1, val === 'BIG' ? 5 : 3));
     }
 
     function onEditSectionChange() {
@@ -1220,7 +1212,6 @@
             mediaWrap.style.display = 'none';
             document.getElementById('editBannerMediaType').value = 'IMAGE';
         }
-        fillSortOrder('editBannerSortOrder', val, parseInt(document.getElementById('editBannerSortOrder').value) || 1);
     }
 
     // Convert sectionNum (null/1/2) to select value (BIG/SMALL1/SMALL2)
@@ -1246,7 +1237,6 @@
         const big    = res.data.big    || [];
         const small1 = res.data.small1 || [];
         const small2 = res.data.small2 || [];
-        bannerCounts = { BIG: big.length, SMALL1: small1.length, SMALL2: small2.length };
 
         // Update count labels
         document.getElementById('big-count-label').textContent    = `(${big.length}/5)`;
@@ -1300,7 +1290,7 @@
         const linkUrl   = document.getElementById('b-link').value.trim();
         const linkType  = document.getElementById('b-type').value;
         const buttonText= document.getElementById('b-btn').value.trim();
-        const sortOrder = parseInt(document.getElementById('b-order').value) || 1;
+        const sortOrder = parseInt(document.getElementById('b-order').value) || 0;
 
         if (!section)   { showToast('Please select a banner type.', true); return; }
         if (!imageUrl)  { showToast('Image / Video URL is required.', true); return; }
@@ -1321,7 +1311,7 @@
             showToast('Banner added!');
             ['b-img','b-title','b-subtitle','b-link','b-btn'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('b-section').value = '';
-            fillSortOrder('b-order', '', 0);
+            document.getElementById('b-order').value = '0';
             document.getElementById('banner-form').style.display = 'none';
             loadBanners();
         } else {
@@ -1348,7 +1338,7 @@
         document.getElementById('editBannerLinkUrl').value    = linkUrl;
         document.getElementById('editBannerLinkType').value   = linkType;
         document.getElementById('editBannerButtonText').value = buttonText;
-        fillSortOrder('editBannerSortOrder', section, parseInt(sortOrder) || 1);   // old banners with 0 start at 1
+        document.getElementById('editBannerSortOrder').value  = sortOrder;
         document.getElementById('editBannerError').style.display = 'none';
         onEditSectionChange();
         new bootstrap.Modal(document.getElementById('editBannerModal')).show();
@@ -1364,7 +1354,7 @@
         const linkUrl   = document.getElementById('editBannerLinkUrl').value.trim();
         const linkType  = document.getElementById('editBannerLinkType').value;
         const buttonText= document.getElementById('editBannerButtonText').value.trim();
-        const sortOrder = parseInt(document.getElementById('editBannerSortOrder').value) || 1;
+        const sortOrder = parseInt(document.getElementById('editBannerSortOrder').value) || 0;
         const errEl     = document.getElementById('editBannerError');
 
         if (!imageUrl) { errEl.textContent = 'Image / Video URL is required.'; errEl.style.display = 'block'; return; }
@@ -1413,8 +1403,8 @@
             faqCache = {};
             res.data.forEach(f => { faqCache[f.id] = f; });
             tbody.innerHTML = res.data.map((f, i) => `
-            <tr data-id="${f.id}">
-                <td style="white-space:nowrap;"><i class="bi bi-grip-vertical drag-handle" title="Drag to change the order"></i><span class="faq-pos">${i + 1}</span></td>
+            <tr>
+                <td><i class="bi bi-grip-vertical drag-handle"></i></td>
                 <td><strong>${escapeHtml(f.question)}</strong></td>
                 <td>
                     <div style="display:flex;align-items:center;gap:8px;">
@@ -1433,99 +1423,19 @@
                 </td>
             </tr>
         `).join('');
-            initFaqDrag();
         } else if (res.ok) {
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--tj-text-muted);">No FAQs found.</td></tr>';
-        }
-    }
-
-    /* ---- Drag a row by its handle to change the FAQ order (works with mouse and touch) ---- */
-    function initFaqDrag() {
-        const tbody = document.getElementById('faq-list');
-
-        // the element that scrolls the list (the admin panel or the whole page)
-        function scrollParent() {
-            let p = tbody.parentElement;
-            while (p && p !== document.body) {
-                const o = getComputedStyle(p).overflowY;
-                if ((o === 'auto' || o === 'scroll') && p.scrollHeight > p.clientHeight) return p;
-                p = p.parentElement;
-            }
-            return null;
-        }
-
-        tbody.querySelectorAll('.drag-handle').forEach(handle => {
-            handle.addEventListener('pointerdown', e => {
-                e.preventDefault();
-                const row = handle.closest('tr');
-                const scroller = scrollParent();
-                let lastY = e.clientY, frame = null;
-                row.classList.add('faq-dragging');
-                document.body.classList.add('faq-drag-active');
-
-                // put the dragged row where the pointer is
-                const place = () => {
-                    const others = [...tbody.querySelectorAll('tr')].filter(r => r !== row);
-                    const next = others.find(r => {
-                        const b = r.getBoundingClientRect();
-                        return lastY < b.top + b.height / 2;
-                    });
-                    if (next) tbody.insertBefore(row, next); else tbody.appendChild(row);
-                };
-                // scroll by itself (about 800 px per second) while the pointer is near the top or bottom edge
-                let prev = null;
-                const tick = () => {
-                    const ts = performance.now();
-                    const dt = prev === null ? 0 : Math.min(ts - prev, 100);
-                    prev = ts;
-                    const box = scroller ? scroller.getBoundingClientRect() : { top: 0, bottom: window.innerHeight };
-                    let dy = 0;
-                    if (lastY < box.top + 90) dy = -0.8 * dt; else if (lastY > box.bottom - 90) dy = 0.8 * dt;
-                    if (dy) {
-                        // 'instant': Bootstrap turns on smooth scrolling, which would restart on every step
-                        if (scroller) scroller.scrollTo({ top: scroller.scrollTop + dy, behavior: 'instant' });
-                        else window.scrollTo({ top: window.scrollY + dy, behavior: 'instant' });
-                        place();
-                    }
-                };
-                frame = setInterval(tick, 16);
-
-                const move = ev => { lastY = ev.clientY; place(); };
-                const up = async () => {
-                    clearInterval(frame);
-                    document.removeEventListener('pointermove', move);
-                    document.removeEventListener('pointerup', up);
-                    document.removeEventListener('pointercancel', up);
-                    row.classList.remove('faq-dragging');
-                    document.body.classList.remove('faq-drag-active');
-                    await saveFaqOrder();
-                };
-                document.addEventListener('pointermove', move);
-                document.addEventListener('pointerup', up);
-                document.addEventListener('pointercancel', up);
-            });
-        });
-    }
-
-    async function saveFaqOrder() {
-        const rows = [...document.querySelectorAll('#faq-list tr[data-id]')];
-        rows.forEach((r, i) => { r.querySelector('.faq-pos').textContent = i + 1; });
-        const res = await apiFetch('/faqs/reorder', { method: 'PUT', body: JSON.stringify(rows.map(r => Number(r.dataset.id))) });
-        if (res.ok) {
-            showToast('FAQ order saved.');
-        } else {
-            showToast('Could not save the order.', true);
-            loadFaqs();
         }
     }
 
     async function addFaq() {
         const q = document.getElementById('f-q').value;
         const a = addFaqQuill ? addFaqQuill.root.innerHTML : '';
+        const o = document.getElementById('f-o').value;
         if (!q) { showToast('Question is required.', true); return; }
         const res = await apiFetch('/faqs', {
             method: 'POST',
-            body: JSON.stringify({ question: q, answer: a })      // the server puts it at the end of the list
+            body: JSON.stringify({ question: q, answer: a, order: parseInt(o) || 1 })
         });
         if (res.ok) {
             showToast('FAQ added!');
@@ -1553,6 +1463,7 @@
         if (!f) return;
         document.getElementById('editFaqId').value       = id;
         document.getElementById('editFaqQuestion').value = f.question || '';
+        document.getElementById('editFaqOrder').value    = f.order || 1;
         document.getElementById('editFaqError').style.display = 'none';
 
         const modalEl = document.getElementById('editFaqModal');
@@ -1576,6 +1487,7 @@
         const id       = document.getElementById('editFaqId').value;
         const question = document.getElementById('editFaqQuestion').value.trim();
         const answer = faqQuill.root.innerHTML.trim();
+        const order    = parseInt(document.getElementById('editFaqOrder').value) || 1;
         const errEl    = document.getElementById('editFaqError');
         if (!question) {
             errEl.textContent = 'Question is required.';
@@ -1584,7 +1496,7 @@
         }
         const res = await apiFetch('/faqs/' + id, {
             method: 'PUT',
-            body: JSON.stringify({ question, answer })
+            body: JSON.stringify({ question, answer, order })
         });
         if (res.ok) {
             bootstrap.Modal.getInstance(document.getElementById('editFaqModal')).hide();
@@ -1632,7 +1544,7 @@
                         <td>${escapeHtml(u.email||'')}</td>
                         <td>${escapeHtml(u.whatsappNo||'—')}</td>
                         <td><span class="${u.active !== false ? 'badge-active' : 'badge-inactive'}">${u.active !== false ? 'Active' : 'Inactive'}</span></td>
-                        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}) : '—'}</td>
+                        <td>${u.createdAt ? tjDate(u.createdAt) : '—'}</td>
                         <td>
                             <div style="display:flex;gap:8px;align-items:center;">
                                 <button class="action-btn" title="Edit"

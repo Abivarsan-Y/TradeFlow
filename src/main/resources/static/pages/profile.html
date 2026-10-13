@@ -132,22 +132,6 @@
             }
         }
 
-        // An Admin cannot edit the profile: the Edit button is greyed out and there is no edit form.
-        // The Super Admin changes admin details in Admin panel > Admins.
-        function lockProfileEdit() {
-            const btn = document.querySelector('.profile-edit-btn');
-            if (btn) {
-                btn.disabled = true;
-                btn.removeAttribute('onclick');
-                btn.title = 'Admin profiles are managed by the Super Admin';
-            }
-            document.getElementById('edit-section')?.remove();
-            const note = document.createElement('div');
-            note.className = 'profile-lock-note';
-            note.innerHTML = '<i class="bi bi-lock"></i> Your profile is managed by the Super Admin. To change your details, ask the Super Admin (Admin panel &gt; Admins).';
-            document.querySelector('.profile-header-card')?.after(note);
-        }
-
         function toggleEdit() {
             const sec = document.getElementById('edit-section');
             sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
@@ -162,13 +146,6 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadProf();
-            // Admin and Super Admin accounts are not customers: no messages, wishlist or purchases to show
-            if (isStaff()) {
-                if (getRole() === 'ROLE_ADMIN') lockProfileEdit();   // the Super Admin may edit here, an Admin may not
-                document.querySelector('.profile-tabs')?.remove();
-                ['tab-messages', 'tab-wishlist', 'tab-history'].forEach(id => document.getElementById(id)?.remove());
-                return;
-            }
             if (getToken()) {
                 loadMyInquiries();
                 loadMyWishlist();
