@@ -1,7 +1,7 @@
 package com.tradejapan.inventory.service;
 
-import com.tradejapan.cms.repository.UserRepository;
-import com.tradejapan.inventory.config.FeatureCatalog;
+import com.tradejapan.part1.repository.UserRepository;
+import com.tradejapan.part2.config.FeatureCatalog;
 import com.tradejapan.inventory.model.*;
 import com.tradejapan.inventory.repository.*;
 import org.springframework.data.domain.Page;
