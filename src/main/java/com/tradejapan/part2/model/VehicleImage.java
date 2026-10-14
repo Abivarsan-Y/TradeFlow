@@ -16,7 +16,7 @@ public class VehicleImage {
     @JsonBackReference
     private Vehicle vehicle;
 
-    @Column(name = "image_url", nullable = false, length = 255)
+    @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
     @Column(name = "is_main")

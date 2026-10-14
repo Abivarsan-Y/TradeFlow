@@ -47,14 +47,21 @@ const VEHICLE_SORTERS = {
 
 /* ======================= LIST ======================= */
 async function loadVehicles() {
-    const res = await apiFetch('/admin/vehicles');
     const tbody = document.getElementById('vehicles-list');
-    if (res.ok && Array.isArray(res.data)) {
-        allVehicles = res.data;
-        fillVehicleFilters();
-        renderVehicles();
-    } else {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Could not load vehicles.</td></tr>';
+    try {
+        const res = await apiFetch('/admin/vehicles');
+        const list = Array.isArray(res.data) ? res.data : (res.data && Array.isArray(res.data.content) ? res.data.content : null);
+        if (res.ok && list) {
+            allVehicles = list;
+            fillVehicleFilters();
+            renderVehicles();
+        } else {
+            const errMsg = res.status === 403 ? 'Access denied. Please log in with an Admin account.' : 'Could not load vehicles.';
+            if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--tj-text-muted);">${errMsg}</td></tr>`;
+        }
+    } catch (err) {
+        console.error('Error loading vehicles:', err);
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--tj-text-muted);">Could not load vehicles.</td></tr>';
     }
 }
 
@@ -156,7 +163,7 @@ function renderVehicles() {
     tbody.innerHTML = rows.map(v => {
         const img = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
         const st = (v.status || 'AVAILABLE').toUpperCase();
-        const added = v.createdAt ? tjDate(v.createdAt) : '—';
+        const added = v.createdAt ? (typeof tjDate === 'function' ? tjDate(v.createdAt) : String(v.createdAt).slice(0, 10)) : '—';
         return `
             <tr style="${v.active === false ? 'opacity:.55;' : ''}">
                 <td><div class="vehicle-thumb">${img ? `<img src="${escapeHtml(img)}" alt="">` : '<i class="bi bi-car-front"></i>'}</div></td>

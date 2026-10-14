@@ -462,12 +462,27 @@ async function runSearch() {
 }
 /* ===SEARCH-VEHICLES-END=== */
 
-/* ---------- Date helpers (used by admin tables) ---------- */
+/* ---------- Date helpers: always YYYY-MM-DD (and YYYY-MM-DD HH:mm) ---------- */
 function tjDate(d) {
-    const x = new Date(d);
-    return isNaN(x) ? '—' : x.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    if (!d) return '';
+    const t = new Date(d);
+    if (isNaN(t)) return '';
+    const p = n => String(n).padStart(2, '0');
+    return `${t.getFullYear()}-${p(t.getMonth() + 1)}-${p(t.getDate())}`;
 }
+
 function tjDateTime(d) {
-    const x = new Date(d);
-    return isNaN(x) ? '—' : x.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    if (!d) return '';
+    const t = new Date(d);
+    if (isNaN(t)) return '';
+    const p = n => String(n).padStart(2, '0');
+    return `${tjDate(t)} ${p(t.getHours())}:${p(t.getMinutes())}`;
+}
+
+/* ---------- Global escapeHtml helper ---------- */
+function escapeHtml(text) {
+    if (text == null) return '';
+    const d = document.createElement('div');
+    d.textContent = String(text);
+    return d.innerHTML;
 }
