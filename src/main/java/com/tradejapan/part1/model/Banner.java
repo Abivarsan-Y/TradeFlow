@@ -8,11 +8,11 @@ public class Banner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // banner is BIG or SMALL 
     @Column(nullable = false)
     private BannerSize size;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // is banner VIDEO or IMAGE
     @Column(name = "media_type", nullable = false)
     private MediaType mediaType;
 
