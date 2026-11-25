@@ -1156,6 +1156,7 @@
         document.querySelectorAll('.admin-sidebar .sidebar-nav a').forEach(a => a.classList.remove('active'));
         const link = document.querySelector(`.admin-sidebar .sidebar-nav a[onclick*="'${sectionId}'"]`);
         if (link) link.classList.add('active');
+        if (typeof toggleAdminSidebar === 'function') toggleAdminSidebar(false);
     }
 
     function showContentTab(tabId) {

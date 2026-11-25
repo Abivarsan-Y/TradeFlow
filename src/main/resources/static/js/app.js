@@ -304,6 +304,15 @@ function renderFooter() {
 }
 
 /* ---------- Render Admin Sidebar ---------- */
+function toggleAdminSidebar(forceOpen) {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const overlay = document.querySelector('.admin-sidebar-overlay');
+    if (!sidebar) return;
+    const open = typeof forceOpen === 'boolean' ? forceOpen : !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', open);
+    if (overlay) overlay.classList.toggle('open', open);
+}
+
 function renderAdminSidebar(activeItem) {
     const el = document.getElementById('admin-sidebar');
     if (!el) return;
@@ -325,6 +334,14 @@ function renderAdminSidebar(activeItem) {
     ];
 
     el.innerHTML = `
+        <div class="admin-mobile-bar">
+            <button type="button" class="admin-menu-btn" onclick="toggleAdminSidebar()" aria-label="Open menu">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="admin-mobile-title"><span style="color:var(--tj-maroon)">TRADE</span> JAPAN</span>
+            <a href="/index.html" target="_blank" rel="noopener" class="admin-mobile-home" title="View Website"><i class="bi bi-globe2"></i></a>
+        </div>
+        <div class="admin-sidebar-overlay" onclick="toggleAdminSidebar(false)"></div>
         <div class="admin-sidebar">
             <div class="sidebar-logo">
                 <div class="logo-icon"><i class="bi bi-car-front-fill"></i></div>
