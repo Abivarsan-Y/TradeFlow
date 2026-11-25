@@ -491,7 +491,7 @@ body #heroCarousel .hero-btn { padding: .9rem 2.2rem; font-size: 1.3rem; border-
 /* Carousel arrows */
 #heroCarousel .carousel-control-prev, #heroCarousel .carousel-control-next,
 .small-carousel-wrap .carousel-control-prev, .small-carousel-wrap .carousel-control-next {
-  display: flex !important; align-items: center; justify-content: center; width: 3.2rem; opacity: 0; transition: opacity .2s;
+  display: flex; align-items: center; justify-content: center; width: 3.2rem; opacity: 0; transition: opacity .2s; z-index: 5; cursor: pointer;
 }
 #heroCarousel:hover .carousel-control-prev, #heroCarousel:hover .carousel-control-next,
 .small-carousel-wrap:hover .carousel-control-prev, .small-carousel-wrap:hover .carousel-control-next { opacity: 1 !important; }

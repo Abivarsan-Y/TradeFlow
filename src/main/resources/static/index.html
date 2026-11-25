@@ -188,8 +188,6 @@
         .small-carousel-wrap .carousel-indicators .active {
             background: #fff;
         }
-        .small-carousel-wrap .carousel-control-prev,
-        .small-carousel-wrap .carousel-control-next { display: none; }
 
         /* fallback promo card (no banners yet) */
         .promo-card-fallback {
@@ -272,7 +270,12 @@
 <script>
     async function loadBanners() {
         const res = await apiFetch('/banners');
-        if (!res.ok) return;
+        if (!res.ok || !res.data) {
+            buildHeroCarousel([]);
+            buildSmallCarousel('promoLeft', 'smallCarousel1', []);
+            buildSmallCarousel('promoRight', 'smallCarousel2', []);
+            return;
+        }
 
         const { big = [], small1 = [], small2 = [] } = res.data;
 
@@ -281,10 +284,19 @@
         buildSmallCarousel('promoRight', 'smallCarousel2', small2);
     }
 
+    function toggleCarouselControls(el, show) {
+        el.querySelectorAll('.carousel-control-prev, .carousel-control-next').forEach(btn => {
+            btn.style.setProperty('display', show ? 'flex' : 'none', 'important');
+        });
+    }
+
     /* ── BIG hero carousel ── */
     function buildHeroCarousel(banners) {
+        const heroEl     = document.getElementById('heroCarousel');
         const indicators = document.getElementById('hero-indicators');
         const slides     = document.getElementById('hero-slides');
+
+        bootstrap.Carousel.getInstance(heroEl)?.dispose();
 
         if (!banners.length) {
             // fallback hardcoded slide
@@ -305,13 +317,15 @@
                             </div>
                         </div>
                     </div>`;
+            toggleCarouselControls(heroEl, false);
             return;
         }
 
-        indicators.innerHTML = banners.map((_, i) => `
+        const multi = banners.length > 1;
+        indicators.innerHTML = multi ? banners.map((_, i) => `
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="${i}"
                     class="${i === 0 ? 'active' : ''}" aria-label="Slide ${i+1}"></button>
-            `).join('');
+            `).join('') : '';
 
         slides.innerHTML = banners.map((b, i) => `
                 <div class="carousel-item ${i === 0 ? 'active' : ''}">
@@ -328,6 +342,11 @@
                     </div>
                 </div>
             `).join('');
+
+        toggleCarouselControls(heroEl, multi);
+        if (multi) {
+            new bootstrap.Carousel(heroEl, { interval: 2500, ride: 'carousel', touch: true }).cycle();
+        }
     }
 
     /* ── SMALL carousel ── */
@@ -346,7 +365,7 @@
                         <div class="promo-card-fallback-content">
                             <h3>${isFallbackLeft ? 'Japanese Car Auctions' : 'Safe &amp; Reliable Global Shipping'}</h3>
                             <p>${isFallbackLeft ? 'Access the best deals from trusted auction houses in Japan.' : 'Your vehicle, delivered safely to your destination.'}</p>
-                            <a href="${isFallbackLeft ? '/pages/content.html?page=services' : '#'}" class="promo-btn">
+                            <a href="${isFallbackLeft ? '/pages/content.html?page=services' : '/pages/contact.html'}" class="promo-btn">
                                 ${isFallbackLeft ? 'Details' : 'Contact Us'} <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -354,10 +373,11 @@
             return;
         }
 
-        const indicatorHtml = banners.map((_, i) => `
+        const multi = banners.length > 1;
+        const indicatorHtml = multi ? banners.map((_, i) => `
                 <button type="button" data-bs-target="#${carouselId}" data-bs-slide-to="${i}"
                     class="${i === 0 ? 'active' : ''}" aria-label="Slide ${i+1}"></button>
-            `).join('');
+            `).join('') : '';
 
         const slideHtml = banners.map((b, i) => `
                 <div class="carousel-item ${i === 0 ? 'active' : ''}">
@@ -387,7 +407,11 @@
                     </div>
                 </div>`;
 
-        new bootstrap.Carousel(document.getElementById(carouselId), { interval: 2500, ride: 'carousel' });
+        const smallEl = document.getElementById(carouselId);
+        toggleCarouselControls(smallEl, multi);
+        if (multi) {
+            new bootstrap.Carousel(smallEl, { interval: 2500, ride: 'carousel', touch: true }).cycle();
+        }
     }
 
     function escapeHtml(text) {
@@ -399,7 +423,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadBanners();
         loadNewArrivals('new-arrivals-grid');
-        new bootstrap.Carousel(document.getElementById('heroCarousel'), { interval: 2500, ride: 'carousel' });
     });
 </script>
 </body>
