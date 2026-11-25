@@ -6,9 +6,9 @@ Vehicle pages, Inquiries & Purchases and Contact Us / Testimonials / Reports wer
 | Member | Module | Package |
 |---|---|---|
 | 1 Abivarsan | Vehicle inventory | `com.tradejapan.inventory` |
-| 2 Rahman | TradeJapan | part1 | `com.tradejapan.part1` |
-| 3 Sarthani | Inquiries & Purchases | `com.tradejapan.part3` |
-| 4 Aazir | Contact Us, Testimonials, Dashboard & Reports | `com.tradejapan.part4` |
+| 2 Rahman | Auth, Users & CMS | `com.tradejapan.auth`, `com.tradejapan.users`, `com.tradejapan.cms` |
+| 3 Sarthani | Inquiries & Purchases | `com.tradejapan.orders` |
+| 4 Aazir | Contact Us, Testimonials, Dashboard & Reports | `com.tradejapan.engagement`, `com.tradejapan.reporting` |
 
 ## Run
 1. Start MySQL (XAMPP or MySQL Server) on port 3306.

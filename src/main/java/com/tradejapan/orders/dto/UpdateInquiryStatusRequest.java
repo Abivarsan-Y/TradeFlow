@@ -1,0 +1,8 @@
+package com.tradejapan.orders.dto;
+
+import com.tradejapan.orders.model.InquiryStatus;
+import jakarta.validation.constraints.NotNull;
+
+public record UpdateInquiryStatusRequest(
+        @NotNull(message = "status is required") InquiryStatus status
+) {}
