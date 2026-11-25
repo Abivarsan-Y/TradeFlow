@@ -141,6 +141,13 @@ function getFilteredVehicles() {
     return list;
 }
 
+function extractVehicleImages(v) {
+    if (v && Array.isArray(v.images) && v.images.length) {
+        return v.images.map(i => (i && i.imageUrl ? String(i.imageUrl).trim() : '')).filter(Boolean);
+    }
+    return v && v.imageUrls ? v.imageUrls.split(',').map(s => s.trim()).filter(Boolean) : [];
+}
+
 function renderVehicles() {
     const tbody = document.getElementById('vehicles-list');
     const footer = document.getElementById('vehicles-pagination');
@@ -161,7 +168,7 @@ function renderVehicles() {
     const rows = list.slice(start, start + VEHICLES_PER_PAGE);
 
     tbody.innerHTML = rows.map(v => {
-        const img = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
+        const img = extractVehicleImages(v)[0] || '';
         const st = (v.status || 'AVAILABLE').toUpperCase();
         const added = v.createdAt ? (typeof tjDate === 'function' ? tjDate(v.createdAt) : String(v.createdAt).slice(0, 10)) : '—';
         return `
@@ -349,6 +356,101 @@ function updateFeatureCount() {
     document.getElementById('v-feature-count').textContent = `${on} of ${boxes.length} features ON`;
 }
 
+function updateVehicleImagePreview(card, url) {
+    const preview = card.querySelector('.v-image-preview');
+    const clean = (url || '').trim();
+    if (!clean) {
+        preview.innerHTML = '<i class="bi bi-car-front"></i>';
+        return;
+    }
+    const img = document.createElement('img');
+    img.alt = '';
+    img.src = clean;
+    img.onerror = () => { preview.innerHTML = '<i class="bi bi-image-alt"></i>'; };
+    preview.innerHTML = '';
+    preview.appendChild(img);
+}
+
+function refreshVehicleImageMeta() {
+    const container = document.getElementById('v-image-list');
+    if (!container) return;
+    const cards = [...container.querySelectorAll('.v-image-card')];
+    let photoIdx = 0;
+    cards.forEach((card, idx) => {
+        const val = card.querySelector('.v-image-input').value.trim();
+        const badge = card.querySelector('.v-image-label');
+        const removeBtn = card.querySelector('.v-image-remove');
+        const isLastEmpty = idx === cards.length - 1 && val === '';
+        if (val) {
+            photoIdx++;
+            badge.innerHTML = photoIdx === 1
+                ? '<span class="v-image-main-badge">Main Photo</span>'
+                : `Photo ${photoIdx}`;
+        } else {
+            badge.textContent = cards.length === 1 ? 'Photo 1 (Main)' : 'Next photo URL';
+        }
+        removeBtn.style.visibility = isLastEmpty ? 'hidden' : 'visible';
+    });
+}
+
+function createVehicleImageCard(url) {
+    const card = document.createElement('div');
+    card.className = 'v-image-card';
+    card.innerHTML = `
+        <div class="v-image-preview"><i class="bi bi-car-front"></i></div>
+        <div class="v-image-input-wrap">
+            <div class="v-image-meta">
+                <span class="v-image-label"></span>
+                <button type="button" class="v-image-remove" title="Remove photo" aria-label="Remove photo"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <input type="url" class="form-control form-control-sm v-image-input" placeholder="https://example.com/car.jpg">
+        </div>`;
+
+    const input = card.querySelector('.v-image-input');
+    const removeBtn = card.querySelector('.v-image-remove');
+    input.value = url || '';
+    updateVehicleImagePreview(card, input.value);
+
+    input.addEventListener('input', () => {
+        updateVehicleImagePreview(card, input.value);
+        const container = document.getElementById('v-image-list');
+        const cards = container ? [...container.querySelectorAll('.v-image-card')] : [];
+        if (cards.length && cards[cards.length - 1] === card && input.value.trim() !== '') {
+            container.appendChild(createVehicleImageCard(''));
+        }
+        refreshVehicleImageMeta();
+    });
+
+    removeBtn.addEventListener('click', () => {
+        const container = document.getElementById('v-image-list');
+        if (!container) return;
+        card.remove();
+        const cards = [...container.querySelectorAll('.v-image-card')];
+        const lastHasVal = cards.length && cards[cards.length - 1].querySelector('.v-image-input').value.trim() !== '';
+        if (!cards.length || lastHasVal) {
+            container.appendChild(createVehicleImageCard(''));
+        }
+        refreshVehicleImageMeta();
+    });
+
+    return card;
+}
+
+function renderVehicleImageInputs(urls) {
+    const container = document.getElementById('v-image-list');
+    if (!container) return;
+    container.innerHTML = '';
+    (urls || []).filter(Boolean).forEach(u => container.appendChild(createVehicleImageCard(u)));
+    container.appendChild(createVehicleImageCard(''));
+    refreshVehicleImageMeta();
+}
+
+function getVehicleImageUrls() {
+    return [...document.querySelectorAll('#v-image-list .v-image-input')]
+        .map(el => el.value.trim())
+        .filter(Boolean);
+}
+
 async function openVehicleModal(id) {
     await loadFeatureCatalog();
     buildVehicleForm();
@@ -364,7 +466,7 @@ async function openVehicleModal(id) {
     document.getElementById('v-price').value    = v ? v.fobPrice : '';
     setFieldValue(document.getElementById('v-condition'), v && v.condition ? v.condition : '');
     setFieldValue(document.getElementById('v-status'), v && v.status ? v.status : 'AVAILABLE');
-    document.getElementById('v-images').value   = v ? (v.imageUrls || '') : '';
+    renderVehicleImageInputs(v ? extractVehicleImages(v) : []);
     document.getElementById('v-overview').value = v ? (v.description || '') : '';
 
     // Specification tab
@@ -421,7 +523,7 @@ async function saveVehicle() {
         fobPrice: Number(document.getElementById('v-price').value),
         condition: document.getElementById('v-condition').value,
         status: document.getElementById('v-status').value,
-        imageUrls: document.getElementById('v-images').value.trim(),
+        imageUrls: getVehicleImageUrls(),
         description: document.getElementById('v-overview').value.trim(),
         featureIds: [...document.querySelectorAll('#v-feature-list input[type=checkbox]:checked')].map(cb => Number(cb.dataset.fid))
     };

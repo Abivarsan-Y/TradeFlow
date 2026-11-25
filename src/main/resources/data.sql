@@ -20,40 +20,51 @@ INSERT IGNORE INTO vehicles
  transmission, drive_type, chassis_no, model_code, grade, engine_model,
  odometer_km, displacement_cc, doors, passengers, dimension, size, exterior_color, location,
  description, is_new_arrival, is_active, status, created_at)
-VALUES
-(1, 1, 2018, 9800.00,  'TJ00001', 'Sedan', 'Petrol', 'Right', 'CVT', '2WD',
- 'NRE161-123456', 'DBA-NRE161', 'X',        '1NR-FE',  42000, 1496, 4, 5, '4,495 x 1,695 x 1,460 mm', 'Compact',
- 'White',  'Japan', 'Great condition family sedan.',
- TRUE,  TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+SELECT src.vehicle_id, src.model_id, src.year, src.price_usd, src.ref_no, src.body_type, src.fuel_type, src.steering,
+       src.transmission, src.drive_type, src.chassis_no, src.model_code, src.grade, src.engine_model,
+       src.odometer_km, src.displacement_cc, src.doors, src.passengers, src.dimension, src.size, src.exterior_color, src.location,
+       src.description, src.is_new_arrival, src.is_active, src.status, src.created_at
+FROM (
+    SELECT 1 AS vehicle_id, 1 AS model_id, 2018 AS year, 9800.00 AS price_usd, 'TJ00001' AS ref_no, 'Sedan' AS body_type, 'Petrol' AS fuel_type, 'Right' AS steering,
+           'CVT' AS transmission, '2WD' AS drive_type, 'NRE161-123456' AS chassis_no, 'DBA-NRE161' AS model_code, 'X' AS grade, '1NR-FE' AS engine_model,
+           42000 AS odometer_km, 1496 AS displacement_cc, 4 AS doors, 5 AS passengers, '4,495 x 1,695 x 1,460 mm' AS dimension, 'Compact' AS size,
+           'White' AS exterior_color, 'Japan' AS location, 'Great condition family sedan.' AS description,
+           TRUE AS is_new_arrival, TRUE AS is_active, 'AVAILABLE' AS status, DATE_SUB(NOW(), INTERVAL 1 DAY) AS created_at
+    UNION ALL
+    SELECT 2, 2, 2019, 15450.00, 'TJ00002', 'SUV', 'Hybrid', 'Right', 'CVT', '4WD',
+           'HNT32-123456', 'DAA-HNT32', '20X', 'MR20DD', 61000, 1997, 5, 5, '4,690 x 1,820 x 1,740 mm', 'Mid-size',
+           'Black', 'Japan', 'Spacious hybrid SUV with premium finish.',
+           FALSE, TRUE, 'AVAILABLE', DATE_SUB(NOW(), INTERVAL 20 DAY)
+    UNION ALL
+    SELECT 3, 3, 2017, 11200.00, 'TJ00003', 'Van', 'Petrol', 'Right', 'CVT', '2WD',
+           'RP3-123456', 'DBA-RP3', 'Spada', 'L15B', 88000, 1496, 5, 7, '4,690 x 1,695 x 1,840 mm', 'Mid-size',
+           'Silver', 'Japan', 'Family van with lots of space.',
+           FALSE, TRUE, 'RESERVED', DATE_SUB(NOW(), INTERVAL 45 DAY)
+    UNION ALL
+    SELECT 4, 4, 2021, 22500.00, 'TJ00004', 'SUV', 'Petrol', 'Right', 'Auto', '4WD',
+           'KF2FW-100001', 'DBA-KF2FW', '25S', 'PY-VPS', 18000, 2488, 5, 5, '4,545 x 1,840 x 1,690 mm', 'Mid-size',
+           'Red', 'Japan', 'Near-new Mazda CX-5 in excellent condition.',
+           TRUE, TRUE, 'AVAILABLE', DATE_SUB(NOW(), INTERVAL 3 DAY)
+    UNION ALL
+    SELECT 5, 5, 2020, 17800.00, 'TJ00005', 'SUV', 'Petrol', 'Right', 'CVT', '4WD',
+           'SK9-200001', 'DBA-SK9', 'X-Break', 'FB25', 35000, 2498, 5, 5, '4,625 x 1,815 x 1,730 mm', 'Mid-size',
+           'Blue', 'Japan', 'Subaru Forester with EyeSight safety system.',
+           FALSE, TRUE, 'AVAILABLE', DATE_SUB(NOW(), INTERVAL 10 DAY)
+) AS src
+WHERE NOT EXISTS (SELECT 1 FROM vehicles);
 
-(2, 2, 2019, 15450.00, 'TJ00002', 'SUV',   'Hybrid', 'Right', 'CVT', '4WD',
- 'HNT32-123456',  'DAA-HNT32',  '20X',      'MR20DD',  61000, 1997, 5, 5, '4,690 x 1,820 x 1,740 mm', 'Mid-size',
- 'Black',  'Japan', 'Spacious hybrid SUV with premium finish.',
- FALSE, TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 20 DAY)),
-
-(3, 3, 2017, 11200.00, 'TJ00003', 'Van',   'Petrol', 'Right', 'CVT', '2WD',
- 'RP3-123456',    'DBA-RP3',    'Spada',    'L15B',    88000, 1496, 5, 7, '4,690 x 1,695 x 1,840 mm', 'Mid-size',
- 'Silver', 'Japan', 'Family van with lots of space.',
- FALSE, TRUE,  'RESERVED',  DATE_SUB(NOW(), INTERVAL 45 DAY)),
-
-(4, 4, 2021, 22500.00, 'TJ00004', 'SUV',   'Petrol', 'Right', 'Auto', '4WD',
- 'KF2FW-100001',  'DBA-KF2FW',  '25S',      'PY-VPS',  18000, 2488, 5, 5, '4,545 x 1,840 x 1,690 mm', 'Mid-size',
- 'Red',    'Japan', 'Near-new Mazda CX-5 in excellent condition.',
- TRUE,  TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 3 DAY)),
-
-(5, 5, 2020, 17800.00, 'TJ00005', 'SUV',   'Petrol', 'Right', 'CVT', '4WD',
- 'SK9-200001',    'DBA-SK9',    'X-Break',  'FB25',    35000, 2498, 5, 5, '4,625 x 1,815 x 1,730 mm', 'Mid-size',
- 'Blue',   'Japan', 'Subaru Forester with EyeSight safety system.',
- FALSE, TRUE,  'AVAILABLE', DATE_SUB(NOW(), INTERVAL 10 DAY));
-
-INSERT IGNORE INTO vehicle_images (image_id, vehicle_id, image_url, is_main, sort_order) VALUES
-(1, 1, 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80', TRUE,  1),
-(2, 1, 'https://picsum.photos/id/111/800/500',                                      FALSE, 2),
-(3, 2, 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80',     TRUE,  1),
-(4, 2, 'https://picsum.photos/id/1071/800/500',                                     FALSE, 2),
-(5, 3, 'https://images.unsplash.com/photo-1570733577524-3a047079e80d?w=800&q=80',  TRUE,  1),
-(6, 4, 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80',  TRUE,  1),
-(7, 5, 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80',  TRUE,  1);
+INSERT IGNORE INTO vehicle_images (image_id, vehicle_id, image_url, is_main, sort_order)
+SELECT src.image_id, src.vehicle_id, src.image_url, src.is_main, src.sort_order
+FROM (
+    SELECT 1 AS image_id, 1 AS vehicle_id, 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80' AS image_url, TRUE AS is_main, 1 AS sort_order
+    UNION ALL SELECT 2, 1, 'https://picsum.photos/id/111/800/500', FALSE, 2
+    UNION ALL SELECT 3, 2, 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&q=80', TRUE, 1
+    UNION ALL SELECT 4, 2, 'https://picsum.photos/id/1071/800/500', FALSE, 2
+    UNION ALL SELECT 5, 3, 'https://images.unsplash.com/photo-1570733577524-3a047079e80d?w=800&q=80', TRUE, 1
+    UNION ALL SELECT 6, 4, 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80', TRUE, 1
+    UNION ALL SELECT 7, 5, 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80', TRUE, 1
+) AS src
+WHERE NOT EXISTS (SELECT 1 FROM vehicle_images);
 
 
 
@@ -73,14 +84,6 @@ INSERT IGNORE INTO content (id, page_name, title, html_content, updated_at) VALU
 (4, 'privacy', 'Privacy Policy',
  '<h2>Privacy Policy</h2><p><em>Last updated: October 2026</em></p><p>TRADE JAPAN CO., LTD. (&quot;Trade Japan&quot;, &quot;we&quot;, &quot;us&quot;) respects your privacy. This page explains what personal information we collect through this website, why, and what choices you have.</p><h3>What we collect</h3><ul><li><strong>Account details:</strong> your first name, last name, email address and WhatsApp number. Your password is stored only in a protected (hashed) form.</li><li><strong>Your inquiries and messages:</strong> the vehicle you ask about, your destination country and the conversation with our team.</li><li><strong>Your purchases:</strong> the purchase records, payment amounts and invoices for vehicles you buy.</li><li><strong>Saved vehicles:</strong> the vehicles you add to your wishlist.</li><li><strong>Contact and testimonial forms:</strong> the name, email, subject and message you send us, and any testimonial you write.</li><li><strong>Sign-in information:</strong> we keep a login token in your browser so that you stay signed in.</li></ul><h3>How we use it</h3><ul><li>To create and manage your account.</li><li>To answer your inquiries and to prepare, invoice and ship your purchases.</li><li>To contact you about your vehicle, usually by email or WhatsApp.</li><li>To show testimonials on our website, only after our team has approved them.</li><li>To keep the website secure and to meet legal and accounting requirements.</li></ul><h3>Who we share it with</h3><p>We do not sell your personal information. We only share what is needed to complete your purchase, for example with shipping companies, auction houses, banks and payment providers, and with authorities when the law requires it.</p><h3>Keeping it safe</h3><p>Your customer record, messages and invoices can only be opened by you, for your own account, and by our logged-in staff. Please keep your password private and log out when you use a shared computer.</p><h3>How long we keep it</h3><p>We keep your account and your purchase records for as long as we need them to provide our service and to meet legal and accounting requirements.</p><h3>Your choices</h3><ul><li>You can see and update your details in your account at any time.</li><li>You can ask us to deactivate your account.</li><li>You can ask us a question about your information.</li></ul><p>To do any of these, please use our <a href="/pages/contact.html">Contact Us</a> page.</p><h3>Changes to this policy</h3><p>We may update this policy from time to time. The latest version is always on this page.</p><h3>Contact</h3><p>TRADE JAPAN CO., LTD., Yamazaki 2116-2, Noda-Shi, Chiba-Ken, Japan. Use our <a href="/pages/contact.html">Contact Us</a> page to reach us.</p>',
  NOW());
-
-
-INSERT IGNORE INTO vehicle_images (image_id, vehicle_id, image_url, is_main, sort_order) VALUES
-(1, 1, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.carjunction.com%2Fcar_images2%2F94990_106925%2F106925aa-(1).jpg&f=1&nofb=1&ipt=f49e0a682d692a1bcf2110b5cab97f324fbcdfbf70aab07ce500ccb39449f469&ipo=images', TRUE, 1),
-(2, 1, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fautovanjp.com%2Fwp-content%2Fuploads%2F2023%2F01%2FTOYOTA-COROLLA-AXIO-9.jpeg&f=1&nofb=1&ipt=460dae0f5f89799aa5443e4cf0146c64ed054ffaf46d35d508067f880cb771aa&ipo=images', FALSE, 2),
-(3, 2, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs1.cdn.autoevolution.com%2Fimages%2Fnews%2Fgallery%2F2019-nissan-x-trail-gets-17-liter-diesel-with-150-hp-13-turbo-with-160-hp_6.jpg&f=1&nofb=1&ipt=00a467b2a2cee306a39a958e45acc649b68f921ed317c428bf69ca98b98c66d9&ipo=images', TRUE, 1),
-(4, 2, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.motor1.com%2Fimages%2Fmgl%2Fz21Wb%2Fs1%2Fnissan-x-trail-2019-neue-motoren.jpg&f=1&nofb=1&ipt=a7767daa5aabb725ee3d15dc4886b5a55ee992183e7bfd72f7a8575387d8fc14&ipo=images', FALSE, 2),
-(5, 3, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars.mds.yandex.net%2Fget-autoru-vos%2F4946962%2F6777edce082bb5734befa67c28c346a7%2F1200x900&f=1&nofb=1&ipt=fc225c56ef35423033ffe52accb8d2dd0448b7b6d3a08ebbe1b0e620124c1e8e&ipo=images', TRUE, 1);
 
 
 INSERT IGNORE INTO faq_items (id, question, answer, display_order, active) VALUES

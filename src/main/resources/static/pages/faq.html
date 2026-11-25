@@ -12,6 +12,7 @@
         .faq-answer.ql-editor {
             padding-left: 0;
             padding-right: 0;
+            padding-bottom: 1.25rem;
             border: none;
             box-shadow: none;
             font-size: inherit;
@@ -19,11 +20,13 @@
             color: inherit;
             white-space: normal;
             height: auto;
+            min-height: 0;
             overflow: visible;
         }
         .faq-answer.ql-editor p { margin: 0; line-height: 1.6; }
         .faq-answer.ql-editor ul,
-        .faq-answer.ql-editor ol { padding-left: 0; margin: 0; }
+        .faq-answer.ql-editor ol { padding-left: 1.4rem; margin: .4rem 0 0; }
+        .faq-answer.ql-editor > :last-child { margin-bottom: 0; }
     </style>
 
 </head>
@@ -52,15 +55,23 @@
             const res = await apiFetch('/faqs');
             const list = document.getElementById('faq-list');
             if (res.ok && res.data.length > 0) {
+                const cleanAnswer = html => String(html || '').replace(/(?:\s*<p>(?:\s|<br\s*\/?>|&nbsp;)*<\/p>)+\s*$/gi, '');
+                const targetId = new URLSearchParams(window.location.search).get('id');
+                let openIdx = targetId ? res.data.findIndex(f => String(f.id) === String(targetId)) : 0;
+                if (openIdx < 0) openIdx = 0;
                 list.innerHTML = res.data.map((f, i) => `
-                    <div class="faq-item${i === 0 ? ' active' : ''}">
+                    <div class="faq-item${i === openIdx ? ' active' : ''}" data-faq-id="${f.id}">
                         <button class="faq-question" onclick="toggleFaq(this)">
                             <span>${f.question}</span>
-                            <span class="faq-toggle">${i === 0 ? '−' : '+'}</span>
+                            <span class="faq-toggle">${i === openIdx ? '−' : '+'}</span>
                         </button>
-                        <div class="faq-answer ql-editor">${f.answer || ''}</div>
+                        <div class="faq-answer ql-editor">${cleanAnswer(f.answer)}</div>
                     </div>
                 `).join('');
+                if (targetId) {
+                    const targetEl = list.querySelector(`.faq-item[data-faq-id="${CSS.escape(targetId)}"]`);
+                    if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             } else {
                 list.innerHTML = '<div style="text-align:center;padding:48px;color:var(--tj-text-muted);">No FAQs available at the moment.</div>';
             }

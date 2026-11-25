@@ -48,6 +48,15 @@ function emptyCard(icon, text) {
             </div>`;
 }
 
+function staffPreviewCard(box, featureLabel) {
+    box.innerHTML = `
+        <div class="admin-card" style="text-align:center;color:var(--tj-text-muted);padding:48px;">
+            <i class="bi bi-shield-check" style="font-size:2.5rem;color:var(--tj-navy);"></i>
+            <p style="margin-top:12px;">Logged in as Staff (preview mode). ${oEsc(featureLabel)} only available for customer accounts.</p>
+            <a class="btn-tj-primary" href="/pages/admin/dashboard.html" style="margin-top:8px;display:inline-flex;">Back to Admin Panel</a>
+        </div>`;
+}
+
 /* ---------- Send Inquiry (vehicle detail page) ---------- */
 function openInquiryModal(btn) {
     const vehicleId = Number(btn.dataset.vid);
@@ -57,10 +66,7 @@ function openInquiryModal(btn) {
         showConfirm('Please log in to send an inquiry about this vehicle.', () => { window.location.href = '/pages/login.html'; });
         return;
     }
-    if (/ADMIN/.test(getRole() || '')) {
-        showConfirm('Inquire functionality works.', () => {});
-        return;
-    }
+    if (staffBlocked('send an inquiry')) return;
 
     document.getElementById('tj-confirm-overlay')?.remove();
     const overlay = document.createElement('div');
@@ -154,6 +160,7 @@ function inquiryItemHtml(i) {
 async function loadMyInquiries() {
     const box = document.getElementById('tab-messages');
     if (!box) return;
+    if (typeof isStaff === 'function' && isStaff()) { staffPreviewCard(box, 'Customer messages are'); return; }
     box.innerHTML = emptyCard('bi-arrow-clockwise', 'Loading your messages...');
     const res = await apiFetch('/inquiries/me');
     if (!res.ok || !Array.isArray(res.data)) { box.innerHTML = emptyCard('bi-exclamation-circle', 'Could not load your messages.'); return; }
@@ -275,6 +282,7 @@ function purchaseCardHtml(p) {
 async function loadMyPurchases() {
     const box = document.getElementById('tab-history');
     if (!box) return;
+    if (typeof isStaff === 'function' && isStaff()) { staffPreviewCard(box, 'Customer purchase history is'); return; }
     box.innerHTML = emptyCard('bi-arrow-clockwise', 'Loading your purchases...');
     const res = await apiFetch('/purchases/me');
     if (!res.ok || !Array.isArray(res.data)) { box.innerHTML = emptyCard('bi-exclamation-circle', 'Could not load your purchases.'); return; }
@@ -307,7 +315,9 @@ async function downloadInvoice(id) {
 
 /* ---------- My Account: Wishlist tab (saved vehicles) ---------- */
 function wishlistCardHtml(v) {
-    const img = (v.imageUrls || '').split(',')[0].trim();
+    const img = (Array.isArray(v.images) && v.images[0]?.imageUrl)
+        ? v.images[0].imageUrl.trim()
+        : (v.imageUrls || '').split(',')[0].trim();
     return `
     <div class="wl-card" id="wl-${v.id}">
         <a class="wl-link" href="/pages/vehicle-detail.html?id=${v.id}">
@@ -324,6 +334,7 @@ function wishlistCardHtml(v) {
 async function loadMyWishlist() {
     const box = document.getElementById('tab-wishlist');
     if (!box) return;
+    if (typeof isStaff === 'function' && isStaff()) { staffPreviewCard(box, 'Saved vehicles are'); return; }
     box.innerHTML = emptyCard('bi-arrow-clockwise', 'Loading your saved vehicles...');
     const res = await apiFetch('/wishlist');
     if (!res.ok || !Array.isArray(res.data)) {

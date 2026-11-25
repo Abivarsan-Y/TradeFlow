@@ -122,13 +122,24 @@ async function initTestimonialPage() {
     if (!form) return;
 
     // Only logged-in customers can write a testimonial
+    const loginBox = document.getElementById('tm-login');
+    const staffBox = document.getElementById('tm-staff');
+    const formWrap = document.getElementById('tm-form-wrap');
     if (!getToken()) {
-        document.getElementById('tm-login').style.display = 'block';
-        document.getElementById('tm-form-wrap').style.display = 'none';
+        loginBox.style.display = 'block';
+        if (staffBox) staffBox.style.display = 'none';
+        formWrap.style.display = 'none';
         return;
     }
-    document.getElementById('tm-login').style.display = 'none';
-    document.getElementById('tm-form-wrap').style.display = 'block';
+    if (typeof isStaff === 'function' && isStaff()) {
+        loginBox.style.display = 'none';
+        if (staffBox) staffBox.style.display = 'block';
+        formWrap.style.display = 'none';
+        return;
+    }
+    loginBox.style.display = 'none';
+    if (staffBox) staffBox.style.display = 'none';
+    formWrap.style.display = 'block';
 
     const notice = document.getElementById('testimonialNotice');
     const countrySel = document.getElementById('tm-country');

@@ -128,7 +128,8 @@
                 loadProf();
             } else {
                 msg.className = 'auth-message';
-                msg.innerText = 'Update failed.';
+                msg.innerText = (res.data && res.data.message)
+                    || (typeof res.data === 'string' && res.data.trim() ? res.data : 'Update failed.');
             }
         }
 

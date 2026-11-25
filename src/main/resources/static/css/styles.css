@@ -159,6 +159,10 @@ a:hover { color: var(--tj-maroon); }
 .search-vstatus.reserved  { background: #fff3da; color: #9a6200; }
 .search-vstatus.sold      { background: #fde8e8; color: #b30f1b; }
 .search-note { color: var(--tj-text-muted); font-size: .9rem; padding: .1rem 0 .6rem; }
+.search-group-title { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; color: var(--tj-text-muted); margin: .8rem 0 .45rem; }
+.search-group-title:first-child { margin-top: .2rem; }
+.search-hit { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 1.1rem; margin-bottom: .5rem; border: 1px solid #e3eaf1; border-radius: .8rem; text-decoration: none; background: #fff; }
+.search-tag { flex-shrink: 0; font-size: .74rem; font-weight: 700; padding: .2rem .6rem; border-radius: 999px; background: #eef3f9; color: var(--tj-navy); }
 
 /* ================================================
    PUBLIC FOOTER
@@ -837,6 +841,18 @@ body .tj-confirm-overlay .tj-confirm-box { max-width: none !important; padding: 
 @media (max-width: 900px) { .feature-toggle-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px) { .feature-toggle-grid { grid-template-columns: 1fr; } }
 .modal-dialog.modal-xl { max-width: 72rem; }
+
+/* admin: multi-box image URL editor */
+.v-image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; }
+.v-image-card { display: flex; align-items: center; gap: .6rem; padding: .5rem .6rem; border: 1px solid var(--tj-border); border-radius: .65rem; background: var(--tj-light-bg); }
+.v-image-card:focus-within { border-color: var(--tj-navy); background: var(--tj-white); }
+.v-image-preview { width: 3.4rem; height: 2.6rem; border-radius: .45rem; background: #e6eef6; display: flex; align-items: center; justify-content: center; color: #9db0c4; font-size: 1.2rem; overflow: hidden; flex-shrink: 0; position: relative; }
+.v-image-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.v-image-input-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .25rem; }
+.v-image-meta { display: flex; align-items: center; justify-content: space-between; font-size: .74rem; color: var(--tj-text-muted); }
+.v-image-main-badge { background: var(--tj-navy); color: #fff; font-size: .68rem; font-weight: 700; padding: .1rem .45rem; border-radius: 999px; letter-spacing: .2px; }
+.v-image-remove { border: none; background: transparent; color: var(--tj-text-muted); padding: .15rem .3rem; border-radius: .35rem; cursor: pointer; line-height: 1; font-size: .95rem; flex-shrink: 0; }
+.v-image-remove:hover { color: var(--tj-maroon); background: rgba(179,15,27,.08); }
 
 /* ================================================
    CATALOGUE PAGE (sidebar filters), ADMIN VEHICLE SEARCH BAR, TABLE FOOTER

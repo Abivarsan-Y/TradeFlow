@@ -12,7 +12,10 @@ function vEsc(t) {
 }
 function vMoney(n) { return '$' + Number(n || 0).toLocaleString('en-US'); }
 function vImages(v) {
-    return v.imageUrls ? v.imageUrls.split(',').map(s => s.trim()).filter(Boolean) : [];
+    if (v && Array.isArray(v.images) && v.images.length) {
+        return v.images.map(i => (i && i.imageUrl ? String(i.imageUrl).trim() : '')).filter(Boolean);
+    }
+    return v && v.imageUrls ? v.imageUrls.split(',').map(s => s.trim()).filter(Boolean) : [];
 }
 function vStatusBadge(status) {
     const s = (status || 'AVAILABLE').toUpperCase();
@@ -332,7 +335,7 @@ function vdSetSaved(btn, saved) {
 // when a customer is logged in, fill the heart if this vehicle is already in their wishlist
 async function vdInitSaveButton(vehicleId) {
     const btn = document.getElementById('vd-save-btn');
-    if (!btn || !getToken()) return;
+    if (!btn || !getToken() || isStaff()) return;
     const res = await apiFetch('/wishlist/ids');
     if (res.ok && Array.isArray(res.data) && res.data.includes(vehicleId)) vdSetSaved(btn, true);
 }
@@ -342,6 +345,7 @@ async function vdToggleSave(btn) {
         window.location.href = '/pages/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
         return;
     }
+    if (staffBlocked('save vehicles to a wishlist')) return;
     const wasSaved = btn.dataset.saved === '1';
     btn.disabled = true;
     const res = await apiFetch('/wishlist/' + btn.dataset.vid, { method: wasSaved ? 'DELETE' : 'POST' });

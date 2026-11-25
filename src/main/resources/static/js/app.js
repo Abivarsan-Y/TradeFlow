@@ -14,10 +14,13 @@ function getUserName()    { return localStorage.getItem('user_name') || ''; }
 // Admin and Super Admin accounts are not customers: they cannot use the customer-only features
 // (inquiries, wishlist, testimonials). The server refuses them too; this keeps the buttons from failing.
 function isStaff() { const r = getRole(); return r === 'ROLE_ADMIN' || r === 'ROLE_SUPER_ADMIN'; }
-function staffBlocked() {
+function staffBlocked(action) {
     if (!isStaff()) return false;
-    const msg = 'Customer accounts only. Please log in with a customer account to use this.';
-    if (typeof tjToast === 'function') tjToast(msg, true); else alert(msg);
+    const suffix = action ? ` to ${action}` : '';
+    const msg = `Logged in as Staff (preview mode). Please log in with a customer account${suffix}.`;
+    if (typeof tjToast === 'function') tjToast(msg, true);
+    else if (typeof showToast === 'function') showToast(msg, true);
+    else alert(msg);
     return true;
 }
 function setUserName(n)   { localStorage.setItem('user_name', n); }
@@ -144,10 +147,13 @@ async function apiFetch(url, options = {}) {
     }
 
     if (response.status === 403 && !url.startsWith('/auth/')) {
+        const text = await response.text();
+        let parsed = text;
+        try { parsed = JSON.parse(text); } catch { /* plain text */ }
         if (typeof showToast === 'function') {
-            showToast("You don't have permission to perform this action.", true);
+            showToast((parsed && parsed.message) || "You don't have permission to perform this action.", true);
         }
-        return { ok: false, status: 403, data: null };
+        return { ok: false, status: 403, data: parsed || null };
     }
 
     const data = await response.text();
@@ -195,10 +201,10 @@ function renderNavbar() {
         <div class="search-panel" id="search-panel">
             <div class="search-box">
                 <i class="bi bi-search"></i>
-                <input type="text" id="search-input" placeholder="Search vehicles: make, model, year, reference no..."
+                <input type="text" id="search-input" placeholder="Search vehicles, brands, auction, inquiry, FAQ..."
                        oninput="searchTyping()"
-                       onkeydown="if(event.key==='Enter'){clearTimeout(_searchTimer);runSearch();}if(event.key==='Escape')toggleSearch();">
-                <button onclick="runSearch()">Search</button>
+                       onkeydown="if(event.key==='Enter'){clearTimeout(_searchTimer);runSearch(true);}if(event.key==='Escape')toggleSearch();">
+                <button onclick="runSearch(true)">Search</button>
                 <button class="search-close" onclick="toggleSearch()"><i class="bi bi-x-lg"></i></button>
             </div>
             <div id="search-results"></div>
@@ -376,89 +382,347 @@ function toggleSearch() {
 }
 
 /* ===SEARCH-VEHICLES-START=== */
-/* Navbar search: finds VEHICLES (make, model, year, body type, colour, fuel, transmission, reference no ...) */
+/* Navbar search: unified word-prefix search across Brands/Categories, Site Features/Pages, FAQs, and Vehicles */
 function _searchEsc(t) {
     const d = document.createElement('div');
     d.textContent = t == null ? '' : String(t);
     return d.innerHTML;
 }
 
-let _searchVehicles = null;   // the vehicle list, loaded once and reused
-let _searchTimer = null;
-
-// live search while typing (small delay so it does not search on every key)
-function searchTyping() {
-    clearTimeout(_searchTimer);
-    _searchTimer = setTimeout(runSearch, 300);
+function _searchStripHtml(html) {
+    if (!html) return '';
+    const d = document.createElement('div');
+    d.innerHTML = html;
+    return d.textContent || d.innerText || '';
 }
 
-// everything about a vehicle that a visitor may type, as one lower-case text
-function _searchHay(v) {
+function _searchWords(text) {
+    return String(text || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+/** Returns 0 if any query word has no word-start prefix match; otherwise higher score for exact whole-word hits. */
+function _searchPrefixScore(text, queryWords) {
+    const targetWords = _searchWords(text);
+    if (!targetWords.length || !queryWords.length) return 0;
+    let total = 0;
+    for (const qw of queryWords) {
+        let best = 0;
+        for (const tw of targetWords) {
+            if (tw === qw) { best = 2; break; }
+            if (tw.startsWith(qw) && best < 1) best = 1;
+        }
+        if (best === 0) return 0;
+        total += best;
+    }
+    return total;
+}
+
+const _SEARCH_PAGES = [
+    {
+        title: 'Auction Service & How To Buy',
+        desc: 'Bid at Japanese car auctions, security deposit, and buying steps',
+        url: '/pages/content.html?page=services',
+        tag: 'Feature',
+        keywords: 'auction auctions bidding bid deposit services how to buy import inspection'
+    },
+    {
+        title: 'Browse Vehicles & Inventory',
+        desc: 'Filter available cars by make, model, year, body type, and price',
+        url: '/pages/inventory.html',
+        tag: 'Page',
+        keywords: 'vehicles inventory catalogue stock cars browse filter buy'
+    },
+    {
+        title: 'Send Vehicle Inquiry',
+        desc: 'Choose a vehicle and click Inquire Now to ask about price or shipping',
+        url: '/pages/inventory.html',
+        tag: 'Feature',
+        keywords: 'inquire inquiry quote price shipping question vehicle'
+    },
+    {
+        title: 'My Inquiries & Messages',
+        desc: 'View replies from the Trade Japan team on your vehicle inquiries',
+        url: '/pages/profile.html?tab=messages',
+        tag: 'Account',
+        keywords: 'inquire inquiry messages replies chat account',
+        staffUrl: '/pages/admin/dashboard.html',
+        staffDesc: 'Manage customer inquiries and replies in Admin Panel'
+    },
+    {
+        title: 'Saved Vehicles (Wishlist)',
+        desc: 'View vehicles you saved to your wishlist',
+        url: '/pages/profile.html?tab=wishlist',
+        tag: 'Account',
+        keywords: 'wishlist saved favorites heart cart',
+        hideForStaff: true
+    },
+    {
+        title: 'Purchase History & Invoices',
+        desc: 'Track order progress, advance payments, balance, and PDF invoices',
+        url: '/pages/profile.html?tab=history',
+        tag: 'Account',
+        keywords: 'purchase history orders invoice pdf payment balance delivery',
+        staffUrl: '/pages/admin/dashboard.html',
+        staffDesc: 'Manage customer purchases and invoices in Admin Panel'
+    },
+    {
+        title: 'Contact Us',
+        desc: 'Send a direct message, view phone, email, and Tokyo office details',
+        url: '/pages/contact.html',
+        tag: 'Page',
+        keywords: 'contact us message support email phone address help'
+    },
+    {
+        title: 'Frequently Asked Questions (FAQ)',
+        desc: 'Answers on auctions, payments, shipping times, and inspections',
+        url: '/pages/faq.html',
+        tag: 'Page',
+        keywords: 'faq questions answers help payment shipping cancel inspection'
+    },
+    {
+        title: 'Share Your Experience (Testimonials)',
+        desc: 'Read or submit a customer testimonial and rating',
+        url: '/pages/submit-testimonial.html',
+        tag: 'Feature',
+        keywords: 'testimonial testimonials review feedback rating experience'
+    },
+    {
+        title: 'About Us',
+        desc: 'About Trade Japan Co., Ltd., mission, vision, and company profile',
+        url: '/pages/content.html?page=about',
+        tag: 'Company',
+        keywords: 'about us company profile mission vision established japan chiba bank'
+    },
+    {
+        title: 'Terms & Conditions',
+        desc: 'Pricing terms (FOB, C&F, CIF), auction rules, and cancellation terms',
+        url: '/pages/content.html?page=tc',
+        tag: 'Policy',
+        keywords: 'terms conditions fob c&f cif cancellation agreement policy'
+    },
+    {
+        title: 'Privacy Policy',
+        desc: 'How Trade Japan collects, uses, and protects your account information',
+        url: '/pages/content.html?page=privacy',
+        tag: 'Policy',
+        keywords: 'privacy policy personal data security account'
+    }
+];
+
+let _searchCache = null;
+let _searchTimer = null;
+
+function searchTyping() {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(() => runSearch(false), 250);
+}
+
+async function _searchEnsureData() {
+    if (_searchCache) return _searchCache;
+    const [vehRes, faqRes] = await Promise.all([
+        apiFetch('/vehicles?page=0&size=500'),
+        apiFetch('/faqs')
+    ]);
+    if (!vehRes.ok || !Array.isArray(vehRes.data)) return null;
+    _searchCache = {
+        vehicles: vehRes.data,
+        faqs: (faqRes.ok && Array.isArray(faqRes.data)) ? faqRes.data : []
+    };
+    return _searchCache;
+}
+
+function _searchVehicleHay(v) {
     return [v.make, v.model, v.manufactureYear, v.category, v.exteriorColor, v.fuelType, v.transmission,
         v.steering, v.driveType, v.refNo, v.grade, v.engineType,
         (v.condition || '').toUpperCase() === 'NEW' ? 'new' : 'used']
         .filter(x => x !== null && x !== undefined && x !== '')
-        .join(' ').toLowerCase();
+        .join(' ');
 }
 
-// 1-2 letters (like "to") must start a word, longer words may be anywhere (so "au" does not match "automatic")
-function _searchHas(hay, w) {
-    return w.length > 2 ? hay.includes(w) : (' ' + hay).includes(' ' + w);
-}
+const SEARCH_MAX = 8;
+const SEARCH_SKIP = ['vehicle', 'vehicles', 'car', 'cars'];
 
-const SEARCH_MAX = 8;                                          // cards shown at most
-const SEARCH_SKIP = ['vehicle', 'vehicles', 'car', 'cars'];    // words that say nothing about which car
-
-async function runSearch() {
+async function runSearch(navigateTop = false) {
     const input = document.getElementById('search-input');
     const out   = document.getElementById('search-results');
     if (!input || !out) return;
     const q = input.value.trim().toLowerCase();
     if (q.length < 2) {
-        out.innerHTML = '<div class="search-empty">Type a make, model, year or reference number (at least 2 characters).</div>';
+        out.innerHTML = '<div class="search-empty">Type at least 2 characters (e.g. a car name, brand, auction, inquire, or FAQ).</div>';
         return;
     }
-    if (_searchVehicles === null) {
-        out.innerHTML = '<div class="search-empty">Searching...</div>';
-        const res = await apiFetch('/vehicles?page=0&size=500');
-        if (!res.ok || !Array.isArray(res.data)) {
-            out.innerHTML = '<div class="search-empty">Could not load vehicles. Please try again.</div>';
+
+    if (!_searchCache) out.innerHTML = '<div class="search-empty">Searching...</div>';
+    const data = await _searchEnsureData();
+    if (!data) {
+        out.innerHTML = '<div class="search-empty">Could not load search results. Please try again.</div>';
+        return;
+    }
+    if (input.value.trim().toLowerCase() !== q) return;
+
+    const rawWords = _searchWords(q);
+    if (!rawWords.length) {
+        out.innerHTML = '<div class="search-empty">Type a keyword to search.</div>';
+        return;
+    }
+    const queryWords = rawWords.length > 1
+        ? rawWords.filter(w => !SEARCH_SKIP.includes(w))
+        : rawWords;
+
+    const staff = isStaff();
+
+    // 1. Brand & Category filter shortcuts (derived from live vehicles)
+    const makeCounts = new Map();
+    const bodyCounts = new Map();
+    for (const v of data.vehicles) {
+        if (v.make) makeCounts.set(v.make, (makeCounts.get(v.make) || 0) + 1);
+        if (v.category) bodyCounts.set(v.category, (bodyCounts.get(v.category) || 0) + 1);
+    }
+    const filterHits = [];
+    for (const [make, count] of makeCounts.entries()) {
+        const score = _searchPrefixScore(make, queryWords);
+        if (score > 0) {
+            filterHits.push({
+                score,
+                title: `${make} — Browse ${make} Vehicles`,
+                desc: `Open inventory filtered by brand ${make} (${count} vehicle${count === 1 ? '' : 's'})`,
+                url: `/pages/inventory.html?make=${encodeURIComponent(make)}`,
+                tag: 'Brand'
+            });
+        }
+    }
+    for (const [body, count] of bodyCounts.entries()) {
+        const score = _searchPrefixScore(body, queryWords);
+        if (score > 0) {
+            filterHits.push({
+                score,
+                title: `${body} — Browse ${body} Vehicles`,
+                desc: `Open inventory filtered by ${body} (${count} vehicle${count === 1 ? '' : 's'})`,
+                url: `/pages/inventory.html?bodyType=${encodeURIComponent(body)}`,
+                tag: 'Body Type'
+            });
+        }
+    }
+    filterHits.sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+
+    // 2. Site Pages, Features & FAQs
+    const pageHits = [];
+    for (const p of _SEARCH_PAGES) {
+        if (staff && p.hideForStaff) continue;
+        const score = _searchPrefixScore(`${p.title} ${p.keywords}`, queryWords);
+        if (score > 0) {
+            pageHits.push({
+                score,
+                title: p.title,
+                desc: (staff && p.staffDesc) ? p.staffDesc : p.desc,
+                url: (staff && p.staffUrl) ? p.staffUrl : p.url,
+                tag: p.tag
+            });
+        }
+    }
+    for (const f of data.faqs) {
+        const answerText = _searchStripHtml(f.answer);
+        const score = _searchPrefixScore(`${f.question} ${answerText}`, queryWords);
+        if (score > 0) {
+            const snippet = answerText.trim().slice(0, 110) + (answerText.trim().length > 110 ? '…' : '');
+            pageHits.push({
+                score,
+                title: f.question,
+                desc: snippet || 'View answer on the FAQ page',
+                url: `/pages/faq.html?id=${encodeURIComponent(f.id)}`,
+                tag: 'FAQ'
+            });
+        }
+    }
+    pageHits.sort((a, b) => b.score - a.score);
+
+    // 3. Matching Vehicles
+    const rank = { AVAILABLE: 0, RESERVED: 1, SOLD: 2 };
+    const vehicleHits = data.vehicles
+        .map(v => {
+            const nameScore = _searchPrefixScore(`${v.make || ''} ${v.model || ''} ${v.refNo || ''}`, queryWords);
+            const fullScore = nameScore || _searchPrefixScore(_searchVehicleHay(v), queryWords);
+            const exactRef = v.refNo && v.refNo.toLowerCase() === q;
+            return { v, score: fullScore + (nameScore ? 2 : 0) + (exactRef ? 10 : 0), exactRef };
+        })
+        .filter(x => x.score > 0)
+        .sort((a, b) => b.score - a.score
+            || ((rank[(a.v.status || 'AVAILABLE').toUpperCase()] ?? 3) - (rank[(b.v.status || 'AVAILABLE').toUpperCase()] ?? 3)));
+
+    // If user pressed Enter / clicked Search, navigate to the best match
+    if (navigateTop) {
+        let topUrl = null;
+        if (vehicleHits.length && vehicleHits[0].exactRef) {
+            topUrl = `/pages/vehicle-detail.html?id=${vehicleHits[0].v.id}`;
+        } else if (filterHits.length && filterHits[0].tag === 'Brand') {
+            topUrl = filterHits[0].url;
+        } else if (vehicleHits.length && (!pageHits.length || vehicleHits[0].score >= pageHits[0].score + 2)) {
+            topUrl = `/pages/vehicle-detail.html?id=${vehicleHits[0].v.id}`;
+        } else if (pageHits.length) {
+            topUrl = pageHits[0].url;
+        } else if (filterHits.length) {
+            topUrl = filterHits[0].url;
+        } else if (vehicleHits.length) {
+            topUrl = `/pages/vehicle-detail.html?id=${vehicleHits[0].v.id}`;
+        }
+        if (topUrl) {
+            window.location.href = topUrl;
             return;
         }
-        _searchVehicles = res.data;
     }
-    if (input.value.trim().toLowerCase() !== q) return;   // the visitor kept typing: a newer search is running
 
-    // every word typed must match: "toyota corolla 2018" finds only vehicles with all three
-    const words = q.split(/\s+/).filter(w => w && !SEARCH_SKIP.includes(w));
-    const rank  = { AVAILABLE: 0, RESERVED: 1, SOLD: 2 };
-    const hits  = _searchVehicles
-        .filter(v => { const hay = _searchHay(v); return words.every(w => _searchHas(hay, w)); })
-        .sort((a, b) => (rank[(a.status || 'AVAILABLE').toUpperCase()] ?? 3) - (rank[(b.status || 'AVAILABLE').toUpperCase()] ?? 3));
-
-    if (!hits.length) {
-        out.innerHTML = '<div class="search-empty">No vehicles found. Try a make, a model or a year (for example: toyota corolla 2018).</div>';
+    if (!filterHits.length && !pageHits.length && !vehicleHits.length) {
+        out.innerHTML = '<div class="search-empty">No results found. Try a vehicle name, brand (e.g. Toyota), or feature (e.g. auction, inquire, FAQ).</div>';
         return;
     }
-    const cards = hits.slice(0, SEARCH_MAX).map(v => {
-        const img    = v.imageUrls ? v.imageUrls.split(',')[0].trim() : '';
-        const status = (v.status || 'AVAILABLE').toUpperCase();
-        const meta   = [v.manufactureYear, v.category,
-            (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
-            (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
-        return `<a class="search-vcard" href="/pages/vehicle-detail.html?id=${v.id}">
-              <div class="search-vimg">${img ? `<img src="${_searchEsc(img)}" alt="" loading="lazy">` : '<i class="bi bi-car-front"></i>'}</div>
-              <div class="search-vinfo">
-                  <div class="search-hit-title">${_searchEsc(v.make)} ${_searchEsc(v.model)}</div>
-                  <div class="search-hit-text">${_searchEsc(meta)}</div>
-                  <div class="search-vprice">$${Number(v.fobPrice || 0).toLocaleString('en-US')}
-                      <span class="search-vstatus ${status.toLowerCase()}">${status.charAt(0) + status.slice(1).toLowerCase()}</span></div>
-              </div></a>`;
-    }).join('');
-    const note = hits.length > SEARCH_MAX
-        ? `<div class="search-note">Showing ${SEARCH_MAX} of ${hits.length} vehicles. Add more words to narrow down (for example: toyota corolla 2018).</div>`
-        : `<div class="search-note">${hits.length} vehicle${hits.length === 1 ? '' : 's'} found.</div>`;
-    out.innerHTML = note + cards;
+
+    let html = '';
+    if (filterHits.length) {
+        html += `<div class="search-group-title">Brands &amp; Categories</div>`;
+        html += filterHits.slice(0, 4).map(h => `
+            <a class="search-hit" href="${h.url}">
+                <div>
+                    <div class="search-hit-title">${_searchEsc(h.title)}</div>
+                    <div class="search-hit-text">${_searchEsc(h.desc)}</div>
+                </div>
+                <span class="search-tag">${_searchEsc(h.tag)}</span>
+            </a>`).join('');
+    }
+    if (pageHits.length) {
+        html += `<div class="search-group-title">Pages, Features &amp; FAQs</div>`;
+        html += pageHits.slice(0, 5).map(h => `
+            <a class="search-hit" href="${h.url}">
+                <div>
+                    <div class="search-hit-title">${_searchEsc(h.title)}</div>
+                    <div class="search-hit-text">${_searchEsc(h.desc)}</div>
+                </div>
+                <span class="search-tag">${_searchEsc(h.tag)}</span>
+            </a>`).join('');
+    }
+    if (vehicleHits.length) {
+        html += `<div class="search-group-title">Vehicles (${vehicleHits.length})</div>`;
+        html += vehicleHits.slice(0, SEARCH_MAX).map(({ v }) => {
+            const img    = (Array.isArray(v.images) && v.images[0]?.imageUrl)
+                ? v.images[0].imageUrl.trim()
+                : (v.imageUrls ? v.imageUrls.split(',')[0].trim() : '');
+            const status = (v.status || 'AVAILABLE').toUpperCase();
+            const meta   = [v.manufactureYear, v.category,
+                (v.mileage || v.mileage === 0) ? Number(v.mileage).toLocaleString('en-US') + ' km' : '',
+                (v.condition || '').toUpperCase() === 'NEW' ? 'New' : 'Used'].filter(Boolean).join('  \u00b7  ');
+            return `<a class="search-vcard" href="/pages/vehicle-detail.html?id=${v.id}">
+                  <div class="search-vimg">${img ? `<img src="${_searchEsc(img)}" alt="" loading="lazy">` : '<i class="bi bi-car-front"></i>'}</div>
+                  <div class="search-vinfo">
+                      <div class="search-hit-title">${_searchEsc(v.make)} ${_searchEsc(v.model)}</div>
+                      <div class="search-hit-text">${_searchEsc(meta)}</div>
+                      <div class="search-vprice">$${Number(v.fobPrice || 0).toLocaleString('en-US')}
+                          <span class="search-vstatus ${status.toLowerCase()}">${status.charAt(0) + status.slice(1).toLowerCase()}</span></div>
+                  </div></a>`;
+        }).join('');
+        if (vehicleHits.length > SEARCH_MAX) {
+            html += `<div class="search-note">Showing top ${SEARCH_MAX} of ${vehicleHits.length} matching vehicles.</div>`;
+        }
+    }
+    out.innerHTML = html;
 }
 /* ===SEARCH-VEHICLES-END=== */
 

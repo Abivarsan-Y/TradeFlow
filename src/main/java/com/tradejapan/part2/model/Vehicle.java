@@ -121,6 +121,7 @@ public class Vehicle {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("sortOrder ASC, imageId ASC")
     @JsonManagedReference
     private List<VehicleImage> images = new ArrayList<>();
 

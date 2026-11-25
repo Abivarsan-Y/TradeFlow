@@ -146,6 +146,24 @@ public class VehicleServiceImpl implements VehicleService {
         }
     }
 
+    /** Accepts either a JSON array of URL strings or a legacy comma-separated string. */
+    private List<String> extractImageUrls(Object raw) {
+        List<String> urls = new ArrayList<>();
+        if (raw instanceof Collection<?> col) {
+            for (Object item : col) {
+                if (item == null) continue;
+                String trimmed = item.toString().trim();
+                if (!trimmed.isEmpty()) urls.add(trimmed);
+            }
+        } else if (raw != null) {
+            for (String part : raw.toString().split(",")) {
+                String trimmed = part.trim();
+                if (!trimmed.isEmpty()) urls.add(trimmed);
+            }
+        }
+        return urls;
+    }
+
     private void populateVehicle(Vehicle v, Map<String, Object> p) {
         if (p.containsKey("make") && p.containsKey("model")) {
             String makeName = str(p, "make");
@@ -211,21 +229,17 @@ public class VehicleServiceImpl implements VehicleService {
         }
 
         if (p.containsKey("imageUrls")) {
-            String urls = str(p, "imageUrls");
-            if (urls != null && !urls.isEmpty()) {
-                v.getImages().clear();
-                String[] urlArr = urls.split(",");
-                int order = 0;
-                for (String url : urlArr) {
-                    if (url.trim().isEmpty()) continue;
-                    VehicleImage vi = new VehicleImage();
-                    vi.setImageUrl(url.trim());
-                    vi.setVehicle(v);
-                    vi.setIsMain(order == 0);
-                    vi.setSortOrder(order + 1);
-                    v.getImages().add(vi);
-                    order++;
-                }
+            v.getImages().clear();
+            List<String> parsedUrls = extractImageUrls(p.get("imageUrls"));
+            int order = 0;
+            for (String url : parsedUrls) {
+                VehicleImage vi = new VehicleImage();
+                vi.setImageUrl(url);
+                vi.setVehicle(v);
+                vi.setIsMain(order == 0);
+                vi.setSortOrder(order + 1);
+                v.getImages().add(vi);
+                order++;
             }
         }
 
